@@ -32,7 +32,7 @@ class SecretForm extends Component {
       <div className="SecretForm">
         <TextField label="FaunaDB Endpoint URL"
           description="Leave this empty for Fauna Cloud."
-          placeholder="https://cloud.faunadb.com/"
+          placeholder="https://db.fauna.com/"
           value={this.state.endpoint} onChanged={this.handleChange.bind(this,"endpoint")}/>
         <TextField required type="password" label="Key Secret"
           description="Visit https://fauna.com/account/keys or talk to your administrator to provision keys."

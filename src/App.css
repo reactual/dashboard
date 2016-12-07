@@ -10,6 +10,7 @@
 
 .sidebar {
   background-color: #f4f4f5;
+  overflow:scroll;
 }
 
 a.highlighted {
