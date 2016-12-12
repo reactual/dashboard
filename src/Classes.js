@@ -128,9 +128,12 @@ class InstanceForm extends Component {
 export class ClassForm extends Component {
   constructor(props) {
     super(props)
-    this.state = {form:{}}
+    this.state = this.initialState();
     this.onSubmit = this.onSubmit.bind(this);
     this.onChange = this.onChange.bind(this);
+  }
+  initialState() {
+    return {form:{}, creating: false}
   }
   onSubmit(event) {
     event.preventDefault();
@@ -146,9 +149,14 @@ export class ClassForm extends Component {
       scopedClient = client;
     }
     console.log("make class", scopedClient);
+    this.setState({creating:true});
     scopedClient.query(q.Create(Ref("classes"), { name: this.state.form.name })).then( (res) => {
       console.log("created",res);
-    }).catch(console.error.bind(console, "createClass error"))
+      this.setState(this.initialState());
+    }).catch(()=>{
+      // error is displayed by page listener
+      this.setState({creating:false});
+    })
   }
   onChange(field, value) {
     var form = this.state.form;
@@ -175,7 +183,7 @@ export class ClassForm extends Component {
             description="Instances of the class will be removed if they have not been updated within the configured TTL."
             value={this.state.form.ttl}
             onChanged={this.onChange.bind(this, "ttl")}/>
-          <Button buttonType={ ButtonType.primary } onClick={this.onSubmit}>Create Class</Button>
+          <Button disabled={!!this.state.creating} buttonType={ ButtonType.primary } onClick={this.onSubmit}>Create Class</Button>
         </form>
       </div>
     )
