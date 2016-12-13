@@ -133,7 +133,7 @@ export class ClassForm extends Component {
     this.onChange = this.onChange.bind(this);
   }
   initialState() {
-    return {form:{}, creating: false}
+    return {form:{name:"",ttl:"", history:""}, creating: false}
   }
   onSubmit(event) {
     event.preventDefault();
@@ -152,6 +152,7 @@ export class ClassForm extends Component {
     this.setState({creating:true});
     scopedClient.query(q.Create(Ref("classes"), { name: this.state.form.name })).then( (res) => {
       console.log("created",res);
+      this.props.bumpSchema();
       this.setState(this.initialState());
     }).catch(()=>{
       // error is displayed by page listener

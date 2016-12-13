@@ -46,7 +46,8 @@ class SecretForm extends Component {
 class Container extends Component {
   constructor(props) {
     super(props);
-    this.state = {client:false, errors:[]};
+    this.state = {client:false, errors:[], schemaBump:0};
+    this.bumpSchema = this.bumpSchema.bind(this);
     this.updateSecret = this.updateSecret.bind(this);
     this.observerCallback = this.observerCallback.bind(this);
   }
@@ -98,10 +99,14 @@ class Container extends Component {
       }, ERROR_MESSAGE_DISPLAY_MS)
     }
   }
+  bumpSchema(){
+    this.setState({schemaBump : this.state.schemaBump+1})
+  }
   render() {
     const childrenWithProps = React.Children.map(this.props.children,
      (child) => React.cloneElement(child, {
-       client: this.state.client
+       client: this.state.client,
+       bumpSchema : this.bumpSchema
      })
     );
     // console.log("Container",this.props);
@@ -115,7 +120,8 @@ class Container extends Component {
         <div className="ms-Grid-row">
           {/* nav */}
           <div className="ms-Grid-col ms-u-sm12 ms-u-md5 ms-u-lg4 sidebar">
-            <NavTree client={this.state.client} path={path}/>
+            <NavTree nonce={this.state.schemaBump}
+              client={this.state.client} path={path}/>
             <SecretForm onSubmit={this.updateSecret} />
           </div>
           {/* main */}
