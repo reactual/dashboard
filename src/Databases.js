@@ -8,7 +8,7 @@ const q = faunadb.query, Ref = q.Ref;
 export class Databases extends Component {
   constructor(props) {
     super(props)
-    this.state = {form:{}}
+    this.state = {form:{}};
     this.onSubmit = this.onSubmit.bind(this);
     this.onChange = this.onChange.bind(this);
   }
@@ -25,8 +25,11 @@ export class Databases extends Component {
       // so we don't know our path and can't change our client
       scopedClient = client;
     }
+    this.setState({creating:true});
     scopedClient.query(q.Create(Ref("databases"), { name: this.state.form.name })).then( (res) => {
       console.log("created",res);
+      this.setState({creating:false, form:{name:""}});
+      this.props.bumpSchema();
     })
   }
   onChange(field, value) {
@@ -36,6 +39,7 @@ export class Databases extends Component {
   }
   render() {
     var context = this.props.params.splat ? " in "+this.props.params.splat : "";
+    const form = this.state.form;
     return (
       <div className="DatabaseForm">
         <form>
@@ -43,9 +47,9 @@ export class Databases extends Component {
           <TextField label="Name"
             required={true}
             description="This name is used in queries and API calls."
-            value={this.state.form.name}
+            value={form.name}
             onChanged={this.onChange.bind(this, "name")}/>
-          <Button buttonType={ ButtonType.primary } onClick={this.onSubmit}>Create Database</Button>
+          <Button disabled={!!this.state.creating} buttonType={ ButtonType.primary } onClick={this.onSubmit}>Create Database</Button>
         </form>
       </div>
     )
