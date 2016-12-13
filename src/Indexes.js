@@ -51,6 +51,7 @@ class IndexCard extends Component {
     var info = this.props.info;
     var active = info.active;
     var unique = info.unique;
+    var source = info.source && info.source.value;
     return (
       <div className="IndexInfo">
 
@@ -60,7 +61,8 @@ class IndexCard extends Component {
               Index: {info.name}
             </div>
             <div className="ms-Grid-col ms-u-sm6">
-              Source: <Link to={this.props.path ? "/"+this.props.path+"/"+info.source.value : info.source.value}>{info.source.value}</Link>
+              Source:
+              {source ? <Link to={this.props.path ? "/"+this.props.path+"/"+source : source}>{source}</Link> : " none"}
             </div>
           </div>
 
