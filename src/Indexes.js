@@ -126,9 +126,11 @@ export class IndexForm extends Component {
     this.getClasses(this.props.client, this.props.params.splat)
   }
   componentWillReceiveProps(nextProps) {
-    if (this.props.params.name !== nextProps.params.name ||
+    if (this.props.params.splat !== nextProps.params.splat ||
+      this.props.params.name !== nextProps.params.name ||
       this.props.client !==  nextProps.client) {
-      this.getClasses(nextProps.client, nextProps.params.splat)
+        this.setState({classes:[]});
+        this.getClasses(nextProps.client, nextProps.params.splat)
     }
   }
   getClasses(client, path) {
@@ -159,8 +161,13 @@ export class IndexForm extends Component {
       // so we don't know our path and can't change our client
       scopedClient = client;
     }
+    this.setState({creating:true});
     scopedClient.query(q.Create(Ref("indexes"), this.indexOptions())).then( (res) => {
       console.log("created",res);
+      this.props.bumpSchema();
+      this.setState({creating:false,unique:false,form:{name:"",terms:"",values:""}})
+    }).catch(()=>{
+      this.setState({creating:false});
     })
   }
   indexOptions() {
@@ -220,7 +227,7 @@ export class IndexForm extends Component {
             placeholder='[{"field": ["data", "name"], "transform": "casefold"}, {"field": ["data", "age"]}]'
             value={this.state.form.values}
             onChanged={this.onChange.bind(this, "values")}/>
-          <Button buttonType={ ButtonType.primary } onClick={this.onSubmit}>Create Index</Button>
+          <Button disabled={!!this.state.creating} buttonType={ ButtonType.primary } onClick={this.onSubmit}>Create Index</Button>
         </form>
       </div>
     )
