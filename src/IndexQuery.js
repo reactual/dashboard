@@ -55,6 +55,7 @@ class QueryResult extends Component {
     }
   }
   getIndexRows(client, name, term) {
+    this.setState({instanceRef:null});
     if (!name) return;
     var query;
     if (term) {
@@ -138,6 +139,7 @@ class InstancePreview extends Component {
     }
   }
   getInstanceData(instanceRef) {
+    this.setState({instance : false})
     instanceRef && this.props.client && this.props.client.query(q.Get(Ref(instanceRef))).then((res) => {
       this.setState({instance : res})
     })
