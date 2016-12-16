@@ -17,7 +17,7 @@ export class IndexForm extends Component {
     this.onUniqueToggled = this.onUniqueToggled.bind(this);
   }
   componentDidMount() {
-    this.getClasses(this.props.client, this.props.params.splat)
+    this.getClasses(this.props.client, this.props.splat)
   }
   componentWillReceiveProps(nextProps) {
     if (this.props.params.splat !== nextProps.params.splat ||
@@ -29,21 +29,13 @@ export class IndexForm extends Component {
   }
   getClasses(client, path) {
     if (!client) return;
-    var scopedClient;
-    if (path) {
-      scopedClient = clientForSubDB(client, path, "server");
-    } else {
-      // we are in a server key context
-      // so we don't know our path and can't change our client
-      scopedClient = client;
-    }
-    scopedClient.query(q.Paginate(Ref("classes"))).then( (res) => {
+    clientForSubDB(client, path, "server").query(q.Paginate(Ref("classes"))).then( (res) => {
       this.setState({classes : res.data})
     }).catch(console.error.bind(console, "getClasses"))
   }
 
   onSubmit() {
-    return clientForSubDB(this.props.client, this.props.params.splat, "server")
+    return clientForSubDB(this.props.client, this.props.splat, "server")
       .query(q.Create(Ref("indexes"), this.indexOptions())).then( (res) => {
         this.setState({form:{name:"",terms:"",values:""}})
       })
@@ -76,7 +68,7 @@ export class IndexForm extends Component {
     this.setState({unique: isUnique})
   }
   render() {
-    var context = this.props.params.splat ? " in "+this.props.params.splat : "";
+    var context = this.props.splat ? " in "+this.props.splat : "";
     var dropdownClasses = this.state.classes.map((ref)=>{
       return {
         key : ref.value,

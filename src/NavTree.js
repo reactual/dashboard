@@ -126,7 +126,7 @@ class NavLevel extends Component {
     return (
       <div className={cname}>
         <dl>
-          <dt key="_classes" >Classes [<Link to={this.props.name+"classes"}>+</Link>]</dt>
+          <dt key="_classes" >Classes [<Link to={"/db"+this.props.name+"classes"}>+</Link>]</dt>
           {this.state.classes.map((classRow) => {
             const name = this._valueTail(classRow.value);
             var highlighted=false;
@@ -135,11 +135,11 @@ class NavLevel extends Component {
             }
             return (
               <dd key={classRow.value}>
-                <Link className={highlighted&&"highlighted"} to={this.props.name+classRow.value}>{name}</Link>
+                <Link className={highlighted&&"highlighted"} to={"/db"+this.props.name+classRow.value}>{name}</Link>
               </dd>
             );
           })}
-          <dt key="_indexes" >Indexes [<Link to={this.props.name+"indexes"}>+</Link>]</dt>
+          <dt key="_indexes" >Indexes [<Link to={"/db"+this.props.name+"indexes"}>+</Link>]</dt>
           {this.state.indexes.map((indexRow) => {
             const name = this._valueTail(indexRow.value);
             var highlighted=false;
@@ -148,11 +148,11 @@ class NavLevel extends Component {
             }
             return (
               <dd key={indexRow.value}>
-                <Link className={highlighted&&"highlighted"} to={this.props.name+indexRow.value}>{name}</Link>
+                <Link className={highlighted&&"highlighted"} to={"/db"+this.props.name+indexRow.value}>{name}</Link>
               </dd>
             );
           })}
-          <dt key="_databases" >Databases [<Link to={this.props.name+"databases"}>+</Link>]</dt>
+          <dt key="_databases" >Databases [<Link to={"/db"+this.props.name+"databases"}>+</Link>]</dt>
           {this.state.databases.map((db) => {
             // render db name at this level
             const db_name = this._valueTail(db.value);
@@ -164,7 +164,7 @@ class NavLevel extends Component {
             return (
               <dd key={db.value}>
                 <a href="#" onClick={this.toggleDB.bind(this, db.value)}>{!!this.state.expanded[db.value] ? "V" : ">"}</a>
-                &nbsp;<Link onClick={this.toggleDB.bind(this, db.value)} className={highlighted&&"highlighted"} to={this.props.name+db_name+"/info"}>{db_name}</Link>
+                &nbsp;<Link onClick={this.toggleDB.bind(this, db.value)} className={highlighted&&"highlighted"} to={"/db"+this.props.name+db_name+"/info"}>{db_name}</Link>
                 <NavLevel
                   name={this.props.name+db_name+"/"}
                   path={db_path}

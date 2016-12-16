@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Router, Route, IndexRoute, browserHistory} from 'react-router';
+import {Router, Route, Redirect, IndexRoute, browserHistory} from 'react-router';
 import Container from './Container'
 import {IndexInfo} from './Indexes'
 import {IndexForm} from './IndexForm'
@@ -21,7 +21,7 @@ class App extends Component {
   render() {
     return (
       <Router history={browserHistory}>
-        <Route path='/' component={Container}>
+        <Route path='/db' component={Container}>
           <IndexRoute component={Home} />
           <Route path='/databases' component={DatabaseForm} />
           <Route path='/**/databases' component={DatabaseForm} />
@@ -39,6 +39,7 @@ class App extends Component {
 
           <Route path='*' component={NotFound} />
         </Route>
+        <Redirect from="/" to="/db" />
       </Router>
     );
   }

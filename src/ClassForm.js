@@ -17,7 +17,7 @@ export class ClassForm extends Component {
     return {form:{name:"",ttl:"", history:""}, classIndex : false}
   }
   onSubmit() {
-    const client = clientForSubDB(this.props.client, this.props.params.splat, "server");
+    const client = clientForSubDB(this.props.client, this.props.splat, "server");
     return client
       .query(q.Create(Ref("classes"), { name: this.state.form.name }))
       .then( (res) => {
@@ -30,7 +30,6 @@ export class ClassForm extends Component {
     })
   }
   classIndexToggled() {
-    console.log("classIndexToggled")
     this.setState({classIndex : !this.state.classIndex})
   }
   onChange(field, value) {
@@ -39,7 +38,7 @@ export class ClassForm extends Component {
     this.setState({form})
   }
   render() {
-    var context = this.props.params.splat ? " in "+this.props.params.splat : "";
+    var context = this.props.splat ? " in "+this.props.splat : "";
     return (
       <SchemaForm buttonText="Create Class" onSubmit={this.onSubmit} bumpSchema={this.props.bumpSchema}>
         <h3>Create a class{context}</h3>

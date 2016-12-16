@@ -17,15 +17,7 @@ export class DatabaseInfo extends Component {
   }
   getDatabaseInfo(client, path) {
     if (!client) return;
-    var scopedClient;
-    if (path) {
-      scopedClient = clientForSubDB(client, path, "server");
-    } else {
-      // we are in a server key context
-      // so we don't know our path and can't change our client
-      scopedClient = client;
-    }
-    this.setState({scopedClient})
+    this.setState({scopedClient : clientForSubDB(client, path, "server")})
   }
   render() {
     return (

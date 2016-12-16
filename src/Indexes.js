@@ -17,14 +17,7 @@ export class IndexInfo extends Component {
   }
   getIndexInfo(client, path, name) {
     if (!client) return;
-    var scopedClient;
-    if (path) {
-      scopedClient = clientForSubDB(client, path, "server");
-    } else {
-      // we are in a server key context
-      // so we don't know our path and can't change our client
-      scopedClient = client;
-    }
+    var scopedClient = clientForSubDB(client, path, "server");
     scopedClient.query(q.Get(Ref("indexes/"+name))).then( (res) => {
       this.setState({info : res, scopedClient})
     })

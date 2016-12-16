@@ -23,15 +23,7 @@ export class ClassInfo extends Component {
   }
   getClassInfo(client, path, name) {
     if (!client) return;
-    var scopedClient;
-    if (path) {
-      scopedClient = clientForSubDB(client, path, "server");
-    } else {
-      // we are in a server key context
-      // so we don't know our path and can't change our client
-      scopedClient = client;
-    }
-    scopedClient.query(q.Get(Ref("classes/"+name))).then( (res) => {
+    clientForSubDB(client, path, "server").query(q.Get(Ref("classes/"+name))).then( (res) => {
       this.setState({info : res, scopedClient})
     })
   }

@@ -14,7 +14,7 @@ export class DatabaseForm extends Component {
     this.onChange = this.onChange.bind(this);
   }
   onSubmit() {
-    return clientForSubDB(this.props.client, this.props.params.splat, "admin")
+    return clientForSubDB(this.props.client, this.props.splat, "admin")
       .query(q.Create(Ref("databases"), { name: this.state.form.name }))
       .then((res)=>{
         this.setState({form:{name:""}});
@@ -26,7 +26,7 @@ export class DatabaseForm extends Component {
     this.setState({form})
   }
   render() {
-    var context = this.props.params.splat ? " in "+this.props.params.splat : "";
+    var context = this.props.splat ? " in "+this.props.splat : "";
     const form = this.state.form;
     return (
       <SchemaForm buttonText="Create Databases" onSubmit={this.onSubmit} bumpSchema={this.props.bumpSchema}>

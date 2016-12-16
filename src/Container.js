@@ -69,14 +69,16 @@ export default class Container extends Component {
     this.setState({schemaBump : this.state.schemaBump+1})
   }
   render() {
+    var splat = this.props.params.splat.replace("db/","");
     const childrenWithProps = React.Children.map(this.props.children,
      (child) => React.cloneElement(child, {
        client: this.state.client,
-       bumpSchema : this.bumpSchema
+       bumpSchema : this.bumpSchema,
+       splat
      })
     );
     // console.log("Container",this.props);
-    var path = (this.props.location||{}).pathname.replace("/",'');
+    var path = (this.props.location||{}).pathname.replace(/\/db\/?/,'');
     return (
       <div className="ms-Grid ms-Fabric ms-font-m">
         {/* header */}
