@@ -7,12 +7,12 @@ export class DatabaseInfo extends Component {
     this.state = {info:{}};
   }
   componentDidMount() {
-    this.getDatabaseInfo(this.props.client, this.props.params.splat, this.props.params.name)
+    this.getDatabaseInfo(this.props.client, this.props.splat, this.props.params.name)
   }
   componentWillReceiveProps(nextProps) {
-    if (this.props.params.splat !== nextProps.params.splat ||
+    if (this.props.splat !== nextProps.splat ||
       this.props.client !==  nextProps.client) {
-      this.getDatabaseInfo(nextProps.client, nextProps.params.splat)
+      this.getDatabaseInfo(nextProps.client, nextProps.splat)
     }
   }
   getDatabaseInfo(client, path) {
@@ -21,7 +21,7 @@ export class DatabaseInfo extends Component {
   }
   render() {
     return (
-      <div>DB info {this.props.params.splat}</div>
+      <div>DB info {this.props.splat}</div>
     )
   }
 }

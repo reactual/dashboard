@@ -13,7 +13,7 @@ export class IndexInfo extends Component {
     }};
   }
   componentDidMount() {
-    this.getIndexInfo(this.props.client, this.props.params.splat, this.props.params.name)
+    this.getIndexInfo(this.props.client, this.props.splat, this.props.params.name)
   }
   getIndexInfo(client, path, name) {
     if (!client) return;
@@ -25,13 +25,13 @@ export class IndexInfo extends Component {
   componentWillReceiveProps(nextProps) {
     if (this.props.params.name !== nextProps.params.name ||
       this.props.client !== nextProps.client) {
-      this.getIndexInfo(nextProps.client, nextProps.params.splat, nextProps.params.name)
+      this.getIndexInfo(nextProps.client, nextProps.splat, nextProps.params.name)
     }
   }
   render() {
     return (<div>
         <h3>Index Details</h3>
-        <IndexCard path={this.props.params.splat} client={this.state.scopedClient} info={this.state.info}/>
+        <IndexCard path={this.props.splat} client={this.state.scopedClient} info={this.state.info}/>
         <IndexQuery client={this.state.scopedClient} info={this.state.info}/>
       </div>)
   }

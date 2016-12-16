@@ -20,11 +20,11 @@ export class IndexForm extends Component {
     this.getClasses(this.props.client, this.props.splat)
   }
   componentWillReceiveProps(nextProps) {
-    if (this.props.params.splat !== nextProps.params.splat ||
+    if (this.props.splat !== nextProps.splat ||
       this.props.params.name !== nextProps.params.name ||
       this.props.client !==  nextProps.client) {
         this.setState({classes:[]});
-        this.getClasses(nextProps.client, nextProps.params.splat)
+        this.getClasses(nextProps.client, nextProps.splat)
     }
   }
   getClasses(client, path) {

@@ -13,12 +13,12 @@ export class ClassInfo extends Component {
     }};
   }
   componentDidMount() {
-    this.getClassInfo(this.props.client, this.props.params.splat, this.props.params.name)
+    this.getClassInfo(this.props.client, this.props.splat, this.props.params.name)
   }
   componentWillReceiveProps(nextProps) {
     if (this.props.params.name !== nextProps.params.name ||
       this.props.client !==  nextProps.client) {
-      this.getClassInfo(nextProps.client, nextProps.params.splat, nextProps.params.name)
+      this.getClassInfo(nextProps.client, nextProps.splat, nextProps.params.name)
     }
   }
   getClassInfo(client, path, name) {
@@ -36,9 +36,9 @@ export class ClassInfo extends Component {
           <dl>
             <dt>Name</dt><dd>{info.name}</dd>
             <dt>History</dt><dd>{info.history_days} days</dd>
-            <ClassIndexes path={this.props.params.splat} client={this.state.scopedClient} info={this.state.info}/>
+            <ClassIndexes path={this.props.splat} client={this.state.scopedClient} info={this.state.info}/>
           </dl>
-          <InstanceForm path={this.props.params.splat} client={this.state.scopedClient} info={this.state.info}/>
+          <InstanceForm path={this.props.splat} client={this.state.scopedClient} info={this.state.info}/>
         </div>
       );
   }
@@ -63,7 +63,10 @@ class ClassIndexes extends Component {
     client && client.query(q.Filter(q.Map(q.Paginate(Ref("indexes")), function (indexRef) {
       return q.Get(indexRef)
     }), function (indexInstance) {
-      return q.Equals(q.Ref(refName), q.Select("source", indexInstance));
+      return q.If(q.Contains("source", indexInstance),
+        q.Equals(classRef, q.Select("source", indexInstance)),
+        true
+      );
     })).then( (response) => {
       this.setState({indexes:response.data})
     })

@@ -22,7 +22,10 @@ export class ClassForm extends Component {
       .query(q.Create(Ref("classes"), { name: this.state.form.name }))
       .then( (res) => {
         var promise = this.state.classIndex ?
-          client.query(q.Create(Ref("indexes"), {name : "all_"+this.state.form.name})) :
+          client.query(q.Create(Ref("indexes"), {
+            name : "all_"+this.state.form.name,
+            source : res.ref
+          })) :
           Promise.resolve();
         return promise.then(() => {
           this.setState(this.initialState());
