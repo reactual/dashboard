@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import {TextField, Button, ButtonType, Dropdown, Toggle} from 'office-ui-fabric-react'
+import {TextField, Dropdown, Toggle} from 'office-ui-fabric-react'
+import SchemaForm from "./SchemaForm"
 import faunadb from 'faunadb';
 import clientForSubDB from "./clientForSubDB";
 const q = faunadb.query, Ref = q.Ref;
@@ -39,27 +40,11 @@ export class IndexForm extends Component {
     }).catch(console.error.bind(console, "getClasses"))
   }
 
-  onSubmit(event) {
-    event.preventDefault();
-    var path = this.props.params.splat;
-    var client = this.props.client;
-    if (!client) return;
-    var scopedClient;
-    if (path) {
-      scopedClient = clientForSubDB(client, path, "server");
-    } else {
-      // we are in a server key context
-      // so we don't know our path and can't change our client
-      scopedClient = client;
-    }
-    this.setState({creating:true});
-    scopedClient.query(q.Create(Ref("indexes"), this.indexOptions())).then( (res) => {
-      console.log("created",res);
-      this.props.bumpSchema();
-      this.setState({creating:false,unique:false,form:{name:"",terms:"",values:""}})
-    }).catch(()=>{
-      this.setState({creating:false});
-    })
+  onSubmit() {
+    return clientForSubDB(this.props.client, this.props.params.splat, "server")
+      .query(q.Create(Ref("indexes"), this.indexOptions())).then( (res) => {
+        this.setState({form:{name:"",terms:"",values:""}})
+      })
   }
   indexOptions() {
     var opts = {
@@ -97,30 +82,27 @@ export class IndexForm extends Component {
       }
     })
     return (
-      <div className="IndexForm">
-        <form>
-          <h3>Create an index{context}</h3>
-          <TextField label="Name"
-            required={true}
-            description="This name is used in queries and API calls."
-            value={this.state.form.name}
-            onChanged={this.onChange.bind(this, "name")}/>
-          <Dropdown label="Source Class" options={dropdownClasses}
-            onChanged={this.onSelectClass} selectedKey={this.state.selected}/>
-          <Toggle label="Unique" checked={this.state.unique} onChanged={this.onUniqueToggled} />
-          <TextField label="Terms"
-            description="JSON list of terms to be indexed."
-            placeholder='[{"field": ["data", "name"], "transform": "casefold"}, {"field": ["data", "age"]}]'
-            value={this.state.form.terms}
-            onChanged={this.onChange.bind(this, "terms")}/>
-          <TextField label="Values"
-            description="JSON list of values to be included."
-            placeholder='[{"field": ["data", "name"], "transform": "casefold"}, {"field": ["data", "age"]}]'
-            value={this.state.form.values}
-            onChanged={this.onChange.bind(this, "values")}/>
-          <Button disabled={!!this.state.creating} buttonType={ ButtonType.primary } onClick={this.onSubmit}>Create Index</Button>
-        </form>
-      </div>
+      <SchemaForm buttonText="Create Index" onSubmit={this.onSubmit} bumpSchema={this.props.bumpSchema}>
+        <h3>Create an index{context}</h3>
+        <TextField label="Name"
+          required={true}
+          description="This name is used in queries and API calls."
+          value={this.state.form.name}
+          onChanged={this.onChange.bind(this, "name")}/>
+        <Dropdown label="Source Class" options={dropdownClasses}
+          onChanged={this.onSelectClass} selectedKey={this.state.selected}/>
+        <Toggle label="Unique" checked={this.state.unique} onChanged={this.onUniqueToggled} />
+        <TextField label="Terms"
+          description="JSON list of terms to be indexed."
+          placeholder='[{"field": ["data", "name"], "transform": "casefold"}, {"field": ["data", "age"]}]'
+          value={this.state.form.terms}
+          onChanged={this.onChange.bind(this, "terms")}/>
+        <TextField label="Values"
+          description="JSON list of values to be included."
+          placeholder='[{"field": ["data", "name"], "transform": "casefold"}, {"field": ["data", "age"]}]'
+          value={this.state.form.values}
+          onChanged={this.onChange.bind(this, "values")}/>
+      </SchemaForm>
     )
   }
 }

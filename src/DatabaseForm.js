@@ -1,48 +1,10 @@
 import React, { Component } from 'react';
 // import { Link } from 'react-router';
-import {TextField, Button, ButtonType} from 'office-ui-fabric-react'
+import {TextField} from 'office-ui-fabric-react'
 import clientForSubDB from "./clientForSubDB";
+import SchemaForm from "./SchemaForm"
 import faunadb from 'faunadb';
 const q = faunadb.query, Ref = q.Ref;
-
-class SchemaForm extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {disabled:false}
-    this.onSubmit = this.onSubmit.bind(this);
-  }
-  onSubmit(event) {
-    event.preventDefault()
-    this.setState({disabled:true});
-    this.props.onSubmit().then(() => {
-      this.setState({disabled:false});
-      this.props.bumpSchema();
-    }, () => {
-      this.setState({disabled:false});
-    })
-  }
-  render() {
-    return (
-      <div className="SchemaForm">
-        <form>
-          {this.props.children}
-          <Button disabled={!!this.state.disabled}
-            buttonType={ ButtonType.primary } onClick={this.onSubmit}>{this.props.buttonText}</Button>
-        </form>
-      </div>
-    )
-  }
-}
-
-function clientForPath(client, path, type) {
-  if (!client) return;
-  if (path) {
-    return clientForSubDB(client, path, type);
-  } else {
-    // we are in a server key context so we don't know our path and can't change our client
-    return client;
-  }
-}
 
 export class DatabaseForm extends Component {
   constructor(props) {
@@ -52,7 +14,7 @@ export class DatabaseForm extends Component {
     this.onChange = this.onChange.bind(this);
   }
   onSubmit() {
-    return clientForPath(this.props.client, this.props.params.splat, "admin")
+    return clientForSubDB(this.props.client, this.props.params.splat, "admin")
       .query(q.Create(Ref("databases"), { name: this.state.form.name }))
       .then((res)=>{
         this.setState({form:{name:""}});
