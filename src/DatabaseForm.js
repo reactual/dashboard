@@ -78,3 +78,7 @@ export class DatabaseForm extends Component {
     )
   }
 }
+
+DatabaseForm.propTypes = {
+  client : React.PropTypes.instanceOf(faunadb.Client)
+}

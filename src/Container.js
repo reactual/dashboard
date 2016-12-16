@@ -96,7 +96,8 @@ export default class Container extends Component {
               return (<MessageBar
               messageBarType={ MessageBarType.error }>{error.message}</MessageBar>)
             })}
-            {childrenWithProps}
+            {this.state.client ? childrenWithProps : <MessageBar
+            messageBarType={ MessageBarType.error }>Please provide a FauanDB secret.</MessageBar>}
           </div>
         </div>
       </div>
