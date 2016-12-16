@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
-import {TextField, Dropdown, Toggle} from 'office-ui-fabric-react'
+import {TextField, Dropdown, Checkbox} from 'office-ui-fabric-react'
 import SchemaForm from "./SchemaForm"
 import faunadb from 'faunadb';
 import clientForSubDB from "./clientForSubDB";
 const q = faunadb.query, Ref = q.Ref;
+
+window.q = q;
 
 export class IndexForm extends Component {
   constructor(props) {
@@ -91,7 +93,7 @@ export class IndexForm extends Component {
           onChanged={this.onChange.bind(this, "name")}/>
         <Dropdown label="Source Class" options={dropdownClasses}
           onChanged={this.onSelectClass} selectedKey={this.state.selected}/>
-        <Toggle label="Unique" checked={this.state.unique} onChanged={this.onUniqueToggled} />
+        <Checkbox label="Unique" checked={this.state.unique} onChanged={this.onUniqueToggled} />
         <TextField label="Terms"
           description="JSON list of terms to be indexed."
           placeholder='[{"field": ["data", "name"], "transform": "casefold"}, {"field": ["data", "age"]}]'

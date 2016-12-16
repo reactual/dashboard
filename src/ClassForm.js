@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {TextField} from 'office-ui-fabric-react'
+import {TextField, Checkbox} from 'office-ui-fabric-react'
 import SchemaForm from "./SchemaForm"
 import faunadb from 'faunadb';
 import clientForSubDB from "./clientForSubDB";
@@ -11,16 +11,27 @@ export class ClassForm extends Component {
     this.state = this.initialState();
     this.onSubmit = this.onSubmit.bind(this);
     this.onChange = this.onChange.bind(this);
+    this.classIndexToggled = this.classIndexToggled.bind(this);
   }
   initialState() {
-    return {form:{name:"",ttl:"", history:""}, creating: false}
+    return {form:{name:"",ttl:"", history:""}, classIndex : false}
   }
   onSubmit() {
-    return clientForSubDB(this.props.client, this.props.params.splat, "server")
+    const client = clientForSubDB(this.props.client, this.props.params.splat, "server");
+    return client
       .query(q.Create(Ref("classes"), { name: this.state.form.name }))
       .then( (res) => {
-        this.setState(this.initialState());
+        var promise = this.state.classIndex ?
+          client.query(q.Create(Ref("indexes"), {name : "all_"+this.state.form.name})) :
+          Promise.resolve();
+        return promise.then(() => {
+          this.setState(this.initialState());
+        })
     })
+  }
+  classIndexToggled() {
+    console.log("classIndexToggled")
+    this.setState({classIndex : !this.state.classIndex})
   }
   onChange(field, value) {
     var form = this.state.form;
@@ -46,6 +57,12 @@ export class ClassForm extends Component {
           description="Instances of the class will be removed if they have not been updated within the configured TTL."
           value={this.state.form.ttl}
           onChanged={this.onChange.bind(this, "ttl")}/>
+        <h4>Indexing Options</h4>
+        <Checkbox label="Create Class Index" checked={this.state.classIndex} onChange={this.classIndexToggled} />
+        <p className="ms-TextField-description">Without a class index instances can only be loaded by
+          Ref. A class index indexes all members of the class under a single key. For large
+          datasets this can increase storage and processing overhead, so use class
+          indexes sparingly in production.</p>
       </SchemaForm>
     )
   }
