@@ -53,8 +53,11 @@ class IndexCard extends Component {
               Index: {info.name}
             </div>
             <div className="ms-Grid-col ms-u-sm6">
-              Source:
-              {source ? <Link to={this.props.path ? "/"+this.props.path+"/"+source : source}>{source}</Link> : " none"}
+              Source: {source ?
+                <Link to={this.props.path ?
+                  "/db/"+this.props.path+"/"+source :
+                  "/db/"+source}>{source}</Link> :
+                " none"}
             </div>
           </div>
 

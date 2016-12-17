@@ -69,7 +69,9 @@ export default class Container extends Component {
     this.setState({schemaBump : this.state.schemaBump+1})
   }
   render() {
-    var splat = this.props.params.splat.replace(/^db\/?/,'');
+    var splat = this.props.params.splat ?
+      this.props.params.splat.replace(/^db\/?/,'') : "";
+
     const childrenWithProps = React.Children.map(this.props.children,
      (child) => React.cloneElement(child, {
        client: this.state.client,
