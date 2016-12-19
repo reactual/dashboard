@@ -59,7 +59,6 @@ class ClassIndexes extends Component {
     }
   }
   queryForIndexes(client, classRef) {
-    var refName = classRef.value;
     client && client.query(q.Filter(q.Map(q.Paginate(Ref("indexes")), function (indexRef) {
       return q.Get(indexRef)
     }), function (indexInstance) {
