@@ -35,3 +35,7 @@ div.NavLevel.highlighted {
 .NavTree dl {
   margin:0;
 }
+
+.ms-Breadcrumb {
+  margin : 1em 0;
+}

@@ -6,6 +6,8 @@
     "react-scripts": "0.7.0"
   },
   "dependencies": {
+    "babel-core": "^5.5.8",
+    "brace": "^0.5.1",
     "faunadb": "^0.2.1",
     "office-ui-fabric-react": "^0.69.0-hotfix1",
     "react": "^15.3.2",

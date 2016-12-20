@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router';
-import {MessageBar, MessageBarType} from 'office-ui-fabric-react'
+import {MessageBar, MessageBarType, Breadcrumb} from 'office-ui-fabric-react'
 import faunadb from 'faunadb';
 import {NavTree} from './NavTree'
 import {SecretForm} from './Secrets'
+import FaunaRepl from './FaunaRepl'
 import logo from './logo.svg';
 import {parse as parseURL} from 'url'
 
@@ -16,6 +17,8 @@ export default class Container extends Component {
     this.bumpSchema = this.bumpSchema.bind(this);
     this.updateSecret = this.updateSecret.bind(this);
     this.observerCallback = this.observerCallback.bind(this);
+    this._onBreadcrumbItemClicked = this._onBreadcrumbItemClicked.bind(this);
+
   }
   updateSecret(data) {
     // get a new client for that secret and set state
@@ -68,6 +71,9 @@ export default class Container extends Component {
   bumpSchema(){
     this.setState({schemaBump : this.state.schemaBump+1})
   }
+  _onBreadcrumbItemClicked(item) {
+    console.log("Breadcrumb",item)
+  }
   render() {
     var splat = this.props.params.splat ?
       this.props.params.splat.replace(/^db\/?/,'') : "";
@@ -81,6 +87,26 @@ export default class Container extends Component {
     );
     // console.log("Container",this.props);
     var path = (this.props.location||{}).pathname.replace(/\/db\/?/,'');
+
+    var contents = <MessageBar messageBarType={ MessageBarType.error }>
+      Please provide a FaunaDB secret.</MessageBar>;
+
+    if (this.state.client) {
+      contents = <div>
+        <Breadcrumb
+        items={ splat.split('/').map((db_name, i, path)=>{
+          return {
+            text : db_name,
+            key : db_name,
+            onClick : this._onBreadcrumbItemClicked.bind(this, path.slice(0,i+1))
+          }
+        }) }
+        maxDisplayedItems={ 4 } />
+        {childrenWithProps}
+        <FaunaRepl splat={splat} client={this.state.client}/>
+      </div>
+    }
+
     return (
       <div className="ms-Grid ms-Fabric ms-font-m">
         {/* header */}
@@ -100,11 +126,7 @@ export default class Container extends Component {
               return (<MessageBar
               messageBarType={ MessageBarType.error }>{error.message}</MessageBar>)
             })}
-            {this.state.client ?
-              childrenWithProps :
-              <MessageBar messageBarType={ MessageBarType.error }>
-                Please provide a FaunaDB secret.</MessageBar>
-            }
+            {contents}
           </div>
         </div>
       </div>
