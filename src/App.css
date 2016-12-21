@@ -36,10 +36,32 @@ div.NavLevel.highlighted {
   margin:0;
 }
 
-.ms-Breadcrumb {
-  margin : 1em 0;
+.FaunaRepl {
+  background-color: #f4f4f5;
+  position: relative;
+  height:100%; width: 100%;
 }
-
+.repl-workspace {
+  height:100%; width: 100%;
+}
+.repl-bar {
+  background-color: #f4f4f5;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+}
+.repl-bar .buttons {
+  float:right;
+}
+.repl-bar .ms-Breadcrumb {
+  margin : 0.25em;
+}
+.expandedArea {
+  height: calc(100% - 40px);
+  position: relative;
+}
 .Resizer {
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
