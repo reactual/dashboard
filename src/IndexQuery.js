@@ -15,20 +15,20 @@ export default class IndexQuery extends Component {
   }
   gotTerm(term) {
     this.setState({term})
-  }
+  } // todo move running the query up here and use Query Result
   render() {
     var termInfo, queryResults;
     if (this.props.info.terms) {
       // get a term
       termInfo = <TermForm onSubmit={this.gotTerm}/>;
       if (this.state.term) {
-        queryResults = <QueryResult client={this.props.client} info={this.props.info} term={this.state.term}/>
+        queryResults = <IndexQueryResult client={this.props.client} info={this.props.info} term={this.state.term}/>
       } else {
         // no query
       }
     } else {
       // run a termless query
-      queryResults = <QueryResult client={this.props.client} info={this.props.info} />
+      queryResults = <IndexQueryResult client={this.props.client} info={this.props.info} />
     }
     return (<div>
       {termInfo}
@@ -36,7 +36,76 @@ export default class IndexQuery extends Component {
     </div>);
   }
 }
-class QueryResult extends Component {
+export class QueryResult extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+    this.clickedRef = this.clickedRef.bind(this);
+    this._onRenderRow = this._onRenderRow.bind(this);
+    this._renderItemColumn = this._renderItemColumn.bind(this);
+  }
+  makeResultIntoTableData(result) {
+    console.log("resu", result)
+    // const values = this.props.info.values;
+    const values = false;
+    // return the result structured as rows with column names
+    // alternatively we could provide a column map to the table view
+    if (values) {
+      const keynames = values.map((v) => v.field.join("."));
+      if (!result.data) return [];
+      return result.data.map((resItem) => {
+        var item = {};
+        if (keynames.length === 1) { // special case for single column
+          item[keynames[0]] = resItem;
+        } else {
+          for (var i = 0; i < keynames.length; i++) {
+            item[keynames[i]] = resItem[i];
+          }
+        }
+        return item;
+      });
+    } else {
+      return result.data.map((resItem) => {
+        return {value:resItem}
+      })
+    }
+  }
+  clickedRef(item, event) {
+    event.preventDefault()
+    if (item.constructor === q.Ref("").constructor) {
+      this.setState({instanceRef:item});
+    }
+  }
+  _onRenderRow (props) {
+    return <DetailsRow { ...props } onRenderCheck={ this._onRenderCheck } />;
+  }
+  _onRenderCheck(props) {
+    return null;
+  }
+  _renderItemColumn(item, index, column) {
+    let fieldContent = item[column.fieldName];
+    if (fieldContent.constructor === q.Ref("").constructor) {
+      return <a href="#" onClick={this.clickedRef.bind(null, fieldContent)}>{inspect(fieldContent, {depth:null})}</a>
+    } else {
+      return <span>{ fieldContent }</span>;
+    }
+  }
+  render() {
+    var listItems = this.makeResultIntoTableData(this.props.result);
+    console.log("listItems", listItems)
+    return (<div>
+        <h3>Query Results</h3>
+          <DetailsList
+            onRenderItemColumn={this._renderItemColumn}
+            onRenderRow={ this._onRenderRow }
+            selectionMode="none"
+            items={ listItems }/>
+         <InstancePreview client={this.props.client} instanceRef={this.state.instanceRef}/>
+      </div>)
+  }
+}
+
+class IndexQueryResult extends Component {
   constructor(props) {
     super(props);
     this.state = {data:[]};
@@ -123,7 +192,6 @@ class QueryResult extends Component {
       </div>)
   }
 }
-
 
 class InstancePreview extends Component {
   constructor(props) {

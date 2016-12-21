@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {Button, ButtonType} from 'office-ui-fabric-react'
 import SplitPane from "react-split-pane"
 import Ace from "./repl/Ace"
-
+import {QueryResult} from "./IndexQuery"
 import clientForSubDB from "./clientForSubDB";
 import faunadb from 'faunadb';
 const q = faunadb.query, Ref = q.Ref;
@@ -24,6 +24,7 @@ export default class FaunaRepl extends Component {
     super(props)
     this.state = {
       opened : false,
+      result : { data : []},
       aceCode : "Paginate(Ref(\"indexes\"))"
     }
     this.handleAceChange = this.handleAceChange.bind(this);
@@ -57,7 +58,8 @@ export default class FaunaRepl extends Component {
 
         <div className="FaunaRepl">
           <div className="expandedArea">
-            <SplitPane split="vertical" defaultSize="50%" style={{height:"calc(100% - 40px);"}}>
+            <SplitPane split="vertical" defaultSize="50%" style={{height:"calc(100% - 40px);"}}
+              pane2Style={{overflow:"scroll"}}>
               {this.state.opened ?
                 (<div className="repl-workspace">
                     <Ace
@@ -68,7 +70,7 @@ export default class FaunaRepl extends Component {
                       mode={'javascript'} />
                   </div>) : (<div></div>)
               }
-              <QueryResults/>
+              <QueryResult result={this.state.result}/>
             </SplitPane>
           </div>
           <div className="repl-bar">
@@ -87,13 +89,6 @@ export default class FaunaRepl extends Component {
   }
 }
 
-class QueryResults extends Component {
-  render() {
-    return (<div>
-      <h3>Query Results</h3>
-    </div>);
-  }
-}
 
 //
 // <CommandBar
