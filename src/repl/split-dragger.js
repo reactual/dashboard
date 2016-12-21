@@ -23,20 +23,6 @@ const styles = {
 const noop = ()=>undefined;
 
 export default class SplitDragger extends Component {
-  static propTypes = {
-    style: React.PropTypes.object,
-    draggerStyle: React.PropTypes.object,
-    onDragEnd: React.PropTypes.func,
-    onClick: React.PropTypes.func,
-    orientation: React.PropTypes.oneOf(['vertical', 'horizontal'])
-  }
-
-  static defaultProps = {
-    orientation: 'vertical',
-    onDragEnd: noop,
-    onClick: noop
-  }
-
   constructor(props) {
     super(props);
     this.handleDocumentMouseUp = this.handleDocumentMouseUp;
@@ -100,4 +86,18 @@ export default class SplitDragger extends Component {
       </div>
     )
   }
+}
+
+SplitDragger.propTypes = {
+  style: React.PropTypes.object,
+  draggerStyle: React.PropTypes.object,
+  onDragEnd: React.PropTypes.func,
+  onClick: React.PropTypes.func,
+  orientation: React.PropTypes.oneOf(['vertical', 'horizontal'])
+}
+
+SplitDragger.defaultProps = {
+  orientation: 'vertical',
+  onDragEnd: noop,
+  onClick: noop
 }

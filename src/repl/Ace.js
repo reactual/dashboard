@@ -8,8 +8,6 @@ const ace = require('brace');
 export default class Ace extends Component {
   constructor(props) {
     super(props);
-    this.displayName = 'Ace'
-
     this.handleChange = this.handleChange.bind(this)
   }
 

@@ -1,15 +1,15 @@
 const React = require('react');
 const {Component, PropTypes} = React;
-const Console = require('./console');
+const Cronsole = require('./console');
 const Ace = require('./Ace');
 const babel = require('babel-core/browser');
 const consoleLog = require('./hijack-log')();
 const PlayRun = require('./play-run');
 const SplitView = require('./split-view');
 
-const debounce = (fn, ms, t) => () => {
-  clearTimeout(t);
-  t = setTimeout(fn, ms); };
+// const debounce = (fn, ms, t) => () => {
+//   clearTimeout(t);
+//   t = setTimeout(fn, ms); };
 
 const styles = {
   ace: {
@@ -31,6 +31,8 @@ const styles = {
     right: '10px',
   }
 };
+
+console.log("ace", Ace)
 
 export default class ReactREPL extends Component {
   constructor(props) {
@@ -63,6 +65,7 @@ export default class ReactREPL extends Component {
     try {
       const es5 = babel.transform(theCode).code;
       consoleLog("-------- Transformed Code --------\n" + es5 + "\n----------------------------------");
+// eslint-disable-next-line
       eval(es5);
     } catch (e) {
       console.log(e.stack);
@@ -89,7 +92,7 @@ export default class ReactREPL extends Component {
           <div style={styles.console}>
 
             <div>
-              <Console log={consoleLog.get() || null} />
+              <Cronsole log={consoleLog.get() || null} />
             </div>
 
             <PlayRun style={styles.playRun} />
@@ -117,5 +120,5 @@ ReactREPL.defaultProps = {
   splitDraggerSize: 12,
   initialOrientation: 'vertical',
   initialCode: '',
-  debounceDelay: PropTypes.number
+  debounceDelay: 100
 }

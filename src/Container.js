@@ -6,6 +6,7 @@ import {NavTree} from './NavTree'
 import {SecretForm} from './Secrets'
 import FaunaRepl from './FaunaRepl'
 import logo from './logo.svg';
+import SplitPane from "react-split-pane"
 import {parse as parseURL} from 'url'
 
 const ERROR_MESSAGE_DISPLAY_MS = 5000;
@@ -92,44 +93,48 @@ export default class Container extends Component {
       Please provide a FaunaDB secret.</MessageBar>;
 
     if (this.state.client) {
+      var crumb = <Breadcrumb
+      items={ splat.split('/').map((db_name, i, path)=>{
+        return {
+          text : db_name,
+          key : db_name,
+          onClick : this._onBreadcrumbItemClicked.bind(this, path.slice(0,i+1))
+        }
+      }) }
+      maxDisplayedItems={ 4 } />
       contents = <div>
-        <Breadcrumb
-        items={ splat.split('/').map((db_name, i, path)=>{
-          return {
-            text : db_name,
-            key : db_name,
-            onClick : this._onBreadcrumbItemClicked.bind(this, path.slice(0,i+1))
-          }
-        }) }
-        maxDisplayedItems={ 4 } />
         {childrenWithProps}
-        <FaunaRepl splat={splat} client={this.state.client}/>
+        <FaunaRepl splat={splat} crumb={crumb} client={this.state.client}/>
       </div>
     }
 
     return (
-      <div className="ms-Grid ms-Fabric ms-font-m">
-        {/* header */}
-        <div className="ms-Grid-row header">
-          <Link to="/"><img src={logo} className="logo" alt="logo" /></Link>
-        </div>
-        <div className="ms-Grid-row">
-          {/* nav */}
-          <div className="ms-Grid-col ms-u-sm12 ms-u-md5 ms-u-lg4 sidebar">
-            <NavTree nonce={this.state.schemaBump}
-              client={this.state.client} path={path}/>
-            <SecretForm onSubmit={this.updateSecret} />
+      <SplitPane split="horizontal" defaultSize={200} paneStyle={{overflow:"scroll"}}>
+        <div className="ms-Grid ms-Fabric ms-font-m">
+          {/* header */}
+          <div className="ms-Grid-row header">
+            <Link to="/"><img src={logo} className="logo" alt="logo" /></Link>
           </div>
-          {/* main */}
-          <div className="ms-Grid-col ms-u-sm12 ms-u-md7 ms-u-lg8">
-            {this.state.errors.map((error)=>{
-              return (<MessageBar
-              messageBarType={ MessageBarType.error }>{error.message}</MessageBar>)
-            })}
-            {contents}
+          <div className="ms-Grid-row">
+            {/* nav */}
+            <div className="ms-Grid-col ms-u-sm12 ms-u-md5 ms-u-lg4 sidebar">
+              <NavTree nonce={this.state.schemaBump}
+                client={this.state.client} path={path}/>
+              <SecretForm onSubmit={this.updateSecret} />
+            </div>
+            {/* main */}
+            <div className="ms-Grid-col ms-u-sm12 ms-u-md7 ms-u-lg8">
+              {this.state.errors.map((error)=>{
+                return (<MessageBar
+                messageBarType={ MessageBarType.error }>{error.message}</MessageBar>)
+              })}
+              {contents}
+            </div>
           </div>
         </div>
-      </div>
+        <MessageBar messageBarType={ MessageBarType.error }>
+          Please provide a FaunaDB secret.</MessageBar>
+      </SplitPane>
     )
   }
 }

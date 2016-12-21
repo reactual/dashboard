@@ -1,5 +1,5 @@
 const React = require('react');
-const {Component} = React;
+const {Component, ReactDOM} = React;
 const SplitDragger = require('./split-dragger');
 const DOUBLE_CLICK_TIMEOUT = 300;
 
@@ -18,9 +18,8 @@ export default class SplitView extends Component {
   }
 
   handleSplitDrag(offset) {
-    const containerSize = React.findDOMNode(this.refs.container)
-                                   .getBoundingClientRect()
-                                   [this.isVertical() ? 'width' : 'height'];
+    const containerSize = ReactDOM.findDOMNode(this.refs.container)
+                                   .getBoundingClientRect()[this.isVertical() ? 'width' : 'height'];
 
     const splitOffsetPercent = this.state.splitOffsetPercent + 100 * offset / containerSize;
     this.setState({ splitOffsetPercent });
