@@ -4,28 +4,18 @@ import SplitPane from "react-split-pane"
 import Ace from "./repl/Ace"
 import {QueryResult} from "./IndexQuery"
 import clientForSubDB from "./clientForSubDB";
-import faunadb from 'faunadb';
-const q = faunadb.query, Ref = q.Ref;
+import replEval from './repl/repl-eval';
 
 require('brace/mode/javascript');
 require('brace/theme/monokai');
-
-function runQuery(client, __query) {
-  console.log("evalQuery", client, __query)
-  const Ref = q.Ref;
-  const Paginate = q.Paginate;
-  const query = eval(__query);
-  console.log("runQuery", query)
-  return client.query(query)
-}
 
 export default class FaunaRepl extends Component {
   constructor(props) {
     super(props)
     this.state = {
       opened : false,
-      result : { data : []},
-      aceCode : "Paginate(Ref(\"indexes\"))"
+      result : null,
+      aceCode : "q.Paginate(q.Ref(\"indexes\"))"
     }
     this.handleAceChange = this.handleAceChange.bind(this);
     this.toggleRepl = this.toggleRepl.bind(this);
@@ -34,9 +24,11 @@ export default class FaunaRepl extends Component {
   handleAceChange(aceCode) {
     this.setState({aceCode})
   }
+  scopedClient() {
+    return clientForSubDB(this.props.client, this.props.splat, "server");
+  }
   handleRunQuery() {
-    var scopedClient = clientForSubDB(this.props.client, this.props.splat, "server")
-    runQuery(scopedClient, this.state.aceCode).then((result) => {
+    replEval(this.scopedClient(), this.state.aceCode).then((result) => {
       this.setState({result})
     })
   }
@@ -63,19 +55,19 @@ export default class FaunaRepl extends Component {
               {this.state.opened ?
                 (<div className="repl-workspace">
                     <Ace
-                      value={"Paginate(Ref(\"indexes\"))"}
+                      value={this.state.aceCode}
                       onChange={this.handleAceChange}
                       ref="ace"
                       name="aceEditor"
                       mode={'javascript'} />
                   </div>) : (<div></div>)
               }
-              <QueryResult result={this.state.result}/>
+              <QueryResult client={this.scopedClient()} result={this.state.result}/>
             </SplitPane>
           </div>
           <div className="repl-bar">
             <div className="buttons">
-              <Button disabled={!this.state.opened}
+              <Button disabled={!(this.state.opened && this.props.client)}
                 buttonType={ ButtonType.primary } onClick={this.handleRunQuery}>Run</Button>
               <Button disabled={false}
                 icon={(this.state.opened ? "ChevronDown" : "ChevronUp")}
@@ -88,26 +80,3 @@ export default class FaunaRepl extends Component {
     )
   }
 }
-
-
-//
-// <CommandBar
-//   elipisisAriaLabel='More options'
-//   items={ [this.props.crumb] }
-//   farItems={ [{
-//     name:"Run",
-//     key : "run",
-//     icon : "ShowResults"
-//   }, {
-//     name:"Toggle Query Console",
-//     key : "toggle",
-//     onClick : this.toggleRepl,
-//     icon : (this.state.opened ? "ChevronDown" : "ChevronUp")
-//   }] } />
-
-// FaunaRepl.style = {
-//   position : "fixed",
-//   bottom: 0,
-//   left : 0,
-//   right: 0
-// }

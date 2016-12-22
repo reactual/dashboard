@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 // import { Link } from 'react-router';
-import {DetailsList, DetailsRow} from 'office-ui-fabric-react'
+import {DetailsList, DetailsListLayoutMode, DetailsRow} from 'office-ui-fabric-react'
 
 import {query as q} from 'faunadb';
 const Ref = q.Ref;
@@ -45,30 +45,34 @@ export class QueryResult extends Component {
     this._renderItemColumn = this._renderItemColumn.bind(this);
   }
   makeResultIntoTableData(result) {
-    console.log("resu", result)
     // const values = this.props.info.values;
-    const values = false;
+    // todo you can give the names if you know the index
+    var firstResult = result.data[0];
+    if (!firstResult) return [];
+
+    var keynames, multiColumn;
+    if (Array.isArray(firstResult)) {
+       keynames = firstResult.map((v, i) => i.toString());
+       multiColumn = true;
+    } else {
+      keynames = ["value"]
+    }
+    console.log("makeResultIntoTableData", keynames)
+
     // return the result structured as rows with column names
     // alternatively we could provide a column map to the table view
-    if (values) {
-      const keynames = values.map((v) => v.field.join("."));
-      if (!result.data) return [];
-      return result.data.map((resItem) => {
-        var item = {};
-        if (keynames.length === 1) { // special case for single column
-          item[keynames[0]] = resItem;
-        } else {
-          for (var i = 0; i < keynames.length; i++) {
-            item[keynames[i]] = resItem[i];
-          }
+    return result.data.map((resItem) => {
+      var item = {};
+      if (!multiColumn) { // special case for single column
+        item[keynames[0]] = resItem;
+      } else {
+        for (var i = 0; i < keynames.length; i++) {
+          item[keynames[i]] = resItem[i];
         }
-        return item;
-      });
-    } else {
-      return result.data.map((resItem) => {
-        return {value:resItem}
-      })
-    }
+      }
+      return item;
+    });
+
   }
   clickedRef(item, event) {
     event.preventDefault()
@@ -91,15 +95,14 @@ export class QueryResult extends Component {
     }
   }
   render() {
-    var listItems = this.makeResultIntoTableData(this.props.result);
-    console.log("listItems", listItems)
-    return (<div>
-        <h3>Query Results</h3>
-          <DetailsList
+    return (<div className="QueryResult">
+          {this.props.result && <DetailsList
             onRenderItemColumn={this._renderItemColumn}
             onRenderRow={ this._onRenderRow }
             selectionMode="none"
-            items={ listItems }/>
+            layoutMode={DetailsListLayoutMode.fixedColumns}
+            viewport={{height:"100%"}}
+         items={ this.makeResultIntoTableData(this.props.result) }/>}
          <InstancePreview client={this.props.client} instanceRef={this.state.instanceRef}/>
       </div>)
   }

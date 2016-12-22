@@ -41,6 +41,9 @@ div.NavLevel.highlighted {
   position: relative;
   height:100%; width: 100%;
 }
+.QueryResult {
+  height:100%; width: 100%;
+}
 .repl-workspace {
   height:100%; width: 100%;
 }
