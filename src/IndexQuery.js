@@ -55,12 +55,8 @@ export class QueryResult extends Component {
     this._renderItemColumn = this._renderItemColumn.bind(this);
   }
   makeResultIntoTableData(result) {
-    console.log("this.props.info",this.props.info)
-    // const values = this.props.info.values;
-    // todo you can give the names if you know the index
     var firstResult = result.data[0];
     if (!firstResult) return [];
-
     var keynames, multiColumn;
     if (this.props.info && this.props.info.values) {
       keynames = this.props.info.values.map((v) => v.field.join("."));
@@ -75,9 +71,6 @@ export class QueryResult extends Component {
         keynames = ["value"]
       }
     }
-
-    console.log("makeResultIntoTableData", keynames)
-
     // return the result structured as rows with column names
     // alternatively we could provide a column map to the table view
     return result.data.map((resItem) => {
