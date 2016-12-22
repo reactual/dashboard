@@ -5,6 +5,7 @@ import Ace from "./repl/Ace"
 import {QueryResult} from "./IndexQuery"
 import clientForSubDB from "./clientForSubDB";
 import replEval from './repl/repl-eval';
+import {query as q} from 'faunadb';
 
 require('brace/mode/javascript');
 require('brace/theme/monokai');
@@ -28,7 +29,7 @@ export default class FaunaRepl extends Component {
     return clientForSubDB(this.props.client, this.props.splat, "server");
   }
   handleRunQuery() {
-    replEval(this.scopedClient(), this.state.aceCode).then((result) => {
+    replEval(q, this.scopedClient(), this.state.aceCode).then((result) => {
       this.setState({result})
     })
   }
