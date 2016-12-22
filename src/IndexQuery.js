@@ -13,26 +13,36 @@ export default class IndexQuery extends Component {
     this.gotTerm = this.gotTerm.bind(this);
     this.state = {};
   }
-  gotTerm(term) {
-    this.setState({term})
-  } // todo move running the query up here and use Query Result
-  render() {
-    var termInfo, queryResults;
-    if (this.props.info.terms) {
-      // get a term
-      termInfo = <TermForm onSubmit={this.gotTerm}/>;
-      if (this.state.term) {
-        queryResults = <IndexQueryResult client={this.props.client} info={this.props.info} term={this.state.term}/>
-      } else {
-        // no query
-      }
-    } else {
-      // run a termless query
-      queryResults = <IndexQueryResult client={this.props.client} info={this.props.info} />
+  componentDidMount() {
+    this.getIndexRows(this.props.client, this.props.info.name, this.props.term);
+  }
+  componentWillReceiveProps(nextProps) {
+    if (this.props.info.name !== nextProps.info.name ||
+      this.props.term !== nextProps.term ||
+      this.props.client !== nextProps.client) {
+      this.getIndexRows(nextProps.client, nextProps.info.name, nextProps.term)
     }
+  }
+  gotTerm(term) {
+    this.getIndexRows(this.props.client, this.props.info.name, term);
+  }
+  getIndexRows(client, name, term) {
+    this.setState({instanceRef:null});
+    if (!name) return;
+    var query;
+    if (term) {
+      query = q.Paginate(q.Match(Ref("indexes/"+name), term))
+    } else {
+      query = q.Paginate(q.Match(Ref("indexes/"+name)))
+    }
+    client && client.query(query).then((result) => {
+      this.setState({result})
+    }).catch(console.error.bind(console, name))
+  }
+  render() {
     return (<div>
-      {termInfo}
-      {queryResults}
+      {this.props.info.terms && <TermForm onSubmit={this.gotTerm}/>}
+      <QueryResult client={this.props.client} result={this.state.result} info={this.props.info} />
     </div>);
   }
 }
@@ -45,18 +55,27 @@ export class QueryResult extends Component {
     this._renderItemColumn = this._renderItemColumn.bind(this);
   }
   makeResultIntoTableData(result) {
+    console.log("this.props.info",this.props.info)
     // const values = this.props.info.values;
     // todo you can give the names if you know the index
     var firstResult = result.data[0];
     if (!firstResult) return [];
 
     var keynames, multiColumn;
-    if (Array.isArray(firstResult)) {
-       keynames = firstResult.map((v, i) => i.toString());
-       multiColumn = true;
+    if (this.props.info && this.props.info.values) {
+      keynames = this.props.info.values.map((v) => v.field.join("."));
+      if (keynames.length > 1) {
+        multiColumn = true
+      }
     } else {
-      keynames = ["value"]
+      if (Array.isArray(firstResult)) {
+         keynames = firstResult.map((v, i) => i.toString());
+         multiColumn = true;
+      } else {
+        keynames = ["value"]
+      }
     }
+
     console.log("makeResultIntoTableData", keynames)
 
     // return the result structured as rows with column names
@@ -103,94 +122,6 @@ export class QueryResult extends Component {
             layoutMode={DetailsListLayoutMode.fixedColumns}
             viewport={{height:"100%"}}
          items={ this.makeResultIntoTableData(this.props.result) }/>}
-         <InstancePreview client={this.props.client} instanceRef={this.state.instanceRef}/>
-      </div>)
-  }
-}
-
-class IndexQueryResult extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {data:[]};
-    this.clickedRef = this.clickedRef.bind(this);
-    this._onRenderRow = this._onRenderRow.bind(this);
-    this._renderItemColumn = this._renderItemColumn.bind(this);
-  }
-  componentDidMount() {
-    this.getIndexRows(this.props.client, this.props.info.name, this.props.term);
-  }
-  componentWillReceiveProps(nextProps) {
-    if (this.props.info.name !== nextProps.info.name ||
-      this.props.term !== nextProps.term ||
-      this.props.client !== nextProps.client) {
-      this.getIndexRows(nextProps.client, nextProps.info.name, nextProps.term)
-    }
-  }
-  getIndexRows(client, name, term) {
-    this.setState({instanceRef:null});
-    if (!name) return;
-    var query;
-    if (term) {
-      query = q.Paginate(q.Match(Ref("indexes/"+name), term))
-    } else {
-      query = q.Paginate(q.Match(Ref("indexes/"+name)))
-    }
-    client && client.query(query).then((res) => {
-      this.setState({data : this.makeResultIntoTableData(res)})
-    }).catch(console.error.bind(console, name))
-  }
-  makeResultIntoTableData(result) {
-    const values = this.props.info.values;
-    // return the result structured as rows with column names
-    // alternatively we could provide a column map to the table view
-    if (values) {
-      const keynames = values.map((v) => v.field.join("."));
-      if (!result.data) return [];
-      return result.data.map((resItem) => {
-        var item = {};
-        if (keynames.length === 1) { // special case for single column
-          item[keynames[0]] = resItem;
-        } else {
-          for (var i = 0; i < keynames.length; i++) {
-            item[keynames[i]] = resItem[i];
-          }
-        }
-        return item;
-      });
-    } else {
-      return result.data.map((resItem) => {
-        return {value:resItem}
-      })
-    }
-  }
-  clickedRef(item, event) {
-    event.preventDefault()
-    if (item.constructor === q.Ref("").constructor) {
-      this.setState({instanceRef:item});
-    }
-  }
-  _onRenderRow (props) {
-    return <DetailsRow { ...props } onRenderCheck={ this._onRenderCheck } />;
-  }
-  _onRenderCheck(props) {
-    return null;
-  }
-  _renderItemColumn(item, index, column) {
-    let fieldContent = item[column.fieldName];
-    if (fieldContent.constructor === q.Ref("").constructor) {
-      return <a href="#" onClick={this.clickedRef.bind(null, fieldContent)}>{inspect(fieldContent, {depth:null})}</a>
-    } else {
-      return <span>{ fieldContent }</span>;
-    }
-  }
-  render() {
-    return (<div>
-        <h3>Query Results</h3>
-          <DetailsList
-            onRenderItemColumn={this._renderItemColumn}
-            onRenderRow={ this._onRenderRow }
-            selectionMode="none"
-         items={ this.state.data }/>
          <InstancePreview client={this.props.client} instanceRef={this.state.instanceRef}/>
       </div>)
   }
