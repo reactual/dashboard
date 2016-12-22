@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 // import { Link } from 'react-router';
-import {DetailsList, DetailsRow} from 'office-ui-fabric-react'
+import {DetailsList, DetailsListLayoutMode, DetailsRow} from 'office-ui-fabric-react'
 
 import {query as q} from 'faunadb';
 const Ref = q.Ref;
@@ -13,37 +13,6 @@ export default class IndexQuery extends Component {
     this.gotTerm = this.gotTerm.bind(this);
     this.state = {};
   }
-  gotTerm(term) {
-    this.setState({term})
-  }
-  render() {
-    var termInfo, queryResults;
-    if (this.props.info.terms) {
-      // get a term
-      termInfo = <TermForm onSubmit={this.gotTerm}/>;
-      if (this.state.term) {
-        queryResults = <QueryResult client={this.props.client} info={this.props.info} term={this.state.term}/>
-      } else {
-        // no query
-      }
-    } else {
-      // run a termless query
-      queryResults = <QueryResult client={this.props.client} info={this.props.info} />
-    }
-    return (<div>
-      {termInfo}
-      {queryResults}
-    </div>);
-  }
-}
-class QueryResult extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {data:[]};
-    this.clickedRef = this.clickedRef.bind(this);
-    this._onRenderRow = this._onRenderRow.bind(this);
-    this._renderItemColumn = this._renderItemColumn.bind(this);
-  }
   componentDidMount() {
     this.getIndexRows(this.props.client, this.props.info.name, this.props.term);
   }
@@ -54,6 +23,9 @@ class QueryResult extends Component {
       this.getIndexRows(nextProps.client, nextProps.info.name, nextProps.term)
     }
   }
+  gotTerm(term) {
+    this.getIndexRows(this.props.client, this.props.info.name, term);
+  }
   getIndexRows(client, name, term) {
     this.setState({instanceRef:null});
     if (!name) return;
@@ -63,33 +35,56 @@ class QueryResult extends Component {
     } else {
       query = q.Paginate(q.Match(Ref("indexes/"+name)))
     }
-    client && client.query(query).then((res) => {
-      this.setState({data : this.makeResultIntoTableData(res)})
+    client && client.query(query).then((result) => {
+      this.setState({result})
     }).catch(console.error.bind(console, name))
   }
+  render() {
+    return (<div>
+      {this.props.info.terms && <TermForm onSubmit={this.gotTerm}/>}
+      <QueryResult client={this.props.client} result={this.state.result} info={this.props.info} />
+    </div>);
+  }
+}
+export class QueryResult extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+    this.clickedRef = this.clickedRef.bind(this);
+    this._onRenderRow = this._onRenderRow.bind(this);
+    this._renderItemColumn = this._renderItemColumn.bind(this);
+  }
   makeResultIntoTableData(result) {
-    const values = this.props.info.values;
+    var firstResult = result.data[0];
+    if (!firstResult) return [];
+    var keynames, multiColumn;
+    if (this.props.info && this.props.info.values) {
+      keynames = this.props.info.values.map((v) => v.field.join("."));
+      if (keynames.length > 1) {
+        multiColumn = true
+      }
+    } else {
+      if (Array.isArray(firstResult)) {
+         keynames = firstResult.map((v, i) => i.toString());
+         multiColumn = true;
+      } else {
+        keynames = ["value"]
+      }
+    }
     // return the result structured as rows with column names
     // alternatively we could provide a column map to the table view
-    if (values) {
-      const keynames = values.map((v) => v.field.join("."));
-      if (!result.data) return [];
-      return result.data.map((resItem) => {
-        var item = {};
-        if (keynames.length === 1) { // special case for single column
-          item[keynames[0]] = resItem;
-        } else {
-          for (var i = 0; i < keynames.length; i++) {
-            item[keynames[i]] = resItem[i];
-          }
+    return result.data.map((resItem) => {
+      var item = {};
+      if (!multiColumn) { // special case for single column
+        item[keynames[0]] = resItem;
+      } else {
+        for (var i = 0; i < keynames.length; i++) {
+          item[keynames[i]] = resItem[i];
         }
-        return item;
-      });
-    } else {
-      return result.data.map((resItem) => {
-        return {value:resItem}
-      })
-    }
+      }
+      return item;
+    });
+
   }
   clickedRef(item, event) {
     event.preventDefault()
@@ -112,18 +107,18 @@ class QueryResult extends Component {
     }
   }
   render() {
-    return (<div>
-        <h3>Query Results</h3>
-          <DetailsList
+    return (<div className="QueryResult">
+          {this.props.result && <DetailsList
             onRenderItemColumn={this._renderItemColumn}
             onRenderRow={ this._onRenderRow }
             selectionMode="none"
-         items={ this.state.data }/>
+            layoutMode={DetailsListLayoutMode.fixedColumns}
+            viewport={{height:"100%"}}
+         items={ this.makeResultIntoTableData(this.props.result) }/>}
          <InstancePreview client={this.props.client} instanceRef={this.state.instanceRef}/>
       </div>)
   }
 }
-
 
 class InstancePreview extends Component {
   constructor(props) {
