@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 // import { Link } from 'react-router';
-import {TextField, Button, ButtonType} from 'office-ui-fabric-react'
+import {
+  TextField,
+  Button, ButtonType,
+  Dialog, DialogType, DialogFooter
+} from 'office-ui-fabric-react'
 
 export class SecretForm extends Component {
   constructor(props) {
@@ -20,14 +24,28 @@ export class SecretForm extends Component {
   render() {
     return (
       <div className="SecretForm">
+
+        <Dialog
+          isOpen={ this.props.showDialog }
+          type={ DialogType.largeHeader }
+          title='Connect to FaunaDB'
+          subText='Visit https://fauna.com/account/keys or talk to your administrator to provision keys.'
+          isBlocking={ true }
+        >
         <TextField label="FaunaDB Endpoint URL"
           description="Leave this empty for Fauna Cloud."
           placeholder="https://db.fauna.com/"
           value={this.state.endpoint} onChanged={this.handleChange.bind(this,"endpoint")}/>
         <TextField required type="password" label="Key Secret"
-          description="Visit https://fauna.com/account/keys or talk to your administrator to provision keys."
+          description="The secret associated with your FaunaDB key."
           value={this.state.secret} onChanged={this.handleChange.bind(this,"secret")}/>
-        <Button buttonType={ ButtonType.primary } onClick={this.handleSubmit}>Use Secret</Button>
+
+          <DialogFooter>
+            <Button buttonType={ ButtonType.primary } onClick={this.handleSubmit}>Use Secret</Button>
+          </DialogFooter>
+        </Dialog>
+
+
       </div>
     )
   }

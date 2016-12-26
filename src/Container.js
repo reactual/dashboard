@@ -20,6 +20,9 @@ export default class Container extends Component {
     this._onBreadcrumbItemClicked = this._onBreadcrumbItemClicked.bind(this);
 
   }
+  componentDidMount() {
+    setTimeout(()=>{this.setState({viewportReady : true})}, 10);
+  }
   updateSecret(data) {
     // get a new client for that secret and set state
     // observer for errors...
@@ -119,7 +122,7 @@ export default class Container extends Component {
               <div className="ms-Grid-col ms-u-sm12 ms-u-md5 ms-u-lg4 sidebar">
                 <NavTree nonce={this.state.schemaBump}
                   client={this.state.client} path={path}/>
-                <SecretForm onSubmit={this.updateSecret} />
+                <SecretForm showDialog={!this.state.client} onSubmit={this.updateSecret} />
               </div>
               {/* main */}
               <div className="ms-Grid-col ms-u-sm12 ms-u-md7 ms-u-lg8">
