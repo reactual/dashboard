@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { Link, browserHistory } from 'react-router';
 import {MessageBar, MessageBarType, Breadcrumb} from 'office-ui-fabric-react'
 import faunadb from 'faunadb';
-import {NavTree} from './NavTree'
-import {SecretForm} from './Secrets'
-import FaunaRepl from './FaunaRepl'
-import logo from './logo.svg';
+import {NavTree} from '../nav-tree/NavTree'
+import {SecretForm} from '../secrets/Secrets'
+import FaunaRepl from '../fauna-repl/FaunaRepl'
+import logo from '../logo.svg';
 import {parse as parseURL} from 'url'
 
 const ERROR_MESSAGE_DISPLAY_MS = 5000;

@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import {Button, ButtonType} from 'office-ui-fabric-react'
 import SplitPane from "react-split-pane"
 import Ace from "./repl/Ace"
-import {QueryResult} from "./IndexQuery"
-import clientForSubDB from "./clientForSubDB";
+import {QueryResult} from "../index-query/IndexQuery"
+import clientForSubDB from "../clientForSubDB";
 import replEval from './repl/repl-eval';
 import {query as q} from 'faunadb';
 

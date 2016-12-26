@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router';
 import {TextField, Button, ButtonType} from 'office-ui-fabric-react'
 import faunadb from 'faunadb';
-import clientForSubDB from "./clientForSubDB";
+import clientForSubDB from "../clientForSubDB";
 const q = faunadb.query, Ref = q.Ref;
 
 export class ClassInfo extends Component {

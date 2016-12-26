@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import clientForSubDB from "./clientForSubDB";
+import clientForSubDB from "../clientForSubDB";
 
 export class DatabaseInfo extends Component {
   constructor(props) {

@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import {Router, Route, Redirect, IndexRoute, browserHistory} from 'react-router';
-import Container from './Container'
-import {IndexInfo} from './Indexes'
-import {IndexForm} from './IndexForm'
-import {ClassInfo} from './Classes'
-import {ClassForm} from './ClassForm'
-import {DatabaseInfo} from './Databases'
-import {DatabaseForm} from './DatabaseForm'
+import Container from './container/Container'
+import {IndexInfo} from './indexes/Indexes'
+import {IndexForm} from './index-form/IndexForm'
+import {ClassInfo} from './classes/Classes'
+import {ClassForm} from './class-form/ClassForm'
+import {DatabaseInfo} from './databases/Databases'
+import {DatabaseForm} from './database-form/DatabaseForm'
 import './App.css';
 
 const Home = () =>(
