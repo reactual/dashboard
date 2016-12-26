@@ -142,23 +142,18 @@ export default class Container extends Component {
             {/* header */}
             <div className="ms-Grid-row header">
               <Link to="/"><img src={logo} className="logo" alt="logo" /></Link>
+              <SecretForm showDialog={!this.state.client} onSubmit={this.updateSecret} />
             </div>
-            <div className="ms-Grid-row">
-              {/* nav */}
-              <div className="ms-Grid-col ms-u-sm12 ms-u-md5 ms-u-lg4 sidebar">
-                <NavTree nonce={this.state.schemaBump}
-                  client={this.state.client} path={path}/>
-                <SecretForm showDialog={!this.state.client} onSubmit={this.updateSecret} />
-              </div>
-              {/* main */}
-              <div className="ms-Grid-col ms-u-sm12 ms-u-md7 ms-u-lg8">
-                {this.state.errors.map((error)=>{
-                  return (<MessageBar
-                  messageBarType={ MessageBarType.error }>{error.message}</MessageBar>)
-                })}
-                {contents}
-              </div>
-            </div>
+            <NavTree
+              nonce={this.state.schemaBump}
+              client={this.state.client}
+              splat={splat} path={path}>
+              {this.state.errors.map((error)=>{
+                return (<MessageBar
+                messageBarType={ MessageBarType.error }>{error.message}</MessageBar>)
+              })}
+              {contents}
+            </NavTree>
           </div>
         </FaunaRepl>
     )
