@@ -1,23 +1,25 @@
 import React from 'react';
 import ReactDOM from 'react-dom'
-import { Provider } from 'react-redux'
-import { createStore } from 'redux';
+import { createStore, combineReducers, applyMiddleware } from 'redux';
+import thunk from 'redux-thunk'
 import App from './App';
+import { reduceClasses } from './classes/reducers'
 import './index.css';
 
-function appReducer(state, action) {
-  return state;
-}
+const appReducer = combineReducers({
+  classes: reduceClasses
+})
 
-let store = createStore(appReducer)
+let store = createStore(
+  appReducer,
+  applyMiddleware(thunk)
+)
 
 store.subscribe(() => {
   console.log(store.getState())
 });
 
 ReactDOM.render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
+  <App store={store}/>,
   document.getElementById('root')
 );

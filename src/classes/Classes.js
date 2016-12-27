@@ -3,15 +3,10 @@ import { Link } from 'react-router';
 import {TextField, Button, ButtonType} from 'office-ui-fabric-react'
 import faunadb from 'faunadb';
 import clientForSubDB from "../clientForSubDB";
+import {getClassInfo} from "./actions"
 const q = faunadb.query, Ref = q.Ref;
 
-export class ClassInfo extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {info:{
-      ref:{}
-    }};
-  }
+class ClassInfo extends Component {
   componentDidMount() {
     this.getClassInfo(this.props.client, this.props.splat, this.props.params.name)
   }
@@ -24,25 +19,43 @@ export class ClassInfo extends Component {
   getClassInfo(client, path, name) {
     if (!client) return;
     const scopedClient = clientForSubDB(client, path, "server");
-    scopedClient.query(q.Get(Ref("classes/"+name))).then( (res) => {
-      this.setState({info : res, scopedClient})
-    })
+
+    this.props.dispatch(getClassInfo(scopedClient, name))
   }
   render() {
-    const info = this.state.info;
+    const info = this.props.info
+    const scopedClient = this.props.scopedClient
     return (
         <div className="ClassInfo">
           <h3>Class Details</h3>
           <dl>
             <dt>Name</dt><dd>{info.name}</dd>
             <dt>History</dt><dd>{info.history_days} days</dd>
-            <ClassIndexes path={this.props.splat} client={this.state.scopedClient} info={this.state.info}/>
+            <ClassIndexes path={this.props.splat} client={scopedClient} info={info}/>
           </dl>
-          <InstanceForm path={this.props.splat} client={this.state.scopedClient} info={this.state.info}/>
+          <InstanceForm path={this.props.splat} client={scopedClient} info={info}/>
         </div>
       );
   }
 }
+
+import { connect } from 'react-redux'
+
+const mapStateToProps = state => {
+  if(typeof state.classes.selectedClass === 'undefined')
+    return { info: {} }
+
+  const info = state.classes[state.classes.selectedClass]
+
+  return {
+    info: info.classInfo,
+    scopedClient: info.scopedClient
+  }
+}
+
+export default connect(
+  mapStateToProps
+)(ClassInfo)
 
 class ClassIndexes extends Component {
   constructor(props) {
