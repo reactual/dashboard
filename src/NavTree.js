@@ -150,6 +150,73 @@ class NavSchema extends Component {
     );
   }
 }
+import { css } from 'office-ui-fabric-react';
+// A tag used for resolving links.
+let _urlResolver;
+function _isLinkSelected(link, selectedKey) {
+    if (selectedKey && link.key === selectedKey) {
+      return true;
+    }
+
+    // resolve is not supported for ssr
+    if (typeof(window) === 'undefined') {
+      return false;
+    }
+
+    if (!link.url) {
+      return false;
+    }
+
+    _urlResolver = _urlResolver || document.createElement('a');
+
+    _urlResolver.href = link.url || '';
+    const target = _urlResolver.href;
+
+    if (location.protocol + '//' + location.host + location.pathname === target) {
+      return true;
+    }
+
+    if (location.href === target) {
+      return true;
+    }
+
+    if (location.hash) {
+      // Match the hash to the url.
+      if (location.hash === link.url) {
+        return true;
+      }
+
+      // Match a rebased url. (e.g. #foo becomes http://hostname/foo)
+      _urlResolver.href = location.hash.substring(1);
+
+      return _urlResolver.href === target;
+    }
+
+    return false;
+  }
+class Flav extends Nav {
+  constructor(props) {
+    super(props);
+  }
+  _renderCompositeLink(link, linkIndex, nestingLevel) {
+    const isLinkSelected = _isLinkSelected(link, this.state.selectedKey);
+    return (
+      <div key={ link.key || linkIndex }
+           className={ css('ms-Nav-compositeLink', { ' is-expanded': link.isExpanded, 'is-selected': isLinkSelected }) }>
+        { (link.links && link.links.length > 0 ?
+          <button
+            className='ms-Nav-chevronButton ms-Nav-chevronButton--link'
+            onClick={ this._onLinkExpandClicked.bind(this, link) }
+            title={ (link.isExpanded ? this.props.expandedStateText : this.props.collapsedStateText) }
+            >
+            <i className='ms-Nav-chevron ms-Icon ms-Icon--ChevronDown'></i>
+          </button> : null
+        )}
+          { !!link.onClick ? this._renderButtonLink(link, linkIndex) : this._renderAnchorLink(link, linkIndex, nestingLevel) }
+      </div>
+     );
+  }
+}
 
 class NavDBTree extends Component {
   constructor(props) {
@@ -170,13 +237,13 @@ class NavDBTree extends Component {
     this.getDatabases(props.adminClient);
   }
   resultToNavRows(result, root) {
-    const base = root ? "/db/"+root+"/" : "/db/";
+    const slug = root ? root+"/" : "";
     return result.data.map((db) => {
       var name = _valueTail(db.value);
       return {
         name : name,
-        url : base+name+"/info",
-        key : name
+        url : "/db/"+slug+name+"/info",
+        key : slug+name
       }
     })
   }
@@ -189,14 +256,14 @@ class NavDBTree extends Component {
       })
     }).catch(console.error.bind(console, "getDatabases"))
   }
-  getDBsForRows(client, rows, base) {
+  getDBsForRows(client, rows) {
     return Promise.all(rows.map((r, i) => {
       const dbClient = clientForSubDB(client, r.key, "admin")
-      const rowBase = base ? base + "/" + r.key : r.key;
+      // const rowBase = base ? base + "/" + r.key : r.key;
       console.log("getDBsForRows", r.key)
       return dbClient.query(q.Paginate(Ref("databases"))).then( (res) => {
-        return this.getDBsForRows(dbClient, this.resultToNavRows(res, rowBase), rowBase).then((rowLinks) => {
-          rows[i].isExpanded = true;
+        return this.getDBsForRows(client, this.resultToNavRows(res, r.key)).then((rowLinks) => {
+          rows[i].isExpanded = false;
           rows[i].links = rowLinks;
         })
       })
@@ -213,7 +280,7 @@ class NavDBTree extends Component {
       var target = topDBNavRows;
       dbPath.forEach((name)=>{
         // console.log("find", name, target)
-        target = target.links.find(r => r.key === name)
+        target = target.links.find(r => r.name === name)
       })
       target.links = rows;
       console.log("getSubDatabases",db, target);
@@ -229,11 +296,19 @@ class NavDBTree extends Component {
   navLinkClicked(e, link) {
     e.preventDefault();
     browserHistory.push(link.url)
+    console.log(link.key)
+    var target = this.state.navGroup;
+    link.key.split('/').forEach((name)=>{
+      console.log("find", name, target)
+      target = target.links.find(r => r.name === name)
+    })
+    target.isExpanded = !target.isExpanded;
+    this.setState({navGroup:this.state.navGroup})
     // this.getSubDatabases(this.props.adminClient, link.key)
   }
   render() {
     return (
-      <Nav groups={[this.state.navGroup]} onLinkClick={this.navLinkClicked}/>
+      <Flav groups={[this.state.navGroup]} onLinkClick={this.navLinkClicked}/>
     );
   }
 }
