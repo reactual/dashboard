@@ -74,7 +74,7 @@ export class NavTree extends Component {
           {/* nav databases */}
           <div className="ms-Grid-col ms-u-sm12 ms-u-md3 ms-u-lg3 sidebar">
             <h3>Databases</h3>
-            <NavDBTree name="/" path={path} adminClient={this.state.adminClient}/>
+            <NavDBTree path={path} adminClient={this.state.adminClient}/>
           </div>
           <div className="ms-Grid-col ms-u-sm12 ms-u-md3 ms-u-lg3">
             <h3>Schema{context}</h3>
@@ -155,23 +155,27 @@ class NavDBTree extends Component {
   constructor(props) {
     super(props);
     this.navLinkClicked = this.navLinkClicked.bind(this)
-    this.state = {databases:[]};
+    this.state = {navGroup:{
+      links:[]}
+    };
   }
   componentDidMount() {
     this.getInfos(this.props)
   }
   componentWillReceiveProps(nextProps) {
+    if (this.props.client === nextProps.client) return;
     this.getInfos(nextProps)
   }
   getInfos(props) {
     this.getDatabases(props.adminClient);
   }
-  resultToNavRows(result) {
+  resultToNavRows(result, root) {
+    const base = root ? "/db/"+root+"/" : "/db/";
     return result.data.map((db) => {
       var name = _valueTail(db.value);
       return {
         name : name,
-        url : "/db/"+name+"/info",
+        url : base+name+"/info",
         key : name
       }
     })
@@ -179,8 +183,42 @@ class NavDBTree extends Component {
   getDatabases(client) {
     // console.log("getDatabases", client)
     client && client.query(q.Paginate(Ref("databases"))).then( (res) => {
-      this.setState({databases : this.resultToNavRows(res)})
+      var rows = this.resultToNavRows(res);
+      this.getDBsForRows(client, rows).then((decoratedRows)=>{
+        this.setState({navGroup : {links : decoratedRows}})
+      })
     }).catch(console.error.bind(console, "getDatabases"))
+  }
+  getDBsForRows(client, rows, base) {
+    return Promise.all(rows.map((r, i) => {
+      const dbClient = clientForSubDB(client, r.key, "admin")
+      const rowBase = base ? base + "/" + r.key : r.key;
+      console.log("getDBsForRows", r.key)
+      return dbClient.query(q.Paginate(Ref("databases"))).then( (res) => {
+        return this.getDBsForRows(dbClient, this.resultToNavRows(res, rowBase), rowBase).then((rowLinks) => {
+          rows[i].isExpanded = true;
+          rows[i].links = rowLinks;
+        })
+      })
+    })).then(()=>{
+      return rows;
+    })
+  }
+  getSubDatabases(client, db) {
+    const dbPath = db.split('/')
+    const dbClient = clientForSubDB(client, db, "admin")
+    dbClient.query(q.Paginate(Ref("databases"))).then( (res) => {
+      var rows = this.resultToNavRows(res, db);
+      var topDBNavRows = this.state.navGroup;
+      var target = topDBNavRows;
+      dbPath.forEach((name)=>{
+        // console.log("find", name, target)
+        target = target.links.find(r => r.key === name)
+      })
+      target.links = rows;
+      console.log("getSubDatabases",db, target);
+      this.setState({navGroup : topDBNavRows})
+    }).catch(console.error.bind(console, "getSubDatabases", db))
   }
   toggleDB(value, event) {
     event.preventDefault();
@@ -190,12 +228,12 @@ class NavDBTree extends Component {
   }
   navLinkClicked(e, link) {
     e.preventDefault();
-    console.log("navLinkClicked",link)
     browserHistory.push(link.url)
+    // this.getSubDatabases(this.props.adminClient, link.key)
   }
   render() {
     return (
-      <Nav groups={[{links:this.state.databases}]} onLinkClick={this.navLinkClicked}/>
+      <Nav groups={[this.state.navGroup]} onLinkClick={this.navLinkClicked}/>
     );
   }
 }
