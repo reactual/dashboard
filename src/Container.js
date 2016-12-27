@@ -61,6 +61,13 @@ export default class Container extends Component {
       var oldErrors = this.state.errors;
       var allErrors = newErrors.concat(oldErrors);
       this.setState({errors : allErrors})
+      if (this.state.errors.length > 10) {
+        var oldperf =  this.state.client.__proto__._performRequest;
+        this.state.client.__proto__._performRequest = () => {
+          console.log("_performRequest", this.state.client, arguments)
+        }
+        this.setState({client: false})
+      }
       // automatically remove them after a few seconds
       setTimeout(()=>{
         var removeIDs = newErrors.map((error) => error.id)
