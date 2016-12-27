@@ -3,7 +3,7 @@ import { Link } from 'react-router';
 import {TextField, Button, ButtonType} from 'office-ui-fabric-react'
 import faunadb from 'faunadb';
 import clientForSubDB from "../clientForSubDB";
-import {getClassInfo} from "./actions"
+import { getClassInfo, queryForIndexes } from "./actions"
 const q = faunadb.query, Ref = q.Ref;
 
 class ClassInfo extends Component {
@@ -57,11 +57,7 @@ export default connect(
   mapStateToProps
 )(ClassInfo)
 
-class ClassIndexes extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {indexes:[]};
-  }
+class ClassIndexes1 extends Component {
   componentDidMount() {
     this.queryForIndexes(this.props.client, this.props.info.ref)
   }
@@ -72,28 +68,32 @@ class ClassIndexes extends Component {
     }
   }
   queryForIndexes(client, classRef) {
-    client && client.query(q.Filter(q.Map(q.Paginate(Ref("indexes")), function (indexRef) {
-      return q.Get(indexRef)
-    }), function (indexInstance) {
-      return q.If(q.Contains("source", indexInstance),
-        q.Equals(classRef, q.Select("source", indexInstance)),
-        true
-      );
-    })).then( (response) => {
-      this.setState({indexes:response.data})
-    })
+    client && this.props.dispatch(queryForIndexes(client, classRef))
   }
   render() {
     return (
       <div className="ClassIndexes">
         <dt>Covering Indexes</dt>
-        {this.state.indexes.map((index)=>(
+        {this.props.indexes.map((index)=>(
           <dd key={index.ref.value}><Link to={this.props.path ? "/db/"+this.props.path+"/"+index.ref.value : "/db/"+index.ref.value}>{index.name}</Link></dd>
         ))}
       </div>
     )
   }
 }
+
+const mapStateToProps1 = state => {
+  if(typeof state.classes.selectedClass === 'undefined')
+    return { indexes: [] }
+
+  return {
+    indexes: state.classes[state.classes.selectedClass].indexes
+  }
+}
+
+let ClassIndexes = connect(
+  mapStateToProps1
+)(ClassIndexes1)
 
 class InstanceForm extends Component {
   constructor(props) {
