@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router';
+import { Link, browserHistory } from 'react-router';
+import {Nav} from 'office-ui-fabric-react'
+
 import clientForSubDB from "./clientForSubDB";
 import faunadb from 'faunadb';
 const q = faunadb.query, Ref = q.Ref;
@@ -72,7 +74,7 @@ export class NavTree extends Component {
           {/* nav databases */}
           <div className="ms-Grid-col ms-u-sm12 ms-u-md3 ms-u-lg3 sidebar">
             <h3>Databases</h3>
-            <NavLevel name="/" path={path} adminClient={this.state.adminClient} expanded/>
+            <NavDBTree name="/" path={path} adminClient={this.state.adminClient}/>
           </div>
           <div className="ms-Grid-col ms-u-sm12 ms-u-md3 ms-u-lg3">
             <h3>Schema{context}</h3>
@@ -149,28 +151,35 @@ class NavSchema extends Component {
   }
 }
 
-class NavLevel extends Component {
+class NavDBTree extends Component {
   constructor(props) {
     super(props);
-    this.toggleDB.bind(this);
-    this.state = {expanded:{}, databases:[], classes:[], indexes:[]};
+    this.navLinkClicked = this.navLinkClicked.bind(this)
+    this.state = {databases:[]};
   }
   componentDidMount() {
     this.getInfos(this.props)
   }
   componentWillReceiveProps(nextProps) {
-    // console.log("NavLevel admin componentWillReceiveProps", (this.props.adminClient ||{})._secret, nextProps.adminClient._secret)
-    // console.log("NavLevel server componentWillReceiveProps", (this.props.serverClient ||{})._secret, nextProps.serverClient._secret)
     this.getInfos(nextProps)
   }
   getInfos(props) {
-    if (!props.expanded) return;
     this.getDatabases(props.adminClient);
+  }
+  resultToNavRows(result) {
+    return result.data.map((db) => {
+      var name = _valueTail(db.value);
+      return {
+        name : name,
+        url : "/db/"+name+"/info",
+        key : name
+      }
+    })
   }
   getDatabases(client) {
     // console.log("getDatabases", client)
     client && client.query(q.Paginate(Ref("databases"))).then( (res) => {
-      this.setState({databases : res.data})
+      this.setState({databases : this.resultToNavRows(res)})
     }).catch(console.error.bind(console, "getDatabases"))
   }
   toggleDB(value, event) {
@@ -179,42 +188,14 @@ class NavLevel extends Component {
     expanded[value] = !expanded[value]
     this.setState({expanded : expanded})
   }
+  navLinkClicked(e, link) {
+    e.preventDefault();
+    console.log("navLinkClicked",link)
+    browserHistory.push(link.url)
+  }
   render() {
-    // console.log("NavLevel",this.props)
-    if (!this.props.expanded) {
-      return (<div className="NavLevel"></div>)
-    }
-    var path = this.props.path;
-    var cname = "NavLevel";
-    if (this.props.highlighted){
-      cname += " highlighted"
-    }
     return (
-      <div className={cname}>
-        <dl>
-          {this.state.databases.map((db) => {
-            // render db name at this level
-            const db_name = _valueTail(db.value);
-            var db_path = [], highlighted=false;
-            if (db_name === path[0]) {
-              db_path = path.slice(1);
-              highlighted=true;
-            }
-            return (
-              <dd key={db.value}>
-                <a href="#" onClick={this.toggleDB.bind(this, db.value)}>{!!this.state.expanded[db.value] ? "V" : ">"}</a>
-                &nbsp;<Link className={highlighted&&"highlighted"} to={"/db"+this.props.name+db_name+"/info"}>{db_name}</Link>
-                <NavLevel
-                  name={this.props.name+db_name+"/"}
-                  path={db_path}
-                  highlighted={highlighted}
-                  adminClient={clientForSubDB(this.props.adminClient, db_name, "admin")}
-                  expanded={!!this.state.expanded[db.value]}/>
-              </dd>
-            );
-          })}
-        </dl>
-      </div>
+      <Nav groups={[{links:this.state.databases}]} onLinkClick={this.navLinkClicked}/>
     );
   }
 }
