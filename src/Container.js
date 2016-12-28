@@ -95,8 +95,9 @@ export default class Container extends Component {
   bumpSchema(){
     this.setState({schemaBump : this.state.schemaBump+1})
   }
-  _onBreadcrumbItemClicked(item) {
-    console.log("Breadcrumb",item)
+  _onBreadcrumbItemClicked(item, e, crumb) {
+    // console.log("Breadcrumb",item, e, crumb)
+    browserHistory.push(crumb.url);
   }
   render() {
     var splat = this.props.params.splat ?
@@ -119,10 +120,12 @@ export default class Container extends Component {
     var crumb = <Breadcrumb items={[firstItem]}/>;
     if (splat && this.state.client) {
       var breadcrumbItems = [firstItem].concat(splat.split('/').map((db_name, i, path)=>{
+        var db_key = path.slice(0,i+1).join('/');
         return {
           text : db_name,
-          key : path.slice(0,i+1).join('/'),
-          onClick : this._onBreadcrumbItemClicked.bind(this, path.slice(0,i+1))
+          key : db_key,
+          url : "/db/"+db_key+"/databases",
+          onClick : this._onBreadcrumbItemClicked.bind(this, db_key)
         }
       }))
       crumb = <Breadcrumb
