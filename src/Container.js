@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router';
+import { Link, browserHistory } from 'react-router';
 import {MessageBar, MessageBarType, Breadcrumb} from 'office-ui-fabric-react'
 import faunadb from 'faunadb';
 import {NavTree} from './NavTree'
@@ -13,7 +13,7 @@ const ERROR_MESSAGE_DISPLAY_MS = 5000;
 export default class Container extends Component {
   constructor(props) {
     super(props);
-    this.state = {client:false, errors:[], schemaBump:0};
+    this.state = {client:false, errors:[], schemaBump:0, bugs : false};
     this.bumpSchema = this.bumpSchema.bind(this);
     this.updateSecret = this.updateSecret.bind(this);
     this.observerCallback = this.observerCallback.bind(this);
@@ -61,12 +61,26 @@ export default class Container extends Component {
       var oldErrors = this.state.errors;
       var allErrors = newErrors.concat(oldErrors);
       this.setState({errors : allErrors})
-      if (this.state.errors.length > 10) {
-        var oldperf =  this.state.client.__proto__._performRequest;
+      // if errors get out of hand, cut off the client
+      var bugs = this.state.bugs;
+      if (!bugs && this.state.errors.length > 10) {
+        this.setState({bugs:true});
+        let first = true;
+        // eslint-disable-next-line
         this.state.client.__proto__._performRequest = () => {
           console.log("_performRequest", this.state.client, arguments)
+          if (first) {
+            first = false;
+            browserHistory.push("/")
+            return Promise.resolve({
+              status: 429,
+              header : {},
+              text:'{"errors":[{"description":"Too many errors, please refresh the page"}]}'})
+          } else {
+            return Promise.reject(new Error("too many client errors, please refresh the page to recover"))
+          }
         }
-        this.setState({client: false})
+        // this.setState({client: false})
       }
       // automatically remove them after a few seconds
       setTimeout(()=>{
