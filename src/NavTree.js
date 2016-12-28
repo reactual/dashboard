@@ -67,20 +67,17 @@ export class NavTree extends Component {
   }
   render() {
     var path = this.props.path ? this.props.path.split('/') : [];
-    const context = this.props.splat ? " for "+this.props.splat : "";
     if (this.state.serverClient || this.state.adminClient) {
       return (
         <div className="NavTree ms-Grid-row">
           {/* nav databases */}
-          <div className="ms-Grid-col ms-u-sm12 ms-u-md3 ms-u-lg3 sidebar">
-            <h3>Databases</h3>
-            <NavDBTree path={path} adminClient={this.state.adminClient}/>
+          <div className="ms-Grid-col ms-u-sm6 ms-u-md3 ms-u-lg2">
+            <NavDBTree nonce={this.props.nonce} path={path} adminClient={this.state.adminClient}/>
           </div>
-          <div className="ms-Grid-col ms-u-sm12 ms-u-md3 ms-u-lg3">
-            <h3>Schema{context}</h3>
-            <NavSchema splat={this.props.splat} serverClient={this.scopedClient()} expanded/>
+          <div className="ms-Grid-col ms-u-sm6 ms-u-md3 ms-u-lg2">
+            <NavSchema nonce={this.props.nonce} splat={this.props.splat} serverClient={this.scopedClient()} expanded/>
           </div>
-          <div className="ms-Grid-col ms-u-sm12 ms-u-md6 ms-u-lg6">
+          <div className="ms-Grid-col ms-u-sm12 ms-u-md6 ms-u-lg8">
             {this.props.children}
           </div>
         </div>
@@ -150,7 +147,8 @@ class NavDBTree extends Component {
     this.getInfos(this.props)
   }
   componentWillReceiveProps(nextProps) {
-    if (this.props.client === nextProps.client) return;
+    if (this.props.nonce === nextProps.nonce &&
+      this.props.client === nextProps.client) return;
     this.getInfos(nextProps)
   }
   getInfos(props) {
@@ -162,7 +160,7 @@ class NavDBTree extends Component {
       var name = _valueTail(db.value);
       return {
         name : name,
-        url : "/db/"+slug+name+"/info",
+        url : "/db/"+slug+name+"/databases",
         key : slug+name
       }
     })
@@ -170,17 +168,25 @@ class NavDBTree extends Component {
   getDatabases(client) {
     client && client.query(q.Paginate(Ref("databases"))).then( (res) => {
       var rows = this.resultToNavRows(res);
-      this.getDBsForRows(client, rows).then((decoratedRows)=>{
-        this.setState({navGroup : {links : decoratedRows}})
+      this.getDBsForRows(client, rows, this.state.navGroup.links).then((decoratedRows)=>{
+        this.setState({navGroup : {name: "databases", links : decoratedRows}})
       })
     }).catch(console.error.bind(console, "getDatabases"))
   }
-  getDBsForRows(client, rows) {
+  getDBsForRows(client, rows, oldRows) {
     return Promise.all(rows.map((r, i) => {
+      var oldRow = oldRows.find(or=>or.key === r.key);
+      console.log("oldRow", oldRow, rows[i])
+      var links = [];
+      if (oldRow) {
+        rows[i].isExpanded = oldRow.isExpanded;
+        links = oldRow.links || [];
+      }
       const dbClient = clientForSubDB(client, r.key, "admin")
       return dbClient.query(q.Paginate(Ref("databases"))).then( (res) => {
-        return this.getDBsForRows(client, this.resultToNavRows(res, r.key)).then((rowLinks) => {
-          rows[i].isExpanded = false;
+        return this.getDBsForRows(client, this.resultToNavRows(res, r.key), links).then((rowLinks) => {
+          // rows[i].isExpanded = false;
+          // console.log("rowLinks", rows[i].links, rowLinks)
           rows[i].links = rowLinks;
         })
       })
