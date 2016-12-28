@@ -150,6 +150,90 @@ class NavSchema extends Component {
     );
   }
 }
+
+
+class NavDBTree extends Component {
+  constructor(props) {
+    super(props);
+    this.navLinkClicked = this.navLinkClicked.bind(this)
+    this.state = {navGroup:{
+      links:[]}
+    };
+  }
+  componentDidMount() {
+    this.getInfos(this.props)
+  }
+  componentWillReceiveProps(nextProps) {
+    if (this.props.client === nextProps.client) return;
+    this.getInfos(nextProps)
+  }
+  getInfos(props) {
+    this.getDatabases(props.adminClient);
+  }
+  resultToNavRows(result, root) {
+    const slug = root ? root+"/" : "";
+    return result.data.map((db) => {
+      var name = _valueTail(db.value);
+      return {
+        name : name,
+        url : "/db/"+slug+name+"/info",
+        key : slug+name
+      }
+    })
+  }
+  getDatabases(client) {
+    client && client.query(q.Paginate(Ref("databases"))).then( (res) => {
+      var rows = this.resultToNavRows(res);
+      this.getDBsForRows(client, rows).then((decoratedRows)=>{
+        this.setState({navGroup : {links : decoratedRows}})
+      })
+    }).catch(console.error.bind(console, "getDatabases"))
+  }
+  getDBsForRows(client, rows) {
+    return Promise.all(rows.map((r, i) => {
+      const dbClient = clientForSubDB(client, r.key, "admin")
+      return dbClient.query(q.Paginate(Ref("databases"))).then( (res) => {
+        return this.getDBsForRows(client, this.resultToNavRows(res, r.key)).then((rowLinks) => {
+          rows[i].isExpanded = false;
+          rows[i].links = rowLinks;
+        })
+      })
+    })).then(()=>{
+      return rows;
+    })
+  }
+  getSubDatabases(client, db) {
+    const dbPath = db.split('/')
+    const dbClient = clientForSubDB(client, db, "admin")
+    dbClient.query(q.Paginate(Ref("databases"))).then( (res) => {
+      var rows = this.resultToNavRows(res, db);
+      var topDBNavRows = this.state.navGroup;
+      var target = topDBNavRows;
+      dbPath.forEach((name)=>{
+        target = target.links.find(r => r.name === name)
+      })
+      target.links = rows;
+      this.setState({navGroup : topDBNavRows})
+    }).catch(console.error.bind(console, "getSubDatabases", db))
+  }
+  navLinkClicked(e, link) {
+    e.preventDefault();
+    browserHistory.push(link.url)
+    // todo we could save deep recursion til grandparent is unfolded
+  }
+  render() {
+    return (
+      <Flav groups={[this.state.navGroup]} onLinkClick={this.navLinkClicked}/>
+    );
+  }
+}
+
+function _valueTail(string) {
+  var parts = string.split("/")
+  parts.shift()
+  return parts.join("/")
+}
+
 import { css } from 'office-ui-fabric-react';
 // A tag used for resolving links.
 let _urlResolver;
@@ -195,9 +279,6 @@ function _isLinkSelected(link, selectedKey) {
     return false;
   }
 class Flav extends Nav {
-  constructor(props) {
-    super(props);
-  }
   _renderCompositeLink(link, linkIndex, nestingLevel) {
     const isLinkSelected = _isLinkSelected(link, this.state.selectedKey);
     return (
@@ -216,96 +297,4 @@ class Flav extends Nav {
       </div>
      );
   }
-}
-
-class NavDBTree extends Component {
-  constructor(props) {
-    super(props);
-    this.navLinkClicked = this.navLinkClicked.bind(this)
-    this.state = {navGroup:{
-      links:[]}
-    };
-  }
-  componentDidMount() {
-    this.getInfos(this.props)
-  }
-  componentWillReceiveProps(nextProps) {
-    if (this.props.client === nextProps.client) return;
-    this.getInfos(nextProps)
-  }
-  getInfos(props) {
-    this.getDatabases(props.adminClient);
-  }
-  resultToNavRows(result, root) {
-    const slug = root ? root+"/" : "";
-    return result.data.map((db) => {
-      var name = _valueTail(db.value);
-      return {
-        name : name,
-        url : "/db/"+slug+name+"/info",
-        key : slug+name
-      }
-    })
-  }
-  getDatabases(client) {
-    // console.log("getDatabases", client)
-    client && client.query(q.Paginate(Ref("databases"))).then( (res) => {
-      var rows = this.resultToNavRows(res);
-      this.getDBsForRows(client, rows).then((decoratedRows)=>{
-        this.setState({navGroup : {links : decoratedRows}})
-      })
-    }).catch(console.error.bind(console, "getDatabases"))
-  }
-  getDBsForRows(client, rows) {
-    return Promise.all(rows.map((r, i) => {
-      const dbClient = clientForSubDB(client, r.key, "admin")
-      // const rowBase = base ? base + "/" + r.key : r.key;
-      console.log("getDBsForRows", r.key)
-      return dbClient.query(q.Paginate(Ref("databases"))).then( (res) => {
-        return this.getDBsForRows(client, this.resultToNavRows(res, r.key)).then((rowLinks) => {
-          rows[i].isExpanded = false;
-          rows[i].links = rowLinks;
-        })
-      })
-    })).then(()=>{
-      return rows;
-    })
-  }
-  getSubDatabases(client, db) {
-    const dbPath = db.split('/')
-    const dbClient = clientForSubDB(client, db, "admin")
-    dbClient.query(q.Paginate(Ref("databases"))).then( (res) => {
-      var rows = this.resultToNavRows(res, db);
-      var topDBNavRows = this.state.navGroup;
-      var target = topDBNavRows;
-      dbPath.forEach((name)=>{
-        // console.log("find", name, target)
-        target = target.links.find(r => r.name === name)
-      })
-      target.links = rows;
-      console.log("getSubDatabases",db, target);
-      this.setState({navGroup : topDBNavRows})
-    }).catch(console.error.bind(console, "getSubDatabases", db))
-  }
-  toggleDB(value, event) {
-    event.preventDefault();
-    var expanded = this.state.expanded
-    expanded[value] = !expanded[value]
-    this.setState({expanded : expanded})
-  }
-  navLinkClicked(e, link) {
-    e.preventDefault();
-    browserHistory.push(link.url)
-  }
-  render() {
-    return (
-      <Flav groups={[this.state.navGroup]} onLinkClick={this.navLinkClicked}/>
-    );
-  }
-}
-
-function _valueTail(string) {
-  var parts = string.split("/")
-  parts.shift()
-  return parts.join("/")
 }
