@@ -130,8 +130,29 @@ class NavSchema extends Component {
     browserHistory.push(link.url)
   }
   render() {
+    const dbpath = this.props.splat;
+    var options = {
+      name : "Options",
+      links : [
+        {
+          name : "Create Database",
+          key : (dbpath+"/"||"")+"databases",
+          url : "/db/"+(dbpath?dbpath+"/":"")+"databases"
+        },
+        {
+          name : "Create Class",
+          key : (dbpath+"/"||"")+"classes",
+          url : "/db/"+(dbpath?dbpath+"/":"")+"classes"
+        },
+        {
+          name : "Create Index",
+          key : (dbpath+"/"||"")+"indexes",
+          url : "/db/"+(dbpath?dbpath+"/":"")+"indexes"
+        }
+      ]
+    };
     return (
-      <Nav groups={[this.state.classes, this.state.indexes]}
+      <Nav groups={[options, this.state.classes, this.state.indexes]}
         onLinkClick={this.navLinkClicked}/>
     );
   }
@@ -176,7 +197,6 @@ class NavDBTree extends Component {
   getDBsForRows(client, rows, oldRows) {
     return Promise.all(rows.map((r, i) => {
       var oldRow = oldRows.find(or=>or.key === r.key);
-      console.log("oldRow", oldRow, rows[i])
       var links = [];
       if (oldRow) {
         rows[i].isExpanded = oldRow.isExpanded;
