@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link, browserHistory } from 'react-router';
+import { browserHistory } from 'react-router';
 import {Nav} from 'office-ui-fabric-react'
 
 import clientForSubDB from "./clientForSubDB";
@@ -78,7 +78,7 @@ export class NavTree extends Component {
           </div>
           <div className="ms-Grid-col ms-u-sm12 ms-u-md3 ms-u-lg3">
             <h3>Schema{context}</h3>
-            <NavSchema name={"/"+this.props.splat+"/"} path={path.slice(-2)} serverClient={this.scopedClient()} expanded/>
+            <NavSchema splat={this.props.splat} serverClient={this.scopedClient()} expanded/>
           </div>
           <div className="ms-Grid-col ms-u-sm12 ms-u-md6 ms-u-lg6">
             {this.props.children}
@@ -93,21 +93,22 @@ export class NavTree extends Component {
 class NavSchema extends Component {
   constructor(props) {
     super(props);
-    this.state = {classes:[], indexes:[]};
+    this.navLinkClicked = this.navLinkClicked.bind(this)
+    this.state = {
+      classes:{links:[]},
+      indexes:{links:[]}
+    };
   }
   getInfos(props) {
-    this.getClasses(props.serverClient);
-    this.getIndexes(props.serverClient);
+    this.get(props.serverClient, "classes");
+    this.get(props.serverClient, "indexes");
   }
-  getClasses(client) {
-    client && client.query(q.Paginate(Ref("classes"))).then( (res) => {
-      this.setState({classes : res.data})
-    }).catch(console.error.bind(console, "getClasses"))
-  }
-  getIndexes(client) {
-    client && client.query(q.Paginate(Ref("indexes"))).then( (res) => {
-      this.setState({indexes : res.data})
-    }).catch(console.error.bind(console, "getIndexes"))
+  get(client, type) {
+    client && client.query(q.Paginate(Ref(type))).then( (res) => {
+      var stateSetter = {};
+      stateSetter[type] = {name : type, links : this.resultToNavRows(res,type)};
+      this.setState(stateSetter);
+    }).catch(console.error.bind(console, "get "+type))
   }
   componentDidMount() {
     this.getInfos(this.props)
@@ -115,50 +116,35 @@ class NavSchema extends Component {
   componentWillReceiveProps(nextProps) {
     this.getInfos(nextProps)
   }
+  resultToNavRows(result, type) {
+    const dbpath = this.props.splat;
+    const slug = dbpath ? dbpath+"/"+type : type;
+    return result.data.map((x) => {
+      var name = _valueTail(x.value);
+      return {
+        name : name,
+        url : "/db/"+slug+"/"+name,
+        key : slug+"/"+name
+      }
+    })
+  }
+  navLinkClicked(e, link) {
+    e.preventDefault();
+    browserHistory.push(link.url)
+  }
   render() {
-    var path = this.props.path;
     return (
-      <dl>
-        <dt key="_databases" >Create a <Link to={"/db"+this.props.name+"databases"}>database</Link></dt>
-        <dt key="_classes" >Classes [<Link to={"/db"+this.props.name+"classes"}>+</Link>]</dt>
-        {this.state.classes.map((classRow) => {
-          const name = _valueTail(classRow.value);
-          var highlighted=false;
-          if (path[0] === "classes" && path[1] === name) {
-            highlighted=true
-          }
-          return (
-            <dd key={classRow.value}>
-              <Link className={highlighted&&"highlighted"} to={"/db"+this.props.name+classRow.value}>{name}</Link>
-            </dd>
-          );
-        })}
-        <dt key="_indexes" >Indexes [<Link to={"/db"+this.props.name+"indexes"}>+</Link>]</dt>
-        {this.state.indexes.map((indexRow) => {
-          const name = _valueTail(indexRow.value);
-          var highlighted=false;
-          if (path[0] === "indexes" && path[1] === name) {
-            highlighted=true
-          }
-          return (
-            <dd key={indexRow.value}>
-              <Link className={highlighted&&"highlighted"} to={"/db"+this.props.name+indexRow.value}>{name}</Link>
-            </dd>
-          );
-        })}
-      </dl>
+      <Nav groups={[this.state.classes, this.state.indexes]}
+        onLinkClick={this.navLinkClicked}/>
     );
   }
 }
-
 
 class NavDBTree extends Component {
   constructor(props) {
     super(props);
     this.navLinkClicked = this.navLinkClicked.bind(this)
-    this.state = {navGroup:{
-      links:[]}
-    };
+    this.state = {navGroup:{links:[]}};
   }
   componentDidMount() {
     this.getInfos(this.props)
