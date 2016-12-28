@@ -23,15 +23,17 @@ export default class FaunaRepl extends Component {
     this.handleRunQuery = this.handleRunQuery.bind(this);
   }
   handleAceChange(aceCode) {
-    this.setState({aceCode})
+    this.setState({savedCode:aceCode})
   }
   scopedClient() {
     return clientForSubDB(this.props.client, this.props.splat, "server");
   }
   handleRunQuery() {
-    replEval(q, this.scopedClient(), this.state.aceCode).then((result) => {
+    replEval(q, this.scopedClient(), this.state.savedCode).then((result) => {
       this.setState({result})
-    })
+    })//.catch((result) => {
+      // this.setState({result})
+    //})
   }
   toggleRepl() {
     this.setState({opened : !this.state.opened})

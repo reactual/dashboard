@@ -55,8 +55,8 @@ export class QueryResult extends Component {
     this._renderItemColumn = this._renderItemColumn.bind(this);
   }
   makeResultIntoTableData(result) {
-    var firstResult = result.data[0];
-    if (!firstResult) return [];
+    var firstResult = result && result.data && result.data[0];
+    if (!firstResult) return null;
     var keynames, multiColumn;
     if (this.props.info && this.props.info.values) {
       keynames = this.props.info.values.map((v) => v.field.join("."));
@@ -107,16 +107,25 @@ export class QueryResult extends Component {
     }
   }
   render() {
-    return (<div className="QueryResult">
-          {this.props.result && <DetailsList
-            onRenderItemColumn={this._renderItemColumn}
-            onRenderRow={ this._onRenderRow }
-            selectionMode="none"
-            layoutMode={DetailsListLayoutMode.fixedColumns}
-            viewport={{height:"100%"}}
-         items={ this.makeResultIntoTableData(this.props.result) }/>}
-         <InstancePreview client={this.props.client} instanceRef={this.state.instanceRef}/>
-      </div>)
+    var tableData = this.makeResultIntoTableData(this.props.result);
+    var content;
+    if (tableData) {
+      content = (<div className="QueryResult">
+            {this.props.result && <DetailsList
+              onRenderItemColumn={this._renderItemColumn}
+              onRenderRow={ this._onRenderRow }
+              selectionMode="none"
+              layoutMode={DetailsListLayoutMode.fixedColumns}
+              viewport={{height:"100%"}}
+           items={ tableData }/>}
+           <InstancePreview client={this.props.client} instanceRef={this.state.instanceRef}/>
+        </div>);
+    } else {
+      content =  (<div className="QueryResult">
+        {this.props.result && <pre>{inspect(this.props.result, {depth:null})}</pre>}
+      </div>);
+    }
+    return content;
   }
 }
 
