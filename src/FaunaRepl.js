@@ -15,6 +15,7 @@ export default class FaunaRepl extends Component {
     super(props)
     this.state = {
       opened : false,
+      expandedSize : 200,
       result : null,
       aceCode : "q.Paginate(q.Ref(\"indexes\"))"
     }
@@ -42,13 +43,14 @@ export default class FaunaRepl extends Component {
   }
 
   render() {
-    var expandedSize = 200;
+    var expandedSize = this.state.expandedSize;
     return (
       <SplitPane split="horizontal"
-        minSize={40}
+        minSize={42}
         maxSize={"75%"}
         defaultSize={this.state.opened ? expandedSize : 42}
         size={this.state.opened ? expandedSize : 42}
+        onChange={ size => this.setState({expandedSize : size}) }
         primary="second" paneStyle={{overflow:"scroll"}}>
 
         {this.props.children}
