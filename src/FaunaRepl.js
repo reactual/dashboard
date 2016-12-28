@@ -29,11 +29,13 @@ export default class FaunaRepl extends Component {
     return clientForSubDB(this.props.client, this.props.splat, "server");
   }
   handleRunQuery() {
+    this.setState({running:true})
     replEval(q, this.scopedClient(), this.state.savedCode).then((result) => {
-      this.setState({result})
-    })//.catch((result) => {
-      // this.setState({result})
-    //})
+      this.setState({running:false,result})
+    }).catch((result) => {
+      var outData = (result && result.requestResult && result.requestResult.responseContent) ? result.requestResult.responseContent : result;
+      this.setState({running:false, result : outData})
+    })
   }
   toggleRepl() {
     this.setState({opened : !this.state.opened})
@@ -70,7 +72,7 @@ export default class FaunaRepl extends Component {
           </div>
           <div className="repl-bar">
             <div className="buttons">
-              <Button disabled={!(this.state.opened && this.props.client)}
+              <Button disabled={!(this.state.opened && this.props.client && !this.state.running)}
                 buttonType={ ButtonType.primary } onClick={this.handleRunQuery}>Run</Button>
               <Button disabled={false}
                 icon={(this.state.opened ? "ChevronDown" : "ChevronUp")}
