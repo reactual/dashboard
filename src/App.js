@@ -11,7 +11,7 @@ import './App.css';
 
 const Home = () =>(
   <p>
-    To get started, enter a FaunaDB secret in the form and browse to a class or index.
+    Welcome to FaunaDB. Browse and create databases, inspect and define schemas, and query instance data.
   </p>
 );
 
