@@ -18,9 +18,7 @@ export class NavTree extends Component {
     client.query(q.Create(Ref("databases"), { name: "console_key_type_discovery_db_created_and_deleted_automatically_always_safe_to_delete" }))
       .then(()=>{
         // we are an admin key, lets fix our mess
-        console.log("admin key", client)
         return client.query(q.Delete(Ref("databases/console_key_type_discovery_db_created_and_deleted_automatically_always_safe_to_delete"))).then(()=>{
-          console.log("admun key", client)
           this.setState({adminClient : client});
         })
       }, (error) => {

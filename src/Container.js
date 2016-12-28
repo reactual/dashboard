@@ -13,7 +13,7 @@ const ERROR_MESSAGE_DISPLAY_MS = 5000;
 export default class Container extends Component {
   constructor(props) {
     super(props);
-    this.state = {client:false, errors:[], schemaBump:0, bugs : false};
+    this.state = {client:null, errors:[], schemaBump:0, bugs : false};
     this.bumpSchema = this.bumpSchema.bind(this);
     this.updateSecret = this.updateSecret.bind(this);
     this.observerCallback = this.observerCallback.bind(this);
