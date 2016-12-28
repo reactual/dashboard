@@ -55,8 +55,9 @@ export class QueryResult extends Component {
     this._renderItemColumn = this._renderItemColumn.bind(this);
   }
   makeResultIntoTableData(result) {
-    var firstResult = result && result.data && result.data[0];
-    if (!firstResult) return null;
+    if (!(result && result.data)) return null;
+    var firstResult = result.data[0];
+    if (!firstResult) return [{message:"Empty result set, no matching data."}];
     var keynames, multiColumn;
     if (this.props.info && this.props.info.values) {
       keynames = this.props.info.values.map((v) => v.field.join("."));
