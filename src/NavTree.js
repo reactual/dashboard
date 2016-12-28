@@ -296,15 +296,6 @@ class NavDBTree extends Component {
   navLinkClicked(e, link) {
     e.preventDefault();
     browserHistory.push(link.url)
-    console.log(link.key)
-    var target = this.state.navGroup;
-    link.key.split('/').forEach((name)=>{
-      console.log("find", name, target)
-      target = target.links.find(r => r.name === name)
-    })
-    target.isExpanded = !target.isExpanded;
-    this.setState({navGroup:this.state.navGroup})
-    // this.getSubDatabases(this.props.adminClient, link.key)
   }
   render() {
     return (
