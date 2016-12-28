@@ -115,16 +115,18 @@ export default class Container extends Component {
     var contents = <MessageBar messageBarType={ MessageBarType.error }>
       Please provide a FaunaDB secret.</MessageBar>;
     var firstItem = {text : "/", key : "/"};
+
     var crumb = <Breadcrumb items={[firstItem]}/>;
-    if (this.state.client) {
-      crumb = <Breadcrumb
-      items={ [firstItem].concat(splat.split('/').map((db_name, i, path)=>{
+    if (splat && this.state.client) {
+      var breadcrumbItems = [firstItem].concat(splat.split('/').map((db_name, i, path)=>{
         return {
           text : db_name,
-          key : db_name,
+          key : path.slice(0,i+1).join('/'),
           onClick : this._onBreadcrumbItemClicked.bind(this, path.slice(0,i+1))
         }
-      })) }
+      }))
+      crumb = <Breadcrumb
+      items={ breadcrumbItems }
       maxDisplayedItems={ 4 } />
       contents = <div>
         {childrenWithProps}
