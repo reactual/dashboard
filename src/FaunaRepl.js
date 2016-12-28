@@ -47,8 +47,8 @@ export default class FaunaRepl extends Component {
       <SplitPane split="horizontal"
         minSize={40}
         maxSize={"75%"}
-        defaultSize={this.state.opened ? expandedSize : 40}
-        size={this.state.opened ? expandedSize : 40}
+        defaultSize={this.state.opened ? expandedSize : 42}
+        size={this.state.opened ? expandedSize : 42}
         primary="second" paneStyle={{overflow:"scroll"}}>
 
         {this.props.children}

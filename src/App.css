@@ -38,7 +38,7 @@ div.NavDBTree.highlighted {
 
 .FaunaRepl {
   background-color: #f4f4f5;
-  border-top: 2px solid #f4f4f5;
+  border-top: 4px solid #f4f4f5;
   position: relative;
   height:100%; width: 100%;
 }
@@ -49,11 +49,13 @@ div.NavDBTree.highlighted {
   height:100%; width: 100%;
 }
 .repl-bar {
+  border-top: 1px solid #ddd;
   background-color: #f4f4f5;
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
+  height: 42px;
   overflow: hidden;
 }
 .repl-bar .buttons {
@@ -62,8 +64,11 @@ div.NavDBTree.highlighted {
 .repl-bar .ms-Breadcrumb {
   margin : 0.25em;
 }
+.expandedArea pre {
+  margin:0;
+}
 .expandedArea {
-  height: calc(100% - 40px);
+  height: calc(100% - 46px);
   position: relative;
 }
 .Resizer {
