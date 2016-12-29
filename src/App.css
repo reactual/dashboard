@@ -47,6 +47,7 @@ div.NavDBTree.highlighted {
 }
 .repl-workspace {
   height:100%; width: 100%;
+  position: absolute;
 }
 .repl-bar {
   border-top: 1px solid #ddd;
