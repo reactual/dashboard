@@ -114,26 +114,28 @@ export default class Container extends Component {
     var path = (this.props.location||{}).pathname.replace(/\/db\/?/,'');
 
     var contents = <MessageBar messageBarType={ MessageBarType.error }>
-      Please provide a FaunaDB secret.</MessageBar>;
+      No FaunaDB client.</MessageBar>;
     var firstItem = {text : "/", key : "/"};
 
     var crumb = <Breadcrumb items={[firstItem]}/>;
-    if (splat && this.state.client) {
-      var breadcrumbItems = [firstItem].concat(splat.split('/').map((db_name, i, path)=>{
-        var db_key = path.slice(0,i+1).join('/');
-        return {
-          text : db_name,
-          key : db_key,
-          url : "/db/"+db_key+"/databases",
-          onClick : this._onBreadcrumbItemClicked.bind(this, db_key)
-        }
-      }))
-      crumb = <Breadcrumb
-      items={ breadcrumbItems }
-      maxDisplayedItems={ 4 } />
+    if (this.state.client) {
       contents = <div>
         {childrenWithProps}
       </div>
+      if (splat) {
+        var breadcrumbItems = [firstItem].concat(splat.split('/').map((db_name, i, path)=>{
+          var db_key = path.slice(0,i+1).join('/');
+          return {
+            text : db_name,
+            key : db_key,
+            url : "/db/"+db_key+"/databases",
+            onClick : this._onBreadcrumbItemClicked.bind(this, db_key)
+          }
+        }))
+        crumb = <Breadcrumb
+          items={ breadcrumbItems }
+          maxDisplayedItems={ 4 } />
+      }
     }
 
     return (
