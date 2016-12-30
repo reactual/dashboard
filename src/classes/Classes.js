@@ -4,7 +4,7 @@ import {TextField, Button, ButtonType} from 'office-ui-fabric-react'
 import faunadb from 'faunadb';
 import clientForSubDB from "../clientForSubDB";
 import { getClassInfo, queryForIndexes } from "./actions"
-const q = faunadb.query, Ref = q.Ref;
+const q = faunadb.query;
 
 class ClassInfo extends Component {
   componentDidMount() {
