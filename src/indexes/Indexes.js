@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router';
 import faunadb from 'faunadb';
-import clientForSubDB from "./clientForSubDB";
-import IndexQuery from './IndexQuery'
+import clientForSubDB from "../clientForSubDB";
+import IndexQuery from '../index-query/IndexQuery'
 const q = faunadb.query, Ref = q.Ref;
 
 export class IndexInfo extends Component {

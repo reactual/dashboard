@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import {TextField, Dropdown, Checkbox} from 'office-ui-fabric-react'
-import SchemaForm from "./SchemaForm"
+import SchemaForm from "../schema-form/SchemaForm"
 import faunadb from 'faunadb';
-import clientForSubDB from "./clientForSubDB";
+import clientForSubDB from "../clientForSubDB";
 const q = faunadb.query, Ref = q.Ref;
 
 window.q = q;

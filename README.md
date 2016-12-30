@@ -19,6 +19,12 @@ npm start
 Visit http://localhost:3000/ and your app will be available. Enter the Fauna key
 secret and start browsing your data.
 
+### Running tests
+
+On macOS you'll need to install watchman using `brew install watchman`.
+
+Then you can run the tests with `npm run test`
+
 ## Build for production
 
 The console is packaged for bundling with the Fauna JAR using `npm run build`.

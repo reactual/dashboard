@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { browserHistory } from 'react-router';
 import {Nav} from 'office-ui-fabric-react'
-
-import clientForSubDB from "./clientForSubDB";
+import clientForSubDB from "../clientForSubDB";
 import faunadb from 'faunadb';
 const q = faunadb.query, Ref = q.Ref;
 

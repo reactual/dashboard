@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 // import { Link } from 'react-router';
 import {TextField} from 'office-ui-fabric-react'
-import clientForSubDB from "./clientForSubDB";
-import SchemaForm from "./SchemaForm"
+import clientForSubDB from "../clientForSubDB";
+import SchemaForm from "../schema-form/SchemaForm"
 import faunadb from 'faunadb';
 const q = faunadb.query, Ref = q.Ref;
 

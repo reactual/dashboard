@@ -2,16 +2,11 @@ import React, { Component } from 'react';
 import { Link } from 'react-router';
 import {TextField, Button, ButtonType} from 'office-ui-fabric-react'
 import faunadb from 'faunadb';
-import clientForSubDB from "./clientForSubDB";
+import clientForSubDB from "../clientForSubDB";
+import { getClassInfo, queryForIndexes } from "./actions"
 const q = faunadb.query, Ref = q.Ref;
 
-export class ClassInfo extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {info:{
-      ref:{}
-    }};
-  }
+class ClassInfo extends Component {
   componentDidMount() {
     this.getClassInfo(this.props.client, this.props.splat, this.props.params.name)
   }
@@ -24,31 +19,45 @@ export class ClassInfo extends Component {
   getClassInfo(client, path, name) {
     if (!client) return;
     const scopedClient = clientForSubDB(client, path, "server");
-    scopedClient.query(q.Get(Ref("classes/"+name))).then( (res) => {
-      this.setState({info : res, scopedClient})
-    })
+
+    this.props.dispatch(getClassInfo(scopedClient, name))
   }
   render() {
-    const info = this.state.info;
+    const info = this.props.info
+    const scopedClient = this.props.scopedClient
     return (
         <div className="ClassInfo">
           <h3>Class Details</h3>
           <dl>
             <dt>Name</dt><dd>{info.name}</dd>
             <dt>History</dt><dd>{info.history_days} days</dd>
-            <ClassIndexes path={this.props.splat} client={this.state.scopedClient} info={this.state.info}/>
+            <ClassIndexes path={this.props.splat} client={scopedClient} info={info}/>
           </dl>
-          <InstanceForm path={this.props.splat} client={this.state.scopedClient} info={this.state.info}/>
+          <InstanceForm path={this.props.splat} client={scopedClient} info={info}/>
         </div>
       );
   }
 }
 
-class ClassIndexes extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {indexes:[]};
+import { connect } from 'react-redux'
+
+const mapStateToProps = state => {
+  if(typeof state.classes.selectedClass === 'undefined')
+    return { info: {} }
+
+  const info = state.classes[state.classes.selectedClass]
+
+  return {
+    info: info.classInfo,
+    scopedClient: info.scopedClient
   }
+}
+
+export default connect(
+  mapStateToProps
+)(ClassInfo)
+
+class ClassIndexes1 extends Component {
   componentDidMount() {
     this.queryForIndexes(this.props.client, this.props.info.ref)
   }
@@ -59,28 +68,32 @@ class ClassIndexes extends Component {
     }
   }
   queryForIndexes(client, classRef) {
-    client && client.query(q.Filter(q.Map(q.Paginate(Ref("indexes")), function (indexRef) {
-      return q.Get(indexRef)
-    }), function (indexInstance) {
-      return q.If(q.Contains("source", indexInstance),
-        q.Equals(classRef, q.Select("source", indexInstance)),
-        true
-      );
-    })).then( (response) => {
-      this.setState({indexes:response.data})
-    })
+    client && this.props.dispatch(queryForIndexes(client, classRef))
   }
   render() {
     return (
       <div className="ClassIndexes">
         <dt>Covering Indexes</dt>
-        {this.state.indexes.map((index)=>(
+        {this.props.indexes.map((index)=>(
           <dd key={index.ref.value}><Link to={this.props.path ? "/db/"+this.props.path+"/"+index.ref.value : "/db/"+index.ref.value}>{index.name}</Link></dd>
         ))}
       </div>
     )
   }
 }
+
+const mapStateToProps1 = state => {
+  if(typeof state.classes.selectedClass === 'undefined')
+    return { indexes: [] }
+
+  return {
+    indexes: state.classes[state.classes.selectedClass].indexes
+  }
+}
+
+let ClassIndexes = connect(
+  mapStateToProps1
+)(ClassIndexes1)
 
 class InstanceForm extends Component {
   constructor(props) {
