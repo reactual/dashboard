@@ -40,9 +40,9 @@ class App extends Component {
           <Route path='/**/indexes' component={IndexForm}/>
           <Route path='/**/indexes/:name' component={IndexInfo}/>
 
-          <Route path='*' component={NotFound} />
         </Route>
         <Redirect from="/" to="/db" />
+        <Route path='*' component={NotFound} />
       </Router>
       </Provider>
     );
