@@ -2,22 +2,14 @@ import React, { Component } from 'react';
 import { Link } from 'react-router';
 import faunadb from 'faunadb';
 import IndexQuery from '../index-query/IndexQuery'
-const q = faunadb.query, Ref = q.Ref;
+import { getIndexInfo } from './actions'
 
-export class IndexInfo extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {info:{
-      source:{}
-    }};
-  }
+class IndexInfo extends Component {
   componentDidMount() {
     this.getIndexInfo(this.props.scopedClient, this.props.splat, this.props.params.name)
   }
   getIndexInfo(client, path, name) {
-    client && client.query(q.Get(Ref("indexes/"+name))).then( (res) => {
-      this.setState({info : res})
-    })
+    client && this.props.dispatch(getIndexInfo(client, name))
   }
   componentWillReceiveProps(nextProps) {
     if (this.props.params.name !== nextProps.params.name ||
@@ -28,12 +20,29 @@ export class IndexInfo extends Component {
   render() {
     return (<div>
         <h3>Index Details</h3>
-        <IndexCard path={this.props.splat} client={this.props.scopedClient} info={this.state.info}/>
-        <IndexQuery client={this.props.scopedClient} info={this.state.info}/>
+        <IndexCard path={this.props.splat} client={this.props.scopedClient} info={this.props.info}/>
+        <IndexQuery client={this.props.scopedClient} info={this.props.info}/>
       </div>)
   }
 }
 
+import { connect } from 'react-redux'
+
+const mapStateToProps = state => {
+  if(typeof state.indexes.selectedIndex === 'undefined')
+    return { info: {} }
+
+  const info = state.indexes[state.indexes.selectedIndex]
+
+  return {
+    info: info.indexInfo,
+    scopedClient: info.scopedClient
+  }
+}
+
+export default connect(
+  mapStateToProps
+)(IndexInfo)
 
 class IndexCard extends Component {
   render() {

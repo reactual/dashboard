@@ -79,11 +79,25 @@ class ClassIndexes1 extends Component {
 }
 
 const mapStateToProps1 = state => {
-  if(typeof state.classes.selectedClass === 'undefined')
-    return { indexes: [] }
+  const defaultProps = { indexes: [] }
+
+  if(!state.classes.selectedClass)
+    return defaultProps
+
+  const clazz = state.classes[state.classes.selectedClass]
+
+  if (!clazz || !clazz.indexes)
+    return defaultProps
+
+  const indexesNames = state.classes[state.classes.selectedClass].indexes
+
+  const indexes = indexesNames
+    .map(index => state.indexes[index])
+    .filter(index => index)
+    .map(index => index.indexInfo)
 
   return {
-    indexes: state.classes[state.classes.selectedClass].indexes
+    indexes: indexes
   }
 }
 

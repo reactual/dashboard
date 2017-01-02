@@ -21,9 +21,12 @@ it('should get class info', () => {
   client.query.mockReturnValue(Promise.resolve("result"))
 
   const expectedActions = [{
-    type: 'UPDATE_CLASS_INFO',
+    type: "UPDATE_CLASS_INFO",
     scopedClient: client,
-    result: "result"
+    result: ["result"]
+  }, {
+    type: "UPDATE_SELECTED_CLASS",
+    name: "test-class"
   }]
 
   return store.dispatch(getClassInfo(client, "test-class")).then(() => {
@@ -70,7 +73,7 @@ it('should query indexes', () => {
   }))
 
   const expectedActions = [{
-    type: "UPDATE_INDEX_INFO",
+    type: "UPDATE_INDEX_OF_CLASS",
     clazz: "test-class",
     indexes: ["index-0", "index-1"]
   }]
