@@ -1,13 +1,42 @@
 import faunadb from 'faunadb';
 const q = faunadb.query, Ref = q.Ref;
 
-import { getClassInfo, queryForIndexes } from '../../src/classes/actions'
+import {
+  getAllClasses,
+  getClassInfo,
+  queryForIndexes
+} from '../../src/classes/actions'
 
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 
 const middlewares = [ thunk ]
 const mockStore = configureMockStore(middlewares)
+
+it('should get all classes', () => {
+  const store = mockStore({
+    classes: {}
+  })
+
+  const client = {
+    query: jest.fn()
+  }
+
+  client.query.mockReturnValue(Promise.resolve({
+    data: ["class-0", "class-1"]
+  }))
+
+  const expectedActions = [{
+    type: "UPDATE_CLASS_INFO",
+    scopedClient: client,
+    result: ["class-0", "class-1"]
+  }]
+
+  return store.dispatch(getAllClasses(client)).then(() => {
+    expect(store.getActions()).toEqual(expectedActions)
+    expect(client.query).toBeCalled()
+  })
+})
 
 it('should get class info', () => {
   const store = mockStore({
@@ -35,7 +64,7 @@ it('should get class info', () => {
   })
 })
 
-it('should not get class info when it already class info', () => {
+it('should not get class info when it already have class info', () => {
   const store = mockStore({
     classes: {
       "test-class": {}
@@ -57,7 +86,7 @@ it('should not get class info when it already class info', () => {
   })
 })
 
-it('should query indexes', () => {
+it('should query indexes of class', () => {
   const store = mockStore({
     classes: {
       "test-class": {}
