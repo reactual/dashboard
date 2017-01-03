@@ -3,7 +3,6 @@ import {Button, ButtonType} from 'office-ui-fabric-react'
 import SplitPane from "react-split-pane"
 import Ace from "./repl/Ace"
 import {QueryResult} from "../index-query/IndexQuery"
-import clientForSubDB from "../clientForSubDB";
 import replEval from './repl/repl-eval';
 import {query as q} from 'faunadb';
 
@@ -27,7 +26,7 @@ export default class FaunaRepl extends Component {
     this.setState({savedCode:aceCode})
   }
   scopedClient() {
-    return clientForSubDB(this.props.client, this.props.splat, "server");
+    return this.props.scopedClient;
   }
   handleRunQuery() {
     this.setState({running:true})
@@ -74,7 +73,7 @@ export default class FaunaRepl extends Component {
           </div>
           <div className="repl-bar">
             <div className="buttons">
-              <Button disabled={!(this.state.opened && this.props.client && !this.state.running)}
+              <Button disabled={!(this.state.opened && this.props.scopedClient && !this.state.running)}
                 buttonType={ ButtonType.primary } onClick={this.handleRunQuery}>Run</Button>
               <Button disabled={false}
                 icon={(this.state.opened ? "ChevronDown" : "ChevronUp")}

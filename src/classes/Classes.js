@@ -2,24 +2,21 @@ import React, { Component } from 'react';
 import { Link } from 'react-router';
 import {TextField, Button, ButtonType} from 'office-ui-fabric-react'
 import faunadb from 'faunadb';
-import clientForSubDB from "../clientForSubDB";
 import { getClassInfo, queryForIndexes } from "./actions"
 const q = faunadb.query;
 
 class ClassInfo extends Component {
   componentDidMount() {
-    this.getClassInfo(this.props.client, this.props.splat, this.props.params.name)
+    this.getClassInfo(this.props.scopedClient, this.props.splat, this.props.params.name)
   }
   componentWillReceiveProps(nextProps) {
     if (this.props.params.name !== nextProps.params.name ||
-      this.props.client !==  nextProps.client) {
-      this.getClassInfo(nextProps.client, nextProps.splat, nextProps.params.name)
+      this.props.scopedClient !==  nextProps.scopedClient) {
+      this.getClassInfo(nextProps.scopedClient, nextProps.splat, nextProps.params.name)
     }
   }
-  getClassInfo(client, path, name) {
-    if (!client) return;
-    const scopedClient = clientForSubDB(client, path, "server");
-
+  getClassInfo(scopedClient, path, name) {
+    if (!scopedClient) return;
     this.props.dispatch(getClassInfo(scopedClient, name))
   }
   render() {
@@ -31,9 +28,9 @@ class ClassInfo extends Component {
           <dl>
             <dt>Name</dt><dd>{info.name}</dd>
             <dt>History</dt><dd>{info.history_days} days</dd>
-            <ClassIndexes path={this.props.splat} client={scopedClient} info={info}/>
+            <ClassIndexes path={this.props.splat} scopedClient={scopedClient} info={info}/>
           </dl>
-          <InstanceForm path={this.props.splat} client={scopedClient} info={info}/>
+          <InstanceForm path={this.props.splat} scopedClient={scopedClient} info={info}/>
         </div>
       );
   }
@@ -48,8 +45,7 @@ const mapStateToProps = state => {
   const info = state.classes[state.classes.selectedClass]
 
   return {
-    info: info.classInfo,
-    scopedClient: info.scopedClient
+    info: info.classInfo
   }
 }
 
@@ -59,16 +55,16 @@ export default connect(
 
 class ClassIndexes1 extends Component {
   componentDidMount() {
-    this.queryForIndexes(this.props.client, this.props.info.ref)
+    this.queryForIndexes(this.props.scopedClient, this.props.info.ref)
   }
   componentWillReceiveProps(nextProps) {
     if (this.props.info.ref !== nextProps.info.ref ||
-      this.props.client !==  nextProps.client) {
-      this.queryForIndexes(nextProps.client, nextProps.info.ref)
+      this.props.scopedClient !==  nextProps.scopedClient) {
+      this.queryForIndexes(nextProps.scopedClient, nextProps.info.ref)
     }
   }
   queryForIndexes(client, classRef) {
-    client && this.props.dispatch(queryForIndexes(client, classRef))
+    classRef && client && this.props.dispatch(queryForIndexes(client, classRef))
   }
   render() {
     return (
@@ -113,7 +109,7 @@ class InstanceForm extends Component {
     var createQuery = q.Create(this.props.info.ref, {
       data: data
     });
-    this.props.client && this.props.client.query(createQuery)
+    this.props.scopedClient && this.props.scopedClient.query(createQuery)
   }
   render() {
     var context = this.props.path ? " in "+this.props.path : "";

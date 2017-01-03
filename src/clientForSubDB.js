@@ -1,7 +1,7 @@
 import faunadb from 'faunadb';
 import {parse} from 'url'
 export default function clientForSubDB(adminClient, db_name, type) {
-  if (!adminClient) return false;
+  if (!adminClient) return null;
   if (!db_name) return adminClient;
   var path, encoded = adminClient._secret,
     parts = encoded.split(":"),

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router';
 import faunadb from 'faunadb';
-import clientForSubDB from "../clientForSubDB";
 import IndexQuery from '../index-query/IndexQuery'
 const q = faunadb.query, Ref = q.Ref;
 
@@ -13,26 +12,24 @@ export class IndexInfo extends Component {
     }};
   }
   componentDidMount() {
-    this.getIndexInfo(this.props.client, this.props.splat, this.props.params.name)
+    this.getIndexInfo(this.props.scopedClient, this.props.splat, this.props.params.name)
   }
   getIndexInfo(client, path, name) {
-    if (!client) return;
-    var scopedClient = clientForSubDB(client, path, "server");
-    scopedClient.query(q.Get(Ref("indexes/"+name))).then( (res) => {
-      this.setState({info : res, scopedClient})
+    client && client.query(q.Get(Ref("indexes/"+name))).then( (res) => {
+      this.setState({info : res})
     })
   }
   componentWillReceiveProps(nextProps) {
     if (this.props.params.name !== nextProps.params.name ||
-      this.props.client !== nextProps.client) {
-      this.getIndexInfo(nextProps.client, nextProps.splat, nextProps.params.name)
+      this.props.scopedClient !== nextProps.scopedClient) {
+      this.getIndexInfo(nextProps.scopedClient, nextProps.splat, nextProps.params.name)
     }
   }
   render() {
     return (<div>
         <h3>Index Details</h3>
-        <IndexCard path={this.props.splat} client={this.state.scopedClient} info={this.state.info}/>
-        <IndexQuery client={this.state.scopedClient} info={this.state.info}/>
+        <IndexCard path={this.props.splat} client={this.props.scopedClient} info={this.state.info}/>
+        <IndexQuery client={this.props.scopedClient} info={this.state.info}/>
       </div>)
   }
 }

@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {TextField, Dropdown, Checkbox} from 'office-ui-fabric-react'
 import SchemaForm from "../schema-form/SchemaForm"
 import faunadb from 'faunadb';
-import clientForSubDB from "../clientForSubDB";
 const q = faunadb.query, Ref = q.Ref;
 
 window.q = q;
@@ -17,25 +16,25 @@ export class IndexForm extends Component {
     this.onUniqueToggled = this.onUniqueToggled.bind(this);
   }
   componentDidMount() {
-    this.getClasses(this.props.client, this.props.splat)
+    this.getClasses(this.props.scopedClient, this.props.splat)
   }
   componentWillReceiveProps(nextProps) {
     if (this.props.splat !== nextProps.splat ||
       this.props.params.name !== nextProps.params.name ||
-      this.props.client !==  nextProps.client) {
+      this.props.scopedClient !==  nextProps.scopedClient) {
         this.setState({classes:[]});
-        this.getClasses(nextProps.client, nextProps.splat)
+        this.getClasses(nextProps.scopedClient, nextProps.splat)
     }
   }
   getClasses(client, path) {
     if (!client) return;
-    clientForSubDB(client, path, "server").query(q.Paginate(Ref("classes"))).then( (res) => {
+    client.query(q.Paginate(Ref("classes"))).then( (res) => {
       this.setState({classes : res.data})
     }).catch(console.error.bind(console, "getClasses"))
   }
 
   onSubmit() {
-    return clientForSubDB(this.props.client, this.props.splat, "server")
+    return this.props.scopedClient
       .query(q.Create(Ref("indexes"), this.indexOptions())).then( (res) => {
         this.setState({form:{name:"",terms:"",values:""}})
       })
