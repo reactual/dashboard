@@ -1,46 +1,52 @@
 import faunadb from 'faunadb';
 const q = faunadb.query, Ref = q.Ref;
 
-export function updateIndexInfo(client, result) {
+export function updateIndexInfo(client, database, result) {
   if(!Array.isArray(result))
     result = [result]
 
   return {
     type: "UPDATE_INDEX_INFO",
     scopedClient: client,
+    database: database,
     result: result
   }
 }
 
-export function updateSelectedIndex(name) {
+export function updateSelectedIndex(database, name) {
   return {
     type: "UPDATE_SELECTED_INDEX",
+    database: database,
     name: name
   }
 }
 
-export function getAllIndexes(client) {
+export function getAllIndexes(client, database) {
   return (dispatch, getState) => {
-    if(Object.keys(getState().indexes).length > 0)
+    const indexes = getState().indexes[database]
+
+    if(indexes /*&& Object.keys(indexes).length > 0*/)
       return Promise.resolve()
 
     return client.query(q.Map(q.Paginate(Ref("indexes")), index => q.Get(index))).then(
-      result => dispatch(updateIndexInfo(client, result.data))
+      result => dispatch(updateIndexInfo(client, database, result.data))
     )
   }
 }
 
-export function getIndexInfo(client, name) {
+export function getIndexInfo(client, database, name) {
   return (dispatch, getState) => {
-    if(getState().indexes[name]) {
-      dispatch(updateSelectedIndex(name))
+    const indexes = getState().indexes[database]
+
+    if(indexes && indexes[name]) {
+      dispatch(updateSelectedIndex(database, name))
       return Promise.resolve()
     }
 
     return client.query(q.Get(q.Index(name))).then(result => {
-      dispatch(updateIndexInfo(client, result))
+      dispatch(updateIndexInfo(client, database, result))
     }).then(() => {
-      dispatch(updateSelectedIndex(name))
+      dispatch(updateSelectedIndex(database, name))
     })
   }
 }

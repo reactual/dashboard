@@ -9,7 +9,7 @@ class IndexInfo extends Component {
     this.getIndexInfo(this.props.scopedClient, this.props.splat, this.props.params.name)
   }
   getIndexInfo(client, path, name) {
-    client && this.props.dispatch(getIndexInfo(client, name))
+    client && this.props.dispatch(getIndexInfo(client, path, name))
   }
   componentWillReceiveProps(nextProps) {
     if (this.props.params.name !== nextProps.params.name ||
@@ -28,11 +28,13 @@ class IndexInfo extends Component {
 
 import { connect } from 'react-redux'
 
-const mapStateToProps = state => {
-  if(typeof state.indexes.selectedIndex === 'undefined')
+const mapStateToProps = (state, props) => {
+  const indexes = state.indexes[props.splat]
+
+  if(!indexes || !indexes.selectedIndex)
     return { info: {} }
 
-  const info = state.indexes[state.indexes.selectedIndex]
+  const info = indexes[indexes.selectedIndex]
 
   return {
     info: info.indexInfo,

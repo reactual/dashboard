@@ -25,10 +25,11 @@ it('should get all indexes', () => {
   const expectedActions = [{
     type: "UPDATE_INDEX_INFO",
     scopedClient: client,
+    database: "db-name",
     result: ["index-0", "index-1"]
   }]
 
-  return store.dispatch(getAllIndexes(client)).then(() => {
+  return store.dispatch(getAllIndexes(client, "db-name")).then(() => {
     expect(store.getActions()).toEqual(expectedActions)
     expect(client.query).toBeCalled()
   })
@@ -48,13 +49,15 @@ it('should get index info', () => {
   const expectedActions = [{
     type: "UPDATE_INDEX_INFO",
     scopedClient: client,
+    database: "db-name",
     result: ["result"]
   }, {
     type: "UPDATE_SELECTED_INDEX",
+    database: "db-name",
     name: "test-index"
   }]
 
-  return store.dispatch(getIndexInfo(client, "test-index")).then(() => {
+  return store.dispatch(getIndexInfo(client, "db-name", "test-index")).then(() => {
     expect(store.getActions()).toEqual(expectedActions)
     expect(client.query).toBeCalled()
   })
@@ -63,7 +66,9 @@ it('should get index info', () => {
 it('should not get index info when it already have index info', () => {
   const store = mockStore({
     indexes: {
-      "test-index": {}
+      "db-name": {
+        "test-index": {}
+      }
     }
   })
 
@@ -73,10 +78,11 @@ it('should not get index info when it already have index info', () => {
 
   const expectedActions = [{
     type: "UPDATE_SELECTED_INDEX",
+    database: "db-name",
     name: "test-index"
   }]
 
-  return store.dispatch(getIndexInfo(client, "test-index")).then(() => {
+  return store.dispatch(getIndexInfo(client, "db-name", "test-index")).then(() => {
     expect(store.getActions()).toEqual(expectedActions)
     expect(client.query).not.toBeCalled()
   })

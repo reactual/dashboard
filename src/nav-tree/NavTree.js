@@ -66,14 +66,14 @@ class NavSchema1 extends Component {
     this.navLinkClicked = this.navLinkClicked.bind(this)
   }
   getInfos(props) {
-    this.getIndexes(props.serverClient)
-    this.getClasses(props.serverClient)
+    this.getIndexes(props.serverClient, props.splat)
+    this.getClasses(props.serverClient, props.splat)
   }
-  getIndexes(client) {
-    client && this.props.dispatch(getAllIndexes(client))
+  getIndexes(client, database) {
+    client && this.props.dispatch(getAllIndexes(client, database))
   }
-  getClasses(client) {
-    client && this.props.dispatch(getAllClasses(client))
+  getClasses(client, database) {
+    client && this.props.dispatch(getAllClasses(client, database))
   }
   componentDidMount() {
     this.getInfos(this.props)
@@ -117,33 +117,35 @@ class NavSchema1 extends Component {
 let mapStateToProp = (state, ownProps) => {
   const dbpath = ownProps.splat;
 
-  const indexesLinks = Object.keys(state.indexes)
-    .filter(key => key !== 'selectedIndex')
-    .map(key => {
-      const slug = dbpath ? dbpath+"/indexes" : "indexes"
-      const index = state.indexes[key].indexInfo
-      const name = index.ref.id
+  const indexesLinks = !state.indexes[dbpath] ? [] :
+    Object.keys(state.indexes[dbpath])
+      .filter(key => key !== 'selectedIndex')
+      .map(key => {
+        const slug = dbpath ? dbpath+"/indexes" : "indexes"
+        const index = state.indexes[dbpath][key].indexInfo
+        const name = index.ref.id
 
-      return {
-        name : name,
-        url : "/db/"+slug+"/"+name,
-        key : slug+"/"+name
-      }
-    })
+        return {
+          name : name,
+          url : "/db/"+slug+"/"+name,
+          key : slug+"/"+name
+        }
+      })
 
-  const classesLinks = Object.keys(state.classes)
-    .filter(key => key !== 'selectedClass')
-    .map(key => {
-      const slug = dbpath ? dbpath+"/classes" : "classes"
-      const clazz = state.classes[key].classInfo
-      const name = clazz.ref.id
+  const classesLinks = !state.classes[dbpath] ? [] :
+    Object.keys(state.classes[dbpath])
+      .filter(key => key !== 'selectedClass')
+      .map(key => {
+        const slug = dbpath ? dbpath+"/classes" : "classes"
+        const clazz = state.classes[dbpath][key].classInfo
+        const name = clazz.ref.id
 
-      return {
-        name : name,
-        url : "/db/"+slug+"/"+name,
-        key : slug+"/"+name
-      }
-    })
+        return {
+          name : name,
+          url : "/db/"+slug+"/"+name,
+          key : slug+"/"+name
+        }
+      })
 
   return {
     classes: {

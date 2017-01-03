@@ -1,63 +1,71 @@
 import faunadb from 'faunadb';
 const q = faunadb.query, Ref = q.Ref;
 
-export function updateClassInfo(client, result) {
+export function updateClassInfo(client, database, result) {
   if(!Array.isArray(result))
     result = [result]
 
   return {
     type: "UPDATE_CLASS_INFO",
     scopedClient: client,
+    database: database,
     result: result
   }
 }
 
-export function updateSelectedClass(name) {
+export function updateSelectedClass(database, name) {
   return {
     type: "UPDATE_SELECTED_CLASS",
+    database: database,
     name: name
   }
 }
 
-export function getAllClasses(client) {
+export function getAllClasses(client, database) {
   return (dispatch, getState) => {
-    if(Object.keys(getState().classes).length > 0)
+    const classes = getState().classes[database]
+
+    if(classes /*&& Object.keys(classes).length > 0*/)
       return Promise.resolve()
 
     return client.query(q.Map(q.Paginate(Ref("classes")), clazz => q.Get(clazz))).then(
-      result => dispatch(updateClassInfo(client, result.data))
+      result => dispatch(updateClassInfo(client, database, result.data))
     )
   }
 }
 
-export function getClassInfo(client, name) {
+export function getClassInfo(client, database, name) {
   return (dispatch, getState) => {
-    if(getState().classes[name]) {
-      dispatch(updateSelectedClass(name))
+    const classes = getState().classes[database]
+
+    if(classes && classes[name]) {
+      dispatch(updateSelectedClass(database, name))
       return Promise.resolve()
     }
 
     return client.query(q.Get(q.Class(name))).then(result => {
-      dispatch(updateClassInfo(client, result))
+      dispatch(updateClassInfo(client, database, result))
     }).then(() => {
-      dispatch(updateSelectedClass(name))
+      dispatch(updateSelectedClass(database, name))
     })
   }
 }
 
-export function updateIndexOfClass(clazz, indexes) {
+export function updateIndexOfClass(clazz, database, indexes) {
   return {
     type: "UPDATE_INDEX_OF_CLASS",
+    database: database,
     clazz: clazz,
     indexes: indexes
   }
 }
 
-export function queryForIndexes(client, classRef) {
+export function queryForIndexes(client, database, classRef) {
   return (dispatch, getState) => {
     const name = classRef.id
+    const classes = getState().classes[database]
 
-    if(getState().classes[name] && getState().classes[name].indexes) {
+    if(classes && classes[name] && classes[name].indexes) {
       return Promise.resolve()
     }
 
@@ -74,7 +82,7 @@ export function queryForIndexes(client, classRef) {
     return client.query(
       q.Map(allIndexes, index => q.Select(['name'], index))
     ).then(result => {
-      dispatch(updateIndexOfClass(name, result.data))
+      dispatch(updateIndexOfClass(name, database, result.data))
     })
   }
 }

@@ -12,12 +12,14 @@ it("should update index info", () => {
 
   const newState = reduceIndexes(
     oldState,
-    updateIndexInfo(client, result))
+    updateIndexInfo(client, "db-name", result))
 
   const expectedState = {
-    "test-index": {
-      indexInfo: result,
-      scopedClient: client
+    "db-name": {
+      "test-index": {
+        indexInfo: result,
+        scopedClient: client
+      }
     }
   }
 
@@ -32,26 +34,30 @@ it("should append index info", () => {
  }
 
   const oldState = {
-    selectedIndex: "existent-index",
-    "existent-index": {
-      indexInfo: {},
-      scopedClient: {}
+    "db-name": {
+      selectedIndex: "existent-index",
+      "existent-index": {
+        indexInfo: {},
+        scopedClient: {}
+      }
     }
   }
 
   const newState = reduceIndexes(
     oldState,
-    updateIndexInfo(client, result))
+    updateIndexInfo(client, "db-name", result))
 
   const expectedState = {
-    selectedIndex: "existent-index",
-    "existent-index": {
-      indexInfo: {},
-      scopedClient: client
-    },
-    "test-index": {
-      indexInfo: result,
-      scopedClient: client
+    "db-name": {
+      selectedIndex: "existent-index",
+      "existent-index": {
+        indexInfo: {},
+        scopedClient: client
+      },
+      "test-index": {
+        indexInfo: result,
+        scopedClient: client
+      }
     }
   }
 
@@ -60,15 +66,19 @@ it("should append index info", () => {
 
 it("should update selected index", () => {
   const oldState = {
-    selectedIndex: "old-index"
+    "db-name": {
+      selectedIndex: "old-index"
+    }
   }
 
   const newState = reduceIndexes(
     oldState,
-    updateSelectedIndex("new-index"))
+    updateSelectedIndex("db-name", "new-index"))
 
   const expectedState = {
-    selectedIndex: "new-index"
+    "db-name": {
+      selectedIndex: "new-index"
+    }
   }
 
   expect(newState).toEqual(expectedState)
