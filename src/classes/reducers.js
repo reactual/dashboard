@@ -1,32 +1,47 @@
 
+/*
+  Shape of data
+
+  classes: {
+    byName: {
+      "class-0": {},
+      "class-1": {}
+    },
+    indexes: {
+      "class-0": ["index-0", "index-1"],
+      "class-1": ["index-1"]
+    },
+    selectedClass: "class-0",
+    fecthingData: true
+  }
+  
+*/
+
 export function reduceClasses(state = {}, action) {
   switch(action.type) {
     case "UPDATE_CLASS_INFO": {
-      var classes = state[action.database] || {}
+      var byName = state.byName
 
       action.result.forEach(clazz => {
-        classes = {...classes,
+        byName = {...byName,
           [clazz.name]: {
-            classInfo: clazz,
-            scopedClient: action.scopedClient
+            classInfo: clazz
           }
         }
       })
-
-      return {...state, [action.database]: classes}
+      return {...state, byName: byName}
     }
 
-    case "UPDATE_SELECTED_CLASS": {
-      const classes = {...state[action.database], selectedClass: action.name}
-      return {...state, [action.database]: classes}
-    }
+    case "UPDATE_SELECTED_CLASS":
+      return {...state, selectedClass: action.name}
 
     case "UPDATE_INDEX_OF_CLASS": {
-      const indexes = [...action.indexes]
-      const clazz = {...state[action.database][action.clazz], indexes: indexes}
-      const classes = {...state[action.database], [action.clazz]: clazz}
-      return {...state, [action.database]: classes}
+      const indexes = {...state.indexes, [action.clazz]: [...action.indexes]}
+      return {...state, indexes: indexes}
     }
+
+    case "FETCHING_CLASSES":
+      return {...state, fetchingData: action.fetching}
 
     default:
       return state

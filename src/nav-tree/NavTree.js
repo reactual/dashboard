@@ -5,6 +5,7 @@ import clientForSubDB from "../clientForSubDB";
 import discoverKeyType from "../discoverKeyType";
 import { getAllIndexes } from '../indexes/actions'
 import { getAllClasses } from '../classes/actions'
+import { resetToDatabase } from '../app/actions'
 import faunadb from 'faunadb';
 const q = faunadb.query, Ref = q.Ref;
 
@@ -66,24 +67,26 @@ class NavSchema1 extends Component {
     this.navLinkClicked = this.navLinkClicked.bind(this)
   }
   getInfos(props) {
-    this.getIndexes(props.serverClient, props.splat)
-    this.getClasses(props.serverClient, props.splat)
+    this.getIndexes(props.serverClient)
+    this.getClasses(props.serverClient)
   }
-  getIndexes(client, database) {
-    client && this.props.dispatch(getAllIndexes(client, database))
+  getIndexes(client) {
+    client && this.props.dispatch(getAllIndexes(client))
   }
-  getClasses(client, database) {
-    client && this.props.dispatch(getAllClasses(client, database))
+  getClasses(client) {
+    client && this.props.dispatch(getAllClasses(client))
   }
   componentDidMount() {
     this.getInfos(this.props)
   }
   componentWillReceiveProps(nextProps) {
-    this.getInfos(nextProps)
+    if(nextProps.splat)
+      this.getInfos(nextProps)
   }
   navLinkClicked(e, link) {
     e.preventDefault();
     browserHistory.push(link.url)
+    this.props.dispatch(resetToDatabase(link.name))
   }
   render() {
     const dbpath = this.props.splat;
@@ -117,12 +120,11 @@ class NavSchema1 extends Component {
 let mapStateToProp = (state, ownProps) => {
   const dbpath = ownProps.splat;
 
-  const indexesLinks = !state.indexes[dbpath] ? [] :
-    Object.keys(state.indexes[dbpath])
-      .filter(key => key !== 'selectedIndex')
+  const indexesLinks = !state.indexes.byName ? [] :
+    Object.keys(state.indexes.byName)
       .map(key => {
         const slug = dbpath ? dbpath+"/indexes" : "indexes"
-        const index = state.indexes[dbpath][key].indexInfo
+        const index = state.indexes.byName[key].indexInfo
         const name = index.ref.id
 
         return {
@@ -132,12 +134,11 @@ let mapStateToProp = (state, ownProps) => {
         }
       })
 
-  const classesLinks = !state.classes[dbpath] ? [] :
-    Object.keys(state.classes[dbpath])
-      .filter(key => key !== 'selectedClass')
+  const classesLinks = !state.classes.byName ? [] :
+    Object.keys(state.classes.byName)
       .map(key => {
         const slug = dbpath ? dbpath+"/classes" : "classes"
-        const clazz = state.classes[dbpath][key].classInfo
+        const clazz = state.classes.byName[key].classInfo
         const name = clazz.ref.id
 
         return {
@@ -163,7 +164,7 @@ let NavSchema = connect(
   mapStateToProp
 )(NavSchema1)
 
-class NavDBTree extends Component {
+class NavDBTree1 extends Component {
   constructor(props) {
     super(props);
     this.navLinkClicked = this.navLinkClicked.bind(this)
@@ -237,6 +238,7 @@ class NavDBTree extends Component {
     e.preventDefault();
     browserHistory.push(link.url)
     // todo we could save deep recursion til grandparent is unfolded
+    this.props.dispatch(resetToDatabase(link.name))
   }
   render() {
     return (
@@ -244,6 +246,8 @@ class NavDBTree extends Component {
     );
   }
 }
+
+let NavDBTree = connect()(NavDBTree1)
 
 function _valueTail(string) {
   var parts = string.split("/")

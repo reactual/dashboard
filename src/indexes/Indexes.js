@@ -1,18 +1,18 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router';
 import IndexQuery from '../index-query/IndexQuery'
-import { getIndexInfo } from './actions'
+import { updateSelectedIndex } from './actions'
 
 class IndexInfo extends Component {
   componentDidMount() {
     this.getIndexInfo(this.props.scopedClient, this.props.splat, this.props.params.name)
   }
   getIndexInfo(client, path, name) {
-    client && this.props.dispatch(getIndexInfo(client, path, name))
+    this.props.dispatch(updateSelectedIndex(name))
   }
   componentWillReceiveProps(nextProps) {
-    if (this.props.params.name !== nextProps.params.name ||
-      this.props.scopedClient !== nextProps.scopedClient) {
+    if (this.props.params.name !== nextProps.params.name /*||
+      this.props.scopedClient !== nextProps.scopedClient*/) {
       this.getIndexInfo(nextProps.scopedClient, nextProps.splat, nextProps.params.name)
     }
   }
@@ -28,12 +28,12 @@ class IndexInfo extends Component {
 import { connect } from 'react-redux'
 
 const mapStateToProps = (state, props) => {
-  const indexes = state.indexes[props.splat]
+  const indexes = state.indexes
 
-  if(!indexes || !indexes.selectedIndex)
+  if(!indexes || !indexes.byName || !indexes.selectedIndex)
     return { info: {} }
 
-  const info = indexes[indexes.selectedIndex]
+  const info = indexes.byName[indexes.selectedIndex]
 
   return {
     info: info.indexInfo,

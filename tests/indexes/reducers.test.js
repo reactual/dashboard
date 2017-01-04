@@ -2,8 +2,6 @@ import { reduceIndexes } from '../../src/indexes/reducers'
 import { updateIndexInfo, updateSelectedIndex } from '../../src/indexes/actions'
 
 it("should update index info", () => {
-  const client = {}
-
   const result = {
     name: "test-index"
   }
@@ -12,13 +10,12 @@ it("should update index info", () => {
 
   const newState = reduceIndexes(
     oldState,
-    updateIndexInfo(client, "db-name", result))
+    updateIndexInfo(result))
 
   const expectedState = {
-    "db-name": {
+    byName: {
       "test-index": {
-        indexInfo: result,
-        scopedClient: client
+        indexInfo: result
       }
     }
   }
@@ -27,36 +24,31 @@ it("should update index info", () => {
 })
 
 it("should append index info", () => {
-  const client = {}
-
   const result = {
     name: "test-index"
  }
 
   const oldState = {
-    "db-name": {
-      selectedIndex: "existent-index",
+    selectedIndex: "existent-index",
+    byName: {
       "existent-index": {
-        indexInfo: {},
-        scopedClient: {}
+        indexInfo: {}
       }
     }
   }
 
   const newState = reduceIndexes(
     oldState,
-    updateIndexInfo(client, "db-name", result))
+    updateIndexInfo(result))
 
   const expectedState = {
-    "db-name": {
-      selectedIndex: "existent-index",
+    selectedIndex: "existent-index",
+    byName: {
       "existent-index": {
-        indexInfo: {},
-        scopedClient: client
+        indexInfo: {}
       },
       "test-index": {
-        indexInfo: result,
-        scopedClient: client
+        indexInfo: result
       }
     }
   }
@@ -66,19 +58,15 @@ it("should append index info", () => {
 
 it("should update selected index", () => {
   const oldState = {
-    "db-name": {
-      selectedIndex: "old-index"
-    }
+    selectedIndex: "old-index"
   }
 
   const newState = reduceIndexes(
     oldState,
-    updateSelectedIndex("db-name", "new-index"))
+    updateSelectedIndex("new-index"))
 
   const expectedState = {
-    "db-name": {
-      selectedIndex: "new-index"
-    }
+    selectedIndex: "new-index"
   }
 
   expect(newState).toEqual(expectedState)

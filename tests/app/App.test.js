@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
+import App from '../../src/app/App';
 
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
