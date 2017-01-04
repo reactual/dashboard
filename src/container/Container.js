@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import { Link, browserHistory } from 'react-router';
 import {MessageBar, MessageBarType, Breadcrumb} from 'office-ui-fabric-react'
+import {parse as parseURL} from 'url'
+
 import faunadb from 'faunadb';
+import clientForSubDB from "../clientForSubDB";
+
 import {NavTree} from '../nav-tree/NavTree'
 import {SecretForm} from '../secrets/Secrets'
 import FaunaRepl from '../fauna-repl/FaunaRepl'
 import logo from '../logo.svg';
-import {parse as parseURL} from 'url'
 
 const ERROR_MESSAGE_DISPLAY_MS = 5000;
 
@@ -102,13 +105,15 @@ export default class Container extends Component {
   render() {
     var splat = this.props.params.splat ?
       this.props.params.splat.replace(/^db\/?/,'') : "";
-
+    var sharedProps = {
+      scopedClient : clientForSubDB(this.state.client, splat, "server"),
+      scopedAdminClient : clientForSubDB(this.state.client, splat, "admin"),
+      // rootClient: this.state.client,
+      bumpSchema : this.bumpSchema,
+      splat
+    };
     const childrenWithProps = React.Children.map(this.props.children,
-     (child) => React.cloneElement(child, {
-       client: this.state.client,
-       bumpSchema : this.bumpSchema,
-       splat
-     })
+     (child) => React.cloneElement(child, sharedProps)
     );
     // console.log("Container",this.props);
     var path = (this.props.location||{}).pathname.replace(/\/db\/?/,'');
@@ -139,7 +144,7 @@ export default class Container extends Component {
     }
 
     return (
-        <FaunaRepl splat={splat} crumb={crumb} client={this.state.client}>
+        <FaunaRepl splat={splat} crumb={crumb} scopedClient={sharedProps.scopedClient}>
           <div className="ms-Grid ms-Fabric ms-font-m">
             {/* header */}
             <div className="ms-Grid-row header">

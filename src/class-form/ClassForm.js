@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {TextField, Checkbox} from 'office-ui-fabric-react'
 import SchemaForm from "../schema-form/SchemaForm"
 import faunadb from 'faunadb';
-import clientForSubDB from "../clientForSubDB";
 const q = faunadb.query, Ref = q.Ref;
 
 export class ClassForm extends Component {
@@ -17,7 +16,7 @@ export class ClassForm extends Component {
     return {form:{name:"",ttl:"", history:""}, classIndex : false}
   }
   onSubmit() {
-    const client = clientForSubDB(this.props.client, this.props.splat, "server");
+    var client = this.props.scopedClient;
     return client
       .query(q.Create(Ref("classes"), { name: this.state.form.name }))
       .then( (res) => {
