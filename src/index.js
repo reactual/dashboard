@@ -4,10 +4,12 @@ import { createStore, combineReducers, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk'
 import App from './App';
 import { reduceClasses } from './classes/reducers'
+import { reduceIndexes } from './indexes/reducers'
 import './index.css';
 
 const appReducer = combineReducers({
-  classes: reduceClasses
+  classes: reduceClasses,
+  indexes: reduceIndexes
 })
 
 let store = createStore(

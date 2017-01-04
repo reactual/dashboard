@@ -17,7 +17,7 @@ class ClassInfo extends Component {
   }
   getClassInfo(scopedClient, path, name) {
     if (!scopedClient) return;
-    this.props.dispatch(getClassInfo(scopedClient, name))
+    this.props.dispatch(getClassInfo(scopedClient, path, name))
   }
   render() {
     const info = this.props.info
@@ -38,11 +38,13 @@ class ClassInfo extends Component {
 
 import { connect } from 'react-redux'
 
-const mapStateToProps = state => {
-  if(typeof state.classes.selectedClass === 'undefined')
+const mapStateToProps = (state, props) => {
+  const classes = state.classes[props.splat]
+
+  if(!classes || !classes.selectedClass)
     return { info: {} }
 
-  const info = state.classes[state.classes.selectedClass]
+  const info = classes[classes.selectedClass]
 
   return {
     info: info.classInfo
@@ -55,16 +57,16 @@ export default connect(
 
 class ClassIndexes1 extends Component {
   componentDidMount() {
-    this.queryForIndexes(this.props.scopedClient, this.props.info.ref)
+    this.queryForIndexes(this.props.scopedClient, this.props.path, this.props.info.ref)
   }
   componentWillReceiveProps(nextProps) {
     if (this.props.info.ref !== nextProps.info.ref ||
       this.props.scopedClient !==  nextProps.scopedClient) {
-      this.queryForIndexes(nextProps.scopedClient, nextProps.info.ref)
+      this.queryForIndexes(nextProps.scopedClient, nextProps.path, nextProps.info.ref)
     }
   }
-  queryForIndexes(client, classRef) {
-    classRef && client && this.props.dispatch(queryForIndexes(client, classRef))
+  queryForIndexes(client, database, classRef) {
+    classRef && client && this.props.dispatch(queryForIndexes(client, database, classRef))
   }
   render() {
     return (
@@ -78,12 +80,28 @@ class ClassIndexes1 extends Component {
   }
 }
 
-const mapStateToProps1 = state => {
-  if(typeof state.classes.selectedClass === 'undefined')
-    return { indexes: [] }
+const mapStateToProps1 = (state, props) => {
+  const defaultProps = { indexes: [] }
+
+  const classes = state.classes[props.path]
+
+  if(!classes || !classes.selectedClass)
+    return defaultProps
+
+  const clazz = classes[classes.selectedClass]
+
+  if (!clazz || !clazz.indexes)
+    return defaultProps
+
+  const indexesNames = clazz.indexes
+
+  const indexes = indexesNames
+    .map(index => state.indexes[props.path][index])
+    .filter(index => index)
+    .map(index => index.indexInfo)
 
   return {
-    indexes: state.classes[state.classes.selectedClass].indexes
+    indexes: indexes
   }
 }
 

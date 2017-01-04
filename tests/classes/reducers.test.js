@@ -1,5 +1,5 @@
 import { reduceClasses } from '../../src/classes/reducers'
-import { updateClassInfo, updateSelectedClass, updateIndexInfo } from '../../src/classes/actions'
+import { updateClassInfo, updateSelectedClass } from '../../src/classes/actions'
 
 it("should update class info", () => {
   const client = {}
@@ -12,13 +12,14 @@ it("should update class info", () => {
 
   const newState = reduceClasses(
     oldState,
-    updateClassInfo(client, result))
+    updateClassInfo(client, "db-name", result))
 
   const expectedState = {
-    selectedClass: "test-class",
-    "test-class": {
-      classInfo: result,
-      scopedClient: client
+    "db-name": {
+      "test-class": {
+        classInfo: result,
+        scopedClient: client
+      }
     }
   }
 
@@ -33,26 +34,30 @@ it("should append class info", () => {
  }
 
   const oldState = {
-    selectedClass: "existent-class",
-    "existent-class": {
-      classInfo: {},
-      scopedClient: {}
+    "db-name": {
+      selectedClass: "existent-class",
+      "existent-class": {
+        classInfo: {},
+        scopedClient: {}
+      }
     }
   }
 
   const newState = reduceClasses(
     oldState,
-    updateClassInfo(client, result))
+    updateClassInfo(client, "db-name", result))
 
   const expectedState = {
-    selectedClass: "test-class",
-    "existent-class": {
-      classInfo: {},
-      scopedClient: client
-    },
-    "test-class": {
-      classInfo: result,
-      scopedClient: client
+    "db-name": {
+      selectedClass: "existent-class",
+      "existent-class": {
+        classInfo: {},
+        scopedClient: client
+      },
+      "test-class": {
+        classInfo: result,
+        scopedClient: client
+      }
     }
   }
 
@@ -61,53 +66,18 @@ it("should append class info", () => {
 
 it("should update selected class", () => {
   const oldState = {
-    selectedClass: "old-class"
-  }
-
-  const newState = reduceClasses(
-    oldState,
-    updateSelectedClass("new-class"))
-
-  const expectedState = {
-    selectedClass: "new-class"
-  }
-
-  expect(newState).toEqual(expectedState)
-})
-
-it("should update index info", () => {
-  const oldState = {}
-
-  const newState = reduceClasses(
-    oldState,
-    updateIndexInfo("test-class", ["index-0", "index-1"]))
-
-  const expectedState = {
-    "test-class": {
-      indexes: ["index-0", "index-1"]
-    }
-  }
-
-  expect(newState).toEqual(expectedState)
-})
-
-it("should append index info", () => {
-  const oldState = {
-    "existent-class": {
-      indexes: ["index"]
+    "db-name": {
+      selectedClass: "old-class"
     }
   }
 
   const newState = reduceClasses(
     oldState,
-    updateIndexInfo("new-class", ["index-0", "index-1"]))
+    updateSelectedClass("db-name", "new-class"))
 
   const expectedState = {
-    "existent-class": {
-      indexes: ["index"]
-    },
-    "new-class": {
-      indexes: ["index-0", "index-1"]
+    "db-name": {
+      selectedClass: "new-class"
     }
   }
 

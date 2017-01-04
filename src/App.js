@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {Router, Route, Redirect, IndexRoute, browserHistory} from 'react-router';
 import { Provider } from 'react-redux'
 import Container from './container/Container'
-import {IndexInfo} from './indexes/Indexes'
+import IndexInfo from './indexes/Indexes'
 import {IndexForm} from './index-form/IndexForm'
 import ClassInfo from './classes/Classes'
 import {ClassForm} from './class-form/ClassForm'

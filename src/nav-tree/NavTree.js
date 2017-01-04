@@ -3,8 +3,12 @@ import { browserHistory } from 'react-router';
 import {Nav} from 'office-ui-fabric-react'
 import clientForSubDB from "../clientForSubDB";
 import discoverKeyType from "../discoverKeyType";
+import { getAllIndexes } from '../indexes/actions'
+import { getAllClasses } from '../classes/actions'
 import faunadb from 'faunadb';
 const q = faunadb.query, Ref = q.Ref;
+
+import { connect } from 'react-redux'
 
 export class NavTree extends Component {
   constructor(props) {
@@ -56,43 +60,26 @@ export class NavTree extends Component {
   }
 }
 
-class NavSchema extends Component {
+class NavSchema1 extends Component {
   constructor(props) {
     super(props);
     this.navLinkClicked = this.navLinkClicked.bind(this)
-    this.state = {
-      classes:{links:[]},
-      indexes:{links:[]}
-    };
   }
   getInfos(props) {
-    this.get(props.serverClient, "classes");
-    this.get(props.serverClient, "indexes");
+    this.getIndexes(props.serverClient, props.splat)
+    this.getClasses(props.serverClient, props.splat)
   }
-  get(client, type) {
-    client && client.query(q.Paginate(Ref(type))).then( (res) => {
-      var stateSetter = {};
-      stateSetter[type] = {name : type, links : this.resultToNavRows(res,type)};
-      this.setState(stateSetter);
-    }).catch(console.error.bind(console, "get "+type))
+  getIndexes(client, database) {
+    client && this.props.dispatch(getAllIndexes(client, database))
+  }
+  getClasses(client, database) {
+    client && this.props.dispatch(getAllClasses(client, database))
   }
   componentDidMount() {
     this.getInfos(this.props)
   }
   componentWillReceiveProps(nextProps) {
     this.getInfos(nextProps)
-  }
-  resultToNavRows(result, type) {
-    const dbpath = this.props.splat;
-    const slug = dbpath ? dbpath+"/"+type : type;
-    return result.data.map((x) => {
-      var name = _valueTail(x.value);
-      return {
-        name : name,
-        url : "/db/"+slug+"/"+name,
-        key : slug+"/"+name
-      }
-    })
   }
   navLinkClicked(e, link) {
     e.preventDefault();
@@ -121,11 +108,60 @@ class NavSchema extends Component {
       ]
     };
     return (
-      <Nav groups={[options, this.state.classes, this.state.indexes]}
+      <Nav groups={[options, this.props.classes, this.props.indexes]}
         onLinkClick={this.navLinkClicked}/>
     );
   }
 }
+
+let mapStateToProp = (state, ownProps) => {
+  const dbpath = ownProps.splat;
+
+  const indexesLinks = !state.indexes[dbpath] ? [] :
+    Object.keys(state.indexes[dbpath])
+      .filter(key => key !== 'selectedIndex')
+      .map(key => {
+        const slug = dbpath ? dbpath+"/indexes" : "indexes"
+        const index = state.indexes[dbpath][key].indexInfo
+        const name = index.ref.id
+
+        return {
+          name : name,
+          url : "/db/"+slug+"/"+name,
+          key : slug+"/"+name
+        }
+      })
+
+  const classesLinks = !state.classes[dbpath] ? [] :
+    Object.keys(state.classes[dbpath])
+      .filter(key => key !== 'selectedClass')
+      .map(key => {
+        const slug = dbpath ? dbpath+"/classes" : "classes"
+        const clazz = state.classes[dbpath][key].classInfo
+        const name = clazz.ref.id
+
+        return {
+          name : name,
+          url : "/db/"+slug+"/"+name,
+          key : slug+"/"+name
+        }
+      })
+
+  return {
+    classes: {
+      name: "classes",
+      links: classesLinks
+    },
+    indexes: {
+      name: "indexes",
+      links: indexesLinks
+    }
+  }
+}
+
+let NavSchema = connect(
+  mapStateToProp
+)(NavSchema1)
 
 class NavDBTree extends Component {
   constructor(props) {
