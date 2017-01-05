@@ -12,7 +12,7 @@ const appReducer = combineReducers({
   indexes: reduceIndexes
 })
 
-let store = createStore(
+const store = createStore(
   appReducer,
   applyMiddleware(thunk)
 )

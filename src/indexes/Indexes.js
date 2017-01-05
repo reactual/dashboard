@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router';
-import faunadb from 'faunadb';
 import IndexQuery from '../index-query/IndexQuery'
 import { getIndexInfo } from './actions'
 

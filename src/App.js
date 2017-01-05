@@ -23,27 +23,27 @@ class App extends Component {
   render() {
     return (
       <Provider store={this.props.store}>
-      <Router history={browserHistory}>
-        <Route path='/db' component={Container}>
-          <IndexRoute component={Home} />
-          <Route path='/databases' component={DatabaseForm} />
-          <Route path='/**/databases' component={DatabaseForm} />
-          <Route path='/**/info' component={DatabaseInfo} />
+        <Router history={browserHistory}>
+          <Route path='/db' component={Container}>
+            <IndexRoute component={Home} />
+            <Route path='/databases' component={DatabaseForm} />
+            <Route path='/**/databases' component={DatabaseForm} />
+            <Route path='/**/info' component={DatabaseInfo} />
 
-          <Route path='/classes' component={ClassForm}/>
-          <Route path='/classes/:name' component={ClassInfo}/>
-          <Route path='/**/classes' component={ClassForm}/>
-          <Route path='/**/classes/:name' component={ClassInfo}/>
+            <Route path='/classes' component={ClassForm}/>
+            <Route path='/classes/:name' component={ClassInfo}/>
+            <Route path='/**/classes' component={ClassForm}/>
+            <Route path='/**/classes/:name' component={ClassInfo}/>
 
-          <Route path='/indexes' component={IndexForm}/>
-          <Route path='/indexes/:name' component={IndexInfo}/>
-          <Route path='/**/indexes' component={IndexForm}/>
-          <Route path='/**/indexes/:name' component={IndexInfo}/>
+            <Route path='/indexes' component={IndexForm}/>
+            <Route path='/indexes/:name' component={IndexInfo}/>
+            <Route path='/**/indexes' component={IndexForm}/>
+            <Route path='/**/indexes/:name' component={IndexInfo}/>
 
-        </Route>
-        <Redirect from="/" to="/db" />
-        <Route path='*' component={NotFound} />
-      </Router>
+          </Route>
+          <Redirect from="/" to="/db" />
+          <Route path='*' component={NotFound} />
+        </Router>
       </Provider>
     );
   }
