@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link, browserHistory } from 'react-router';
-import {MessageBar, MessageBarType, Breadcrumb} from 'office-ui-fabric-react'
+import { Button, MessageBar, MessageBarType, Breadcrumb } from 'office-ui-fabric-react'
 import {parse as parseURL} from 'url'
 
 import faunadb from 'faunadb';
@@ -31,6 +31,7 @@ export default class Container extends Component {
     this.bumpSchema = this.bumpSchema.bind(this);
     this.updateSecret = this.updateSecret.bind(this);
     this.observerCallback = this.observerCallback.bind(this);
+    this.logout = this.logout.bind(this);
     this._onBreadcrumbItemClicked = this._onBreadcrumbItemClicked.bind(this);
   }
 
@@ -61,6 +62,12 @@ export default class Container extends Component {
     }
 
     return new faunadb.Client(opts);
+  }
+
+  logout() {
+    this.setState({ client: null })
+    localStorage.set(LAST_AUTH_SETTINGS, undefined)
+    browserHistory.push("/")
   }
 
   observerCallback(res) { // render any error messages
@@ -167,6 +174,7 @@ export default class Container extends Component {
             {/* header */}
             <div className="ms-Grid-row header">
               <Link to="/"><img src={logo} className="logo" alt="logo" /></Link>
+              <Button className="logout" onClick={this.logout}>Log out</Button>
               <SecretForm showDialog={!this.state.client} onSubmit={this.updateSecret} />
             </div>
             <NavTree
