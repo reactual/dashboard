@@ -9,30 +9,48 @@ import clientForSubDB from "../clientForSubDB";
 import {NavTree} from '../nav-tree/NavTree'
 import {SecretForm} from '../secrets/Secrets'
 import FaunaRepl from '../fauna-repl/FaunaRepl'
+import localStorage from '../persistence/LocalStorage'
 import logo from '../logo.svg';
 
 const ERROR_MESSAGE_DISPLAY_MS = 5000;
+const LAST_AUTH_SETTINGS = "lastAuthSettings";
 
 export default class Container extends Component {
   constructor(props) {
     super(props);
-    this.state = {client:null, errors:[], schemaBump:0, bugs : false};
+
+    const state = { errors: [], schemaBump: 0, bugs: false };
+    const lastAuthSettings = localStorage.get(LAST_AUTH_SETTINGS);
+
+    if (lastAuthSettings) {
+      this.state = { client: this._connect(lastAuthSettings), ...state }
+    } else {
+      this.state = state
+    }
+
     this.bumpSchema = this.bumpSchema.bind(this);
     this.updateSecret = this.updateSecret.bind(this);
     this.observerCallback = this.observerCallback.bind(this);
     this._onBreadcrumbItemClicked = this._onBreadcrumbItemClicked.bind(this);
-
   }
+
   componentDidMount() {
     setTimeout(()=>{this.setState({viewportReady : true})}, 10);
   }
+
   updateSecret(data) {
+    localStorage.set(LAST_AUTH_SETTINGS, data)
+    this.setState({client : this._connect(data)});
+  }
+
+  _connect(data) {
     // get a new client for that secret and set state
     // observer for errors...
     var opts = {
       secret: data.secret,
       observer : this.observerCallback
     };
+
     if (data.endpoint) {
       var endpointURL = parseURL(data.endpoint)
       opts.domain = endpointURL.hostname
@@ -41,10 +59,10 @@ export default class Container extends Component {
         opts.port = endpointURL.port
       }
     }
-    // console.log("client", opts.secret, opts)
-    var clientForSecret = new faunadb.Client(opts);
-    this.setState({client : clientForSecret});
+
+    return new faunadb.Client(opts);
   }
+
   observerCallback(res) { // render any error messages
     if (res.responseContent.errors) {
       console.error("observerCallback errors", res.responseContent.errors)
