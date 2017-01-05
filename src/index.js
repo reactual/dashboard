@@ -18,7 +18,7 @@ const store = createStore(
 )
 
 store.subscribe(() => {
-  console.log(store.getState())
+  console.log("redux state", store.getState())
 });
 
 ReactDOM.render(
