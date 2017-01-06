@@ -10,8 +10,7 @@ class ClassInfo extends Component {
     this.getClassInfo(this.props.scopedClient, this.props.splat, this.props.params.name)
   }
   componentWillReceiveProps(nextProps) {
-    if (this.props.params.name !== nextProps.params.name /*||
-      this.props.scopedClient !==  nextProps.scopedClient*/) {
+    if (this.props.params.name !== nextProps.params.name) {
       this.getClassInfo(nextProps.scopedClient, nextProps.splat, nextProps.params.name)
     }
   }

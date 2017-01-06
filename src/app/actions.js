@@ -1,12 +1,11 @@
 
 export const AppActions = {
-  RESET_TO_DATABASE: "RESET_TO_DATABASE"
+  RESET_STATE: "RESET_STATE"
 }
 
-export function resetToDatabase(database) {
+export function resetState() {
   return {
-    type: AppActions.RESET_TO_DATABASE,
-    database: database
+    type: AppActions.RESET_STATE
   }
 }
 

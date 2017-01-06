@@ -1,5 +1,5 @@
 import { appReducer } from '../../src/app/reducers'
-import { resetToDatabase } from '../../src/app/actions'
+import { resetState } from '../../src/app/actions'
 
 it("should reset to database", () => {
   const oldState = {
@@ -9,7 +9,7 @@ it("should reset to database", () => {
 
   const newState = appReducer(
     oldState,
-    resetToDatabase("db-name"))
+    resetState())
 
   const expectedState = {
     classes: {},

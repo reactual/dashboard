@@ -11,8 +11,7 @@ class IndexInfo extends Component {
     this.props.dispatch(updateSelectedIndex(name))
   }
   componentWillReceiveProps(nextProps) {
-    if (this.props.params.name !== nextProps.params.name /*||
-      this.props.scopedClient !== nextProps.scopedClient*/) {
+    if (this.props.params.name !== nextProps.params.name) {
       this.getIndexInfo(nextProps.scopedClient, nextProps.splat, nextProps.params.name)
     }
   }
@@ -36,8 +35,7 @@ const mapStateToProps = (state, props) => {
   const info = indexes.byName[indexes.selectedIndex]
 
   return {
-    info: info.indexInfo,
-    scopedClient: info.scopedClient
+    info: info.indexInfo
   }
 }
 

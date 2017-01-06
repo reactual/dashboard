@@ -5,7 +5,7 @@ import clientForSubDB from "../clientForSubDB";
 import discoverKeyType from "../discoverKeyType";
 import { getAllIndexes } from '../indexes/actions'
 import { getAllClasses } from '../classes/actions'
-import { resetToDatabase } from '../app/actions'
+import { resetState } from '../app/actions'
 import faunadb from 'faunadb';
 const q = faunadb.query, Ref = q.Ref;
 
@@ -86,7 +86,7 @@ class NavSchema1 extends Component {
   navLinkClicked(e, link) {
     e.preventDefault();
     browserHistory.push(link.url)
-    this.props.dispatch(resetToDatabase(link.name))
+    this.props.dispatch(resetState())
   }
   render() {
     const dbpath = this.props.splat;
@@ -238,7 +238,7 @@ class NavDBTree1 extends Component {
     e.preventDefault();
     browserHistory.push(link.url)
     // todo we could save deep recursion til grandparent is unfolded
-    this.props.dispatch(resetToDatabase(link.name))
+    this.props.dispatch(resetState())
   }
   render() {
     return (

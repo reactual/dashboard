@@ -21,7 +21,7 @@ const appReducer0 = combineReducers({
 
 export function appReducer(state = {}, action) {
   switch(action.type) {
-    case AppActions.RESET_TO_DATABASE:
+    case AppActions.RESET_STATE:
       return {...state, classes: {}, indexes: {}}
 
     default:
