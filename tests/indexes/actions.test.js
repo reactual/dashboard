@@ -1,7 +1,7 @@
 import faunadb from 'faunadb';
 const q = faunadb.query, Ref = q.Ref;
 
-import { getAllIndexes } from '../../src/indexes/actions'
+import { IndexesActions, getAllIndexes } from '../../src/indexes/actions'
 
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
@@ -23,13 +23,13 @@ it('should get all indexes', () => {
   }))
 
   const expectedActions = [{
-    type: "FETCHING_INDEXES",
+    type: IndexesActions.FETCHING_INDEXES,
     fetching: true
   }, {
-    type: "UPDATE_INDEX_INFO",
+    type: IndexesActions.UPDATE_INDEX_INFO,
     result: ["index-0", "index-1"]
   }, {
-    type: "FETCHING_INDEXES",
+    type: IndexesActions.FETCHING_INDEXES,
     fetching: false
   }]
 

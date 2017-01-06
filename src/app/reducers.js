@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux';
 import { reduceClasses } from '../classes/reducers'
 import { reduceIndexes } from '../indexes/reducers'
+import { AppActions } from './actions'
 
 /*
 
@@ -20,7 +21,7 @@ const appReducer0 = combineReducers({
 
 export function appReducer(state = {}, action) {
   switch(action.type) {
-    case "RESET_TO_DATABASE":
+    case AppActions.RESET_TO_DATABASE:
       return {...state, classes: {}, indexes: {}}
 
     default:

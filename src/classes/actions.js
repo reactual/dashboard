@@ -1,26 +1,33 @@
 import faunadb from 'faunadb';
 const q = faunadb.query, Ref = q.Ref;
 
+export const ClassesActions = {
+  UPDATE_CLASS_INFO: "UPDATE_CLASS_INFO",
+  UPDATE_SELECTED_CLASS: "UPDATE_SELECTED_CLASS",
+  FETCHING_CLASSES: "FETCHING_CLASSES",
+  UPDATE_INDEX_OF_CLASS: "UPDATE_INDEX_OF_CLASS"
+}
+
 export function updateClassInfo(result) {
   if(!Array.isArray(result))
     result = [result]
 
   return {
-    type: "UPDATE_CLASS_INFO",
+    type: ClassesActions.UPDATE_CLASS_INFO,
     result: result
   }
 }
 
 export function updateSelectedClass(name) {
   return {
-    type: "UPDATE_SELECTED_CLASS",
+    type: ClassesActions.UPDATE_SELECTED_CLASS,
     name: name
   }
 }
 
 export function fetchingClasses(fetching) {
   return {
-    type: "FETCHING_CLASSES",
+    type: ClassesActions.FETCHING_CLASSES,
     fetching: fetching
   }
 }
@@ -42,7 +49,7 @@ export function getAllClasses(client) {
 
 export function updateIndexOfClass(clazz, indexes) {
   return {
-    type: "UPDATE_INDEX_OF_CLASS",
+    type: ClassesActions.UPDATE_INDEX_OF_CLASS,
     clazz: clazz,
     indexes: indexes
   }

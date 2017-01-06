@@ -2,6 +2,7 @@ import faunadb from 'faunadb';
 const q = faunadb.query, Ref = q.Ref;
 
 import {
+  ClassesActions,
   getAllClasses,
   queryForIndexes
 } from '../../src/classes/actions'
@@ -26,13 +27,13 @@ it('should get all classes', () => {
   }))
 
   const expectedActions = [{
-    type: "FETCHING_CLASSES",
+    type: ClassesActions.FETCHING_CLASSES,
     fetching: true
   }, {
-    type: "UPDATE_CLASS_INFO",
+    type: ClassesActions.UPDATE_CLASS_INFO,
     result: ["class-0", "class-1"]
   }, {
-    type: "FETCHING_CLASSES",
+    type: ClassesActions.FETCHING_CLASSES,
     fetching: false
   }]
 
@@ -81,7 +82,7 @@ it('should query indexes of class', () => {
   }))
 
   const expectedActions = [{
-    type: "UPDATE_INDEX_OF_CLASS",
+    type: ClassesActions.UPDATE_INDEX_OF_CLASS,
     clazz: "test-class",
     indexes: ["index-0", "index-1"]
   }]

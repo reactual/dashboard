@@ -1,26 +1,32 @@
 import faunadb from 'faunadb';
 const q = faunadb.query, Ref = q.Ref;
 
+export const IndexesActions = {
+  UPDATE_INDEX_INFO: "UPDATE_INDEX_INFO",
+  UPDATE_SELECTED_INDEX: "UPDATE_SELECTED_INDEX",
+  FETCHING_INDEXES: "FETCHING_INDEXES"
+}
+
 export function updateIndexInfo(result) {
   if(!Array.isArray(result))
     result = [result]
 
   return {
-    type: "UPDATE_INDEX_INFO",
+    type: IndexesActions.UPDATE_INDEX_INFO,
     result: result
   }
 }
 
 export function updateSelectedIndex(name) {
   return {
-    type: "UPDATE_SELECTED_INDEX",
+    type: IndexesActions.UPDATE_SELECTED_INDEX,
     name: name
   }
 }
 
 export function fetchingIndexes(fetching) {
   return {
-    type: "FETCHING_INDEXES",
+    type: IndexesActions.FETCHING_INDEXES,
     fetching: fetching
   }
 }

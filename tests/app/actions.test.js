@@ -1,4 +1,4 @@
-import { resetToDatabase } from '../../src/app/actions'
+import { AppActions, resetToDatabase } from '../../src/app/actions'
 
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
@@ -10,7 +10,7 @@ it('should reset selected database', () => {
   const store = mockStore({})
 
   const expectedActions = [{
-    type: "RESET_TO_DATABASE",
+    type: AppActions.RESET_TO_DATABASE,
     database: "db-name"
   }]
 

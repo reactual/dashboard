@@ -1,3 +1,4 @@
+import { IndexesActions } from './actions'
 
 /*
   Shape of data
@@ -15,7 +16,7 @@
 
 export function reduceIndexes(state = {}, action) {
   switch(action.type) {
-    case "UPDATE_INDEX_INFO": {
+    case IndexesActions.UPDATE_INDEX_INFO: {
       var byName = state.byName
 
       action.result.forEach(index => {
@@ -30,10 +31,10 @@ export function reduceIndexes(state = {}, action) {
       return {...state, byName: byName}
     }
 
-    case "UPDATE_SELECTED_INDEX":
+    case IndexesActions.UPDATE_SELECTED_INDEX:
       return {...state, selectedIndex: action.name}
 
-    case "FETCHING_INDEXES":
+    case IndexesActions.FETCHING_INDEXES:
       return {...state, fetchingData: action.fetching}
 
     default:

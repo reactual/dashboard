@@ -1,3 +1,4 @@
+import { ClassesActions } from './actions'
 
 /*
   Shape of data
@@ -19,7 +20,7 @@
 
 export function reduceClasses(state = {}, action) {
   switch(action.type) {
-    case "UPDATE_CLASS_INFO": {
+    case ClassesActions.UPDATE_CLASS_INFO: {
       var byName = state.byName
 
       action.result.forEach(clazz => {
@@ -32,15 +33,15 @@ export function reduceClasses(state = {}, action) {
       return {...state, byName: byName}
     }
 
-    case "UPDATE_SELECTED_CLASS":
+    case ClassesActions.UPDATE_SELECTED_CLASS:
       return {...state, selectedClass: action.name}
 
-    case "UPDATE_INDEX_OF_CLASS": {
+    case ClassesActions.UPDATE_INDEX_OF_CLASS: {
       const indexes = {...state.indexes, [action.clazz]: [...action.indexes]}
       return {...state, indexes: indexes}
     }
 
-    case "FETCHING_CLASSES":
+    case ClassesActions.FETCHING_CLASSES:
       return {...state, fetchingData: action.fetching}
 
     default:
