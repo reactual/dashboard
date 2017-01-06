@@ -1,7 +1,7 @@
 import faunadb from 'faunadb';
 const q = faunadb.query, Ref = q.Ref;
 
-import { IndexesActions, getAllIndexes } from '../../src/indexes/actions'
+import { IndexesActions, getAllIndexes } from '../../src/indexes'
 
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'

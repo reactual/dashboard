@@ -1,4 +1,4 @@
-import { AppActions, resetState } from '../../src/app/actions'
+import { AppActions, resetState } from '../../src/app'
 
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'

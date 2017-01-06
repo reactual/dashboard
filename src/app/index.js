@@ -1,7 +1,23 @@
 import { combineReducers } from 'redux';
-import { reduceClasses } from '../classes/reducers'
-import { reduceIndexes } from '../indexes/reducers'
-import { AppActions } from './actions'
+import { reduceClasses } from '../classes'
+import { reduceIndexes } from '../indexes'
+
+import App from './App'
+export { App }
+
+// Actions
+
+export const AppActions = {
+  RESET_STATE: "RESET_STATE"
+}
+
+export function resetState() {
+  return {
+    type: AppActions.RESET_STATE
+  }
+}
+
+// Reducers
 
 /*
 

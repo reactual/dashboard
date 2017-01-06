@@ -1,5 +1,4 @@
-import { reduceIndexes } from '../../src/indexes/reducers'
-import { updateIndexInfo, updateSelectedIndex } from '../../src/indexes/actions'
+import { reduceIndexes, updateIndexInfo, updateSelectedIndex } from '../../src/indexes'
 
 it("should update index info", () => {
   const result = {

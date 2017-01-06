@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-import {Router, Route, Redirect, IndexRoute, browserHistory} from 'react-router';
+import { Router, Route, Redirect, IndexRoute, browserHistory } from 'react-router';
 import { Provider } from 'react-redux'
 import Container from '../container/Container'
-import IndexInfo from '../indexes/Indexes'
-import {IndexForm} from '../index-form/IndexForm'
-import ClassInfo from '../classes/Classes'
-import {ClassForm} from '../class-form/ClassForm'
-import {DatabaseInfo} from '../databases/Databases'
-import {DatabaseForm} from '../database-form/DatabaseForm'
+import { IndexInfo } from '../indexes'
+import { IndexForm } from '../index-form/IndexForm'
+import { ClassInfo } from '../classes'
+import { ClassForm } from '../class-form/ClassForm'
+import { DatabaseInfo } from '../databases/Databases'
+import { DatabaseForm } from '../database-form/DatabaseForm'
 import './App.css';
 
 const Home = () =>(

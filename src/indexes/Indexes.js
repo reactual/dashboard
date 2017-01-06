@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router';
 import IndexQuery from '../index-query/IndexQuery'
-import { updateSelectedIndex } from './actions'
+import { updateSelectedIndex } from './index'
 
 class IndexInfo extends Component {
   componentDidMount() {

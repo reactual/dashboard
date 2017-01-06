@@ -3,9 +3,9 @@ import { browserHistory } from 'react-router';
 import {Nav} from 'office-ui-fabric-react'
 import clientForSubDB from "../clientForSubDB";
 import discoverKeyType from "../discoverKeyType";
-import { getAllIndexes } from '../indexes/actions'
-import { getAllClasses } from '../classes/actions'
-import { resetState } from '../app/actions'
+import { getAllIndexes } from '../indexes'
+import { getAllClasses } from '../classes'
+import { resetState } from '../app'
 import faunadb from 'faunadb';
 const q = faunadb.query, Ref = q.Ref;
 

@@ -2,8 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom'
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk'
-import App from './app/App';
-import { appReducer } from './app/reducers'
+import { App, appReducer } from './app'
 import './index.css';
 
 const store = createStore(

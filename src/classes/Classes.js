@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router';
 import {TextField, Button, ButtonType} from 'office-ui-fabric-react'
+import { updateSelectedClass, queryForIndexes } from "./index"
 import faunadb from 'faunadb';
-import { updateSelectedClass, queryForIndexes } from "./actions"
 const q = faunadb.query;
 
 class ClassInfo extends Component {

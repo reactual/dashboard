@@ -1,5 +1,4 @@
-import { reduceClasses } from '../../src/classes/reducers'
-import { updateClassInfo, updateSelectedClass } from '../../src/classes/actions'
+import { reduceClasses, updateClassInfo, updateSelectedClass } from '../../src/classes'
 
 it("should update class info", () => {
   const result = {

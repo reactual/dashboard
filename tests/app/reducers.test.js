@@ -1,5 +1,4 @@
-import { appReducer } from '../../src/app/reducers'
-import { resetState } from '../../src/app/actions'
+import { appReducer, resetState } from '../../src/app'
 
 it("should reset to database", () => {
   const oldState = {

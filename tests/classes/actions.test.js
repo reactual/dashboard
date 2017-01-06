@@ -1,11 +1,7 @@
 import faunadb from 'faunadb';
 const q = faunadb.query, Ref = q.Ref;
 
-import {
-  ClassesActions,
-  getAllClasses,
-  queryForIndexes
-} from '../../src/classes/actions'
+import { ClassesActions, getAllClasses, queryForIndexes } from '../../src/classes'
 
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
