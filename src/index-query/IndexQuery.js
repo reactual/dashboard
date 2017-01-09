@@ -1,17 +1,30 @@
 import React, { Component } from 'react';
 // import { Link } from 'react-router';
-import {DetailsList, DetailsListLayoutMode, DetailsRow} from 'office-ui-fabric-react'
+import {
+  DetailsList,
+  DetailsListLayoutMode,
+  DetailsRow,
+  Button,
+  ButtonType
+} from 'office-ui-fabric-react'
 
 import {query as q} from 'faunadb';
 const Ref = q.Ref;
 import {inspect} from 'util';
 
+const DEFAULT_ITEMS_PER_PAGE = 16
 
 export default class IndexQuery extends Component {
   constructor(props) {
     super(props);
     this.gotTerm = this.gotTerm.bind(this);
-    this.state = {};
+    this.beforeClick = this.beforeClick.bind(this);
+    this.afterClick = this.afterClick.bind(this);
+    this.changeItemsPerPage = this.changeItemsPerPage.bind(this);
+    this.doQuery = this.doQuery.bind(this);
+    this.state = {
+      itemsPerPage: DEFAULT_ITEMS_PER_PAGE.toString()
+    };
   }
   componentDidMount() {
     this.getIndexRows(this.props.client, this.props.info.name, this.props.term);
@@ -26,22 +39,95 @@ export default class IndexQuery extends Component {
   gotTerm(term) {
     this.getIndexRows(this.props.client, this.props.info.name, term);
   }
-  getIndexRows(client, name, term) {
+  beforeClick() {
+    this.getIndexRows(
+      this.props.client,
+      this.props.info.name,
+      this.props.term,
+      this.state.result.before,
+      undefined);
+  }
+  afterClick() {
+    this.getIndexRows(
+      this.props.client,
+      this.props.info.name,
+      this.props.term,
+      undefined,
+      this.state.result.after);
+  }
+  changeItemsPerPage(event) {
+    var value = parseInt(event.target.value, 10)
+    if(isNaN(value) || value <= 0)
+      value = ""
+    this.setState({itemsPerPage: value.toString()})
+  }
+  doQuery(event) {
+    if(event.key === "Enter") {
+      this.getIndexRows(
+        this.props.client,
+        this.props.info.name,
+        this.props.term)
+      }
+  }
+  getIndexRows(client, name, term, before, after) {
     this.setState({instanceRef:null});
     if (!name) return;
-    var query;
-    if (term) {
-      query = q.Paginate(q.Match(Ref("indexes/"+name), term))
-    } else {
-      query = q.Paginate(q.Match(Ref("indexes/"+name)))
+
+    const size = parseInt(this.state.itemsPerPage, 10)
+    var params = {
+      size: !isNaN(size) ? size : DEFAULT_ITEMS_PER_PAGE,
+      before: before,
+      after: after
     }
+
+    var query = q.Paginate(q.Match(q.Index(name), term), params)
+
     client && client.query(query).then((result) => {
       this.setState({result})
     }).catch(console.error.bind(console, name))
   }
+  createPaginator() {
+    if(!this.state.result || !this.state.result.data || !this.state.result.data.length)
+      return undefined
+
+    const beforeButton =
+      (<Button
+        disabled={!this.state.result.before}
+        onClick={this.beforeClick}
+        buttonType={ButtonType.icon}
+        icon="ChevronLeft" />)
+
+    const afterButton =
+      (<Button
+        disabled={!this.state.result.after}
+        onClick={this.afterClick}
+        buttonType={ButtonType.icon}
+        icon="ChevronRight" />)
+
+    const itemsPerPageField =
+      (<div className="ms-TextField">
+        <input
+          className="ms-TextField-field"
+          type="text"
+          value={this.state.itemsPerPage}
+          onChange={this.changeItemsPerPage}
+          onKeyPress={this.doQuery} />
+       </div>)
+
+  return (
+    <div className="ms-Grid">
+      <div className="ms-Grid-row">
+        <div className="ms-Grid-col ms-u-sm9 ms-u-md9 ms-u-lg9"></div>
+        <div className="ms-Grid-col ms-u-sm1 ms-u-md1 ms-u-lg1 ms-u-textAlignCenter">{beforeButton}</div>
+        <div className="ms-Grid-col ms-u-sm1 ms-u-md1 ms-u-lg1">{itemsPerPageField}</div>
+        <div className="ms-Grid-col ms-u-sm1 ms-u-md1 ms-u-lg1 ms-u-textAlignCenter">{afterButton}</div>
+      </div>
+    </div>)
+  }
   render() {
     return (<div>
       {this.props.info.terms && <TermForm onSubmit={this.gotTerm}/>}
+      {this.createPaginator()}
       <QueryResult client={this.props.client} result={this.state.result} info={this.props.info} />
     </div>);
   }
