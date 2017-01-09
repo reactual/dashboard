@@ -8,6 +8,10 @@
   width: 260px;
 }
 
+.header .logout {
+  float: right;
+}
+
 .sidebar {
   background-color: #f4f4f5;
   overflow:scroll;

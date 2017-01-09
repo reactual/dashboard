@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link, browserHistory } from 'react-router';
-import {MessageBar, MessageBarType, Breadcrumb} from 'office-ui-fabric-react'
+import { Button, MessageBar, MessageBarType, Breadcrumb } from 'office-ui-fabric-react'
 import {parse as parseURL} from 'url'
 
 import faunadb from 'faunadb';
@@ -9,30 +9,52 @@ import clientForSubDB from "../clientForSubDB";
 import {NavTree} from '../nav-tree/NavTree'
 import {SecretForm} from '../secrets/Secrets'
 import FaunaRepl from '../fauna-repl/FaunaRepl'
+import localStorage from '../persistence/LocalStorage'
 import logo from '../logo.svg';
 
 const ERROR_MESSAGE_DISPLAY_MS = 5000;
+const LAST_AUTH_SETTINGS = "lastAuthSettings";
 
 export default class Container extends Component {
   constructor(props) {
     super(props);
-    this.state = {client:null, errors:[], schemaBump:0, bugs : false};
+
+    const state = { errors: [], schemaBump: 0, bugs: false };
+    const lastAuthSettings = localStorage.get(LAST_AUTH_SETTINGS);
+
+    if (lastAuthSettings) {
+      this.state = { client: this._connect(lastAuthSettings), ...state }
+    } else {
+      this.state = state
+    }
+
     this.bumpSchema = this.bumpSchema.bind(this);
     this.updateSecret = this.updateSecret.bind(this);
     this.observerCallback = this.observerCallback.bind(this);
+    this.logout = this.logout.bind(this);
     this._onBreadcrumbItemClicked = this._onBreadcrumbItemClicked.bind(this);
-
   }
+
   componentDidMount() {
     setTimeout(()=>{this.setState({viewportReady : true})}, 10);
   }
+
   updateSecret(data) {
+    if (process.env.NODE_ENV === "development") {
+      localStorage.set(LAST_AUTH_SETTINGS, data)
+    }
+
+    this.setState({client : this._connect(data)});
+  }
+
+  _connect(data) {
     // get a new client for that secret and set state
     // observer for errors...
     var opts = {
       secret: data.secret,
       observer : this.observerCallback
     };
+
     if (data.endpoint) {
       var endpointURL = parseURL(data.endpoint)
       opts.domain = endpointURL.hostname
@@ -41,10 +63,16 @@ export default class Container extends Component {
         opts.port = endpointURL.port
       }
     }
-    // console.log("client", opts.secret, opts)
-    var clientForSecret = new faunadb.Client(opts);
-    this.setState({client : clientForSecret});
+
+    return new faunadb.Client(opts);
   }
+
+  logout() {
+    this.setState({ client: null })
+    localStorage.set(LAST_AUTH_SETTINGS, undefined)
+    browserHistory.push("/")
+  }
+
   observerCallback(res) { // render any error messages
     if (res.responseContent.errors) {
       console.error("observerCallback errors", res.responseContent.errors)
@@ -149,6 +177,7 @@ export default class Container extends Component {
             {/* header */}
             <div className="ms-Grid-row header">
               <Link to="/"><img src={logo} className="logo" alt="logo" /></Link>
+              <Button className="logout" onClick={this.logout}>Log out</Button>
               <SecretForm showDialog={!this.state.client} onSubmit={this.updateSecret} />
             </div>
             <NavTree

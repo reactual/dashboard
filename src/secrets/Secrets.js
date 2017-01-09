@@ -36,10 +36,10 @@ export class SecretForm extends Component {
               <TextField label="FaunaDB Endpoint URL"
                 description="Leave this empty for Fauna Cloud."
                 placeholder="https://db.fauna.com/"
-                value={this.state.endpoint} onChanged={this.handleChange.bind(this,"endpoint")}/>
+                value={this.state.endpoint} onBeforeChange={this.handleChange.bind(this,"endpoint")}/>
               <TextField required type="password" label="Key Secret"
                 description="The secret associated with your FaunaDB key."
-                value={this.state.secret} onChanged={this.handleChange.bind(this,"secret")}/>
+                value={this.state.secret} onBeforeChange={this.handleChange.bind(this,"secret")}/>
 
                 <DialogFooter>
                   <Button buttonType={ ButtonType.primary } onClick={this.handleSubmit}>Use Secret</Button>
