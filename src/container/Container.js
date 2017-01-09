@@ -40,7 +40,10 @@ export default class Container extends Component {
   }
 
   updateSecret(data) {
-    localStorage.set(LAST_AUTH_SETTINGS, data)
+    if (process.env.NODE_ENV === "development") {
+      localStorage.set(LAST_AUTH_SETTINGS, data)
+    }
+
     this.setState({client : this._connect(data)});
   }
 
