@@ -1,11 +1,7 @@
 import faunadb from 'faunadb';
 const q = faunadb.query, Ref = q.Ref;
 
-import {
-  getAllClasses,
-  getClassInfo,
-  queryForIndexes
-} from '../../src/classes/actions'
+import { ClassesActions, getAllClasses, queryForIndexes } from '../../src/classes'
 
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
@@ -27,41 +23,17 @@ it('should get all classes', () => {
   }))
 
   const expectedActions = [{
-    type: "UPDATE_CLASS_INFO",
-    scopedClient: client,
-    database: "db-name",
-    result: ["class-0", "class-1"]
-  }]
-
-  return store.dispatch(getAllClasses(client, "db-name")).then(() => {
-    expect(store.getActions()).toEqual(expectedActions)
-    expect(client.query).toBeCalled()
-  })
-})
-
-it('should get class info', () => {
-  const store = mockStore({
-    classes: {}
-  })
-
-  const client = {
-    query: jest.fn()
-  }
-
-  client.query.mockReturnValue(Promise.resolve("result"))
-
-  const expectedActions = [{
-    type: "UPDATE_CLASS_INFO",
-    scopedClient: client,
-    database: "db-name",
-    result: ["result"]
+    type: ClassesActions.FETCHING_CLASSES,
+    fetching: true
   }, {
-    type: "UPDATE_SELECTED_CLASS",
-    database: "db-name",
-    name: "test-class"
+    type: ClassesActions.UPDATE_CLASS_INFO,
+    result: ["class-0", "class-1"]
+  }, {
+    type: ClassesActions.FETCHING_CLASSES,
+    fetching: false
   }]
 
-  return store.dispatch(getClassInfo(client, "db-name", "test-class")).then(() => {
+  return store.dispatch(getAllClasses(client)).then(() => {
     expect(store.getActions()).toEqual(expectedActions)
     expect(client.query).toBeCalled()
   })
@@ -70,7 +42,7 @@ it('should get class info', () => {
 it('should not get class info when it already have class info', () => {
   const store = mockStore({
     classes: {
-      "db-name": {
+      byName: {
         "test-class": {}
       }
     }
@@ -80,13 +52,9 @@ it('should not get class info when it already have class info', () => {
     query: jest.fn()
   }
 
-  const expectedActions = [{
-    type: "UPDATE_SELECTED_CLASS",
-    database: "db-name",
-    name: "test-class"
-  }]
+  const expectedActions = []
 
-  return store.dispatch(getClassInfo(client, "db-name", "test-class")).then(() => {
+  return store.dispatch(getAllClasses(client)).then(() => {
     expect(store.getActions()).toEqual(expectedActions)
     expect(client.query).not.toBeCalled()
   })
@@ -95,7 +63,7 @@ it('should not get class info when it already have class info', () => {
 it('should query indexes of class', () => {
   const store = mockStore({
     classes: {
-      "db-name": {
+      byName: {
         "test-class": {}
       }
     }
@@ -110,14 +78,13 @@ it('should query indexes of class', () => {
   }))
 
   const expectedActions = [{
-    type: "UPDATE_INDEX_OF_CLASS",
-    database: "db-name",
+    type: ClassesActions.UPDATE_INDEX_OF_CLASS,
     clazz: "test-class",
     indexes: ["index-0", "index-1"]
   }]
 
   const classRef = Ref("classes/test-class")
-  return store.dispatch(queryForIndexes(client, "db-name", classRef)).then(() => {
+  return store.dispatch(queryForIndexes(client, classRef)).then(() => {
     expect(store.getActions()).toEqual(expectedActions)
     expect(client.query).toBeCalled()
   })
@@ -126,9 +93,11 @@ it('should query indexes of class', () => {
 it('should not query indexes when it already have index info', () => {
   const store = mockStore({
     classes: {
-      "db-name": {
+      indexes: {
+        "test-class": ["index-0", "index-1"]
+      },
+      byName: {
         "test-class": {
-          indexes: ["index-0", "index-1"]
         }
       }
     }
@@ -141,7 +110,7 @@ it('should not query indexes when it already have index info', () => {
   const expectedActions = [ ]
 
   const classRef = Ref("classes/test-class")
-  return store.dispatch(queryForIndexes(client, "db-name", classRef)).then(() => {
+  return store.dispatch(queryForIndexes(client, classRef)).then(() => {
     expect(store.getActions()).toEqual(expectedActions)
     expect(client.query).not.toBeCalled()
   })

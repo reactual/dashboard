@@ -1,9 +1,6 @@
-import { reduceClasses } from '../../src/classes/reducers'
-import { updateClassInfo, updateSelectedClass } from '../../src/classes/actions'
+import { reduceClasses, updateClassInfo, updateSelectedClass } from '../../src/classes'
 
 it("should update class info", () => {
-  const client = {}
-
   const result = {
     name: "test-class"
   }
@@ -12,13 +9,12 @@ it("should update class info", () => {
 
   const newState = reduceClasses(
     oldState,
-    updateClassInfo(client, "db-name", result))
+    updateClassInfo(result))
 
   const expectedState = {
-    "db-name": {
+    byName: {
       "test-class": {
-        classInfo: result,
-        scopedClient: client
+        classInfo: result
       }
     }
   }
@@ -27,36 +23,31 @@ it("should update class info", () => {
 })
 
 it("should append class info", () => {
-  const client = {}
-
   const result = {
     name: "test-class"
- }
+  }
 
   const oldState = {
-    "db-name": {
-      selectedClass: "existent-class",
+    selectedClass: "existent-class",
+    byName: {
       "existent-class": {
-        classInfo: {},
-        scopedClient: {}
+        classInfo: {}
       }
     }
   }
 
   const newState = reduceClasses(
     oldState,
-    updateClassInfo(client, "db-name", result))
+    updateClassInfo(result))
 
   const expectedState = {
-    "db-name": {
-      selectedClass: "existent-class",
+    selectedClass: "existent-class",
+    byName: {
       "existent-class": {
-        classInfo: {},
-        scopedClient: client
+        classInfo: {}
       },
       "test-class": {
-        classInfo: result,
-        scopedClient: client
+        classInfo: result
       }
     }
   }
@@ -66,19 +57,15 @@ it("should append class info", () => {
 
 it("should update selected class", () => {
   const oldState = {
-    "db-name": {
-      selectedClass: "old-class"
-    }
+    selectedClass: "old-class"
   }
 
   const newState = reduceClasses(
     oldState,
-    updateSelectedClass("db-name", "new-class"))
+    updateSelectedClass("new-class"))
 
   const expectedState = {
-    "db-name": {
-      selectedClass: "new-class"
-    }
+    selectedClass: "new-class"
   }
 
   expect(newState).toEqual(expectedState)

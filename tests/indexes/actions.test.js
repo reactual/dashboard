@@ -1,7 +1,7 @@
 import faunadb from 'faunadb';
 const q = faunadb.query, Ref = q.Ref;
 
-import { getAllIndexes, getIndexInfo } from '../../src/indexes/actions'
+import { IndexesActions, getAllIndexes } from '../../src/indexes'
 
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
@@ -23,41 +23,17 @@ it('should get all indexes', () => {
   }))
 
   const expectedActions = [{
-    type: "UPDATE_INDEX_INFO",
-    scopedClient: client,
-    database: "db-name",
-    result: ["index-0", "index-1"]
-  }]
-
-  return store.dispatch(getAllIndexes(client, "db-name")).then(() => {
-    expect(store.getActions()).toEqual(expectedActions)
-    expect(client.query).toBeCalled()
-  })
-})
-
-it('should get index info', () => {
-  const store = mockStore({
-    indexes: {}
-  })
-
-  const client = {
-    query: jest.fn()
-  }
-
-  client.query.mockReturnValue(Promise.resolve("result"))
-
-  const expectedActions = [{
-    type: "UPDATE_INDEX_INFO",
-    scopedClient: client,
-    database: "db-name",
-    result: ["result"]
+    type: IndexesActions.FETCHING_INDEXES,
+    fetching: true
   }, {
-    type: "UPDATE_SELECTED_INDEX",
-    database: "db-name",
-    name: "test-index"
+    type: IndexesActions.UPDATE_INDEX_INFO,
+    result: ["index-0", "index-1"]
+  }, {
+    type: IndexesActions.FETCHING_INDEXES,
+    fetching: false
   }]
 
-  return store.dispatch(getIndexInfo(client, "db-name", "test-index")).then(() => {
+  return store.dispatch(getAllIndexes(client)).then(() => {
     expect(store.getActions()).toEqual(expectedActions)
     expect(client.query).toBeCalled()
   })
@@ -66,7 +42,7 @@ it('should get index info', () => {
 it('should not get index info when it already have index info', () => {
   const store = mockStore({
     indexes: {
-      "db-name": {
+      byName: {
         "test-index": {}
       }
     }
@@ -76,13 +52,9 @@ it('should not get index info when it already have index info', () => {
     query: jest.fn()
   }
 
-  const expectedActions = [{
-    type: "UPDATE_SELECTED_INDEX",
-    database: "db-name",
-    name: "test-index"
-  }]
+  const expectedActions = []
 
-  return store.dispatch(getIndexInfo(client, "db-name", "test-index")).then(() => {
+  return store.dispatch(getAllIndexes(client)).then(() => {
     expect(store.getActions()).toEqual(expectedActions)
     expect(client.query).not.toBeCalled()
   })
