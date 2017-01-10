@@ -10,6 +10,7 @@ import { loginWithUnknownUser, logout } from "../authentication/login"
 
 import {NavTree} from '../nav-tree/NavTree'
 import {SecretForm} from '../secrets/Secrets'
+import IntercomWidget from '../external/intercom/Widget'
 import FaunaRepl from '../fauna-repl/FaunaRepl'
 import logo from '../logo.svg';
 
@@ -183,6 +184,7 @@ class Container extends Component {
               {contents}
             </NavTree>
           </div>
+          <IntercomWidget user={this.props.currentUser} />
         </FaunaRepl>
     )
   }

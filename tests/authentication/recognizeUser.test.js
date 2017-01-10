@@ -11,7 +11,7 @@ function localStorageWith(userToReturn) {
 const unknownUser = {
   secret: "abracadabra",
   endpoint: "localhost",
-  settings: { appId: 41 }
+  settings: { any: 41 }
 }
 
 const cloudUser = {
@@ -19,7 +19,7 @@ const cloudUser = {
   endpoint: "localhost",
   email: "user@example.com",
   userId: "abc123",
-  settings: { appId: 42 }
+  settings: { any: 42 }
 }
 
 describe("When no user user data is present", () => {
@@ -31,7 +31,7 @@ describe("When no user user data is present", () => {
 describe("When user data is saved at local storage", () => {
   it("should recognize as an unnamed user", () => {
     expect(recognizeUser(localStorageWith(unknownUser)))
-      .toEqual(new UnknownUser("localhost", "abracadabra", { appId: 41 }))
+      .toEqual(new UnknownUser("localhost", "abracadabra", { any: 41 }))
   })
 
   it("should recognize a cloud user", () => {
@@ -41,7 +41,7 @@ describe("When user data is saved at local storage", () => {
         "abracadabra",
         "user@example.com",
         "abc123",
-        { appId: 42 }
+        { any: 42 }
       ))
   })
 })
