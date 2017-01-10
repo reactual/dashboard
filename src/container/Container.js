@@ -28,7 +28,7 @@ class Container extends Component {
 
   componentWillReceiveProps(next) {
     if (this.props.currentUser === next.currentUser) return;
-    this.setState({ ...this.state, client: this._connect(next.currentUser) })
+    this.setState({ client: this._connect(next.currentUser) })
   }
 
   componentDidMount() {
@@ -190,7 +190,6 @@ class Container extends Component {
 
 function connectContainer(state, props) {
   return {
-    ...props,
     currentUser: state.currentUser
   }
 }
