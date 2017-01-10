@@ -1,33 +1,24 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux'
 import { Link, browserHistory } from 'react-router';
 import { Button, MessageBar, MessageBarType, Breadcrumb } from 'office-ui-fabric-react'
 import {parse as parseURL} from 'url'
 
 import faunadb from 'faunadb';
 import clientForSubDB from "../clientForSubDB";
+import { loginWithUnknownUser, logout } from "../authentication/login"
 
 import {NavTree} from '../nav-tree/NavTree'
 import {SecretForm} from '../secrets/Secrets'
 import FaunaRepl from '../fauna-repl/FaunaRepl'
-import localStorage from '../persistence/LocalStorage'
 import logo from '../logo.svg';
 
 const ERROR_MESSAGE_DISPLAY_MS = 5000;
-const LAST_AUTH_SETTINGS = "lastAuthSettings";
 
-export default class Container extends Component {
+class Container extends Component {
   constructor(props) {
     super(props);
-
-    const state = { errors: [], schemaBump: 0, bugs: false };
-    const lastAuthSettings = localStorage.get(LAST_AUTH_SETTINGS);
-
-    if (lastAuthSettings) {
-      this.state = { client: this._connect(lastAuthSettings), ...state }
-    } else {
-      this.state = state
-    }
-
+    this.state = { client: this._connect(props.currentUser), errors: [], schemaBump: 0, bugs: false };
     this.bumpSchema = this.bumpSchema.bind(this);
     this.updateSecret = this.updateSecret.bind(this);
     this.observerCallback = this.observerCallback.bind(this);
@@ -35,28 +26,30 @@ export default class Container extends Component {
     this._onBreadcrumbItemClicked = this._onBreadcrumbItemClicked.bind(this);
   }
 
+  componentWillReceiveProps(next) {
+    if (this.props.currentUser === next.currentUser) return;
+    this.setState({ client: this._connect(next.currentUser) })
+  }
+
   componentDidMount() {
     setTimeout(()=>{this.setState({viewportReady : true})}, 10);
   }
 
   updateSecret(data) {
-    if (process.env.NODE_ENV === "development") {
-      localStorage.set(LAST_AUTH_SETTINGS, data)
-    }
-
-    this.setState({client : this._connect(data)});
+    this.props.dispatch(loginWithUnknownUser(data.endpoint, data.secret))
   }
 
-  _connect(data) {
+  _connect(user) {
+    if (!user) return null;
     // get a new client for that secret and set state
     // observer for errors...
     var opts = {
-      secret: data.secret,
+      secret: user.secret,
       observer : this.observerCallback
     };
 
-    if (data.endpoint) {
-      var endpointURL = parseURL(data.endpoint)
+    if (user.endpoint) {
+      var endpointURL = parseURL(user.endpoint)
       opts.domain = endpointURL.hostname
       opts.scheme = endpointURL.protocol.replace(/:$/,'')
       if (endpointURL.port) {
@@ -68,8 +61,7 @@ export default class Container extends Component {
   }
 
   logout() {
-    this.setState({ client: null })
-    localStorage.set(LAST_AUTH_SETTINGS, undefined)
+    this.props.dispatch(logout())
     browserHistory.push("/")
   }
 
@@ -195,3 +187,11 @@ export default class Container extends Component {
     )
   }
 }
+
+function connectContainer(state, props) {
+  return {
+    currentUser: state.currentUser
+  }
+}
+
+export default connect(connectContainer)(Container)
