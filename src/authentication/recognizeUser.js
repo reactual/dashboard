@@ -11,9 +11,14 @@ export default function recognizeUser(localStorage) {
       savedUser.endpoint,
       savedUser.secret,
       savedUser.email,
-      savedUser.userId
+      savedUser.userId,
+      savedUser.settings
     )
   }
 
-  return new UnknownUser(savedUser.endpoint, savedUser.secret)
+  return new UnknownUser(
+    savedUser.endpoint,
+    savedUser.secret,
+    savedUser.settings
+  )
 }
