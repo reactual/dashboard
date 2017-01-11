@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "outDir": "src/typescript",
+    "module": "commonjs",
+    "target": "es5",
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "allowJs": false,
+    "jsx": "react",
+    "forceConsistentCasingInFileNames": true,
+    "noEmitOnError": true,
+    "noImplicitUseStrict": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "noUnusedLocals": true,
+    "rootDir": "src",
+    "baseUrl": "src"
+  },
+  "exclude": [
+    "node_modules",
+    "build",
+    "scripts",
+    "acceptance-tests",
+    "webpack",
+    "jest"
+  ],
+  "types": [
+    "typePatches"
+  ]
+}

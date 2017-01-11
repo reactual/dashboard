@@ -50,3 +50,6 @@ export function appReducer(state = {}, action) {
   return appReducer0(state, action)
 }
 
+export function blah(a, b) {
+  return a + b
+}

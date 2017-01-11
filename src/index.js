@@ -7,6 +7,14 @@ import recognizeUser from "./authentication/recognizeUser"
 import localStorage from "./persistence/LocalStorage"
 import './index.css';
 
+import {Blah} from './typescript/blah'
+import App1, {Blah2} from './typescript/blah2'
+
+console.log("blah", new Blah().blah())
+console.log("blah2", new Blah2().blah())
+console.log("App", new App())
+console.log("App1", new App1())
+
 const store = createStore(
   appReducer,
   { currentUser: recognizeUser(localStorage) },
@@ -18,6 +26,6 @@ store.subscribe(() => {
 });
 
 ReactDOM.render(
-  <App store={store}/>,
+  <App1 store={store}/>,
   document.getElementById('root')
 );
