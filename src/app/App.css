@@ -17,6 +17,16 @@
   overflow:scroll;
 }
 
+.message-bar {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.message-bar li {
+  padding: 2px 0;
+}
+
 a.highlighted {
   background-color: rgba(230,235,255,0.5);
   font-weight: bold;
