@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { browserHistory } from 'react-router';
 import {Nav} from 'office-ui-fabric-react'
-import clientForSubDB from "../clientForSubDB";
+import { clientForSubDB } from "../persistence/FaunaDB";
 import discoverKeyType from "../discoverKeyType";
 import { getAllIndexes } from '../indexes'
 import { getAllClasses } from '../classes'
@@ -14,7 +14,7 @@ import { connect } from 'react-redux'
 export class NavTree extends Component {
   constructor(props) {
     super(props);
-    this.scopedClient.bind(this);
+    this.scopedClient = this.scopedClient.bind(this);
     this.state = {adminClient:null, serverClient:null};
   }
   discoverKeyType(client) {

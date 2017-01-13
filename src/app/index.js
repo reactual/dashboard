@@ -2,6 +2,7 @@ import { combineReducers } from 'redux';
 import { reduceClasses } from '../classes'
 import { reduceIndexes } from '../indexes'
 import { reduceAuthentication } from '../authentication/login'
+import { reduceNotifications } from '../notification'
 
 import App from './App'
 export { App }
@@ -27,7 +28,8 @@ export function resetState() {
   {
     classes: {},
     indexes: {},
-    currentUser: {}
+    currentUser: {},
+    notifications: {}
   }
 
 */
@@ -35,7 +37,8 @@ export function resetState() {
 const appReducer0 = combineReducers({
   classes: reduceClasses,
   indexes: reduceIndexes,
-  currentUser: reduceAuthentication
+  currentUser: reduceAuthentication,
+  notifications: reduceNotifications
 })
 
 export function appReducer(state = {}, action) {
