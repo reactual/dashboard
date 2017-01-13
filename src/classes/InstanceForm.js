@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import {TextField, Button, ButtonType} from 'office-ui-fabric-react'
-import { createInstance } from "./index"
+import { createInstance } from './index'
+import { pushNotification, removeNotification, Notification, NotificationType } from '../notification'
+
+const REMOVE_NOTIFICATIONS_DELAY = 2000;
 
 class InstanceForm extends Component {
   constructor(props) {
@@ -13,14 +16,31 @@ class InstanceForm extends Component {
   onChange(value) {
     this.setState({data: value})
   }
+  addNotification(type, message) {
+    const notification = new Notification(type, message)
+
+    this.props.dispatch(pushNotification(notification))
+
+    setTimeout(() => {
+      this.props.dispatch(removeNotification(notification))
+    }, REMOVE_NOTIFICATIONS_DELAY)
+  }
   onSubmit(event) {
     event.preventDefault();
 
-    this.props.dispatch(createInstance(
-      this.props.scopedClient,
-      this.props.info.ref,
-      JSON.parse(this.state.data)
-    )).catch(error => console.error(error))
+    try {
+      this.props.dispatch(createInstance(
+        this.props.scopedClient,
+        this.props.info.ref,
+        JSON.parse(this.state.data)
+      )).then(() => {
+        this.addNotification(
+          NotificationType.SUCCESS,
+          "Instance created successfully")
+      })
+    } catch(e) {
+      this.addNotification(NotificationType.ERROR, e.message)
+    }
   }
   render() {
     var context = this.props.path ? " in "+this.props.path : "";

@@ -5,8 +5,9 @@ import { removeNotification, NotificationType } from "."
 
 const messageBarTypeFor = (notificationType) => {
   switch (notificationType) {
-    case NotificationType.ERROR: return MessageBarType.error
-    default:                     return MessageBarType.info
+    case NotificationType.ERROR:   return MessageBarType.error
+    case NotificationType.SUCCESS: return MessageBarType.success
+    default:                       return MessageBarType.info
   }
 }
 
