@@ -20,7 +20,7 @@ class InstanceForm extends Component {
       this.props.scopedClient,
       this.props.info.ref,
       JSON.parse(this.state.data)
-    ))
+    )).catch(error => console.error(error))
   }
   render() {
     var context = this.props.path ? " in "+this.props.path : "";

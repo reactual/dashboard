@@ -45,6 +45,10 @@ export function getAllClasses(client) {
     return client.query(q.Map(q.Paginate(Ref("classes")), clazz => q.Get(clazz)))
       .then(result => dispatch(updateClassInfo(result.data)))
       .then(() => dispatch(fetchingClasses(false)))
+      .catch(error => {
+        dispatch(fetchingClasses(false))
+        throw error
+      })
   }
 }
 
@@ -89,6 +93,10 @@ export function createInstance(client, classRef, data) {
 
     return client.query(q.Create(classRef, { data: data }))
       .then(() => dispatch(fetchingClasses(false)))
+      .catch(error => {
+        dispatch(fetchingClasses(false))
+        throw error
+      })
   }
 }
 
