@@ -11,9 +11,11 @@ export const NotificationType = {
   ERROR: "ERROR"
 }
 
+var notificationId = 0
+
 export class Notification {
   constructor(type, message) {
-    this.id = Math.random().toString()
+    this.id = ++notificationId
     this.type = type
     this.message = message
   }
