@@ -1,4 +1,4 @@
-import React, { Component } from "react"
+import React from "react"
 import { connect } from "react-redux"
 import { MessageBar, MessageBarType } from "office-ui-fabric-react"
 import { removeNotification, NotificationType } from "."
@@ -10,20 +10,18 @@ const messageBarTypeFor = (notificationType) => {
   }
 }
 
-class NotificationBar extends Component {
-  render() {
-    return <ul className="message-bar">{
-      this.props.notifications.map(notification => (
-        <li key={notification.id}>
-          <MessageBar
-            messageBarType={messageBarTypeFor(notification.type)}
-            onDismiss={() => this.props.dispatch(removeNotification(notification))}>
-            {notification.message}
-          </MessageBar>
-        </li>
-      ))
-    }</ul>
-  }
+function NotificationBar({ notifications, dispatch }) {
+  return <ul className="message-bar">{
+    notifications.map(notification => (
+      <li key={notification.id}>
+        <MessageBar
+          messageBarType={messageBarTypeFor(notification.type)}
+          onDismiss={() => dispatch(removeNotification(notification))}>
+          {notification.message}
+        </MessageBar>
+      </li>
+    ))
+  }</ul>
 }
 
 export default connect(
