@@ -1,17 +1,52 @@
+var waitForIntercom = null;
+
 export function loadIntercomWidget(lead) {
   if (window.intercomSettings && window.intercomSettings.app_id !== lead.appId) {
-      unloadIntercomWidget()
-      delete window.Intercom
+    unloadIntercomWidget()
+    delete window.Intercom
   }
 
   window.intercomSettings = lead.settings
   include(lead.appId)
+  startWaitingForIntercomBubble()
+  window.Intercom('onShow', () => setTimeout(fixIntercomChatPosition))
 }
 
 export function unloadIntercomWidget() {
   if (window.Intercom) {
     window.Intercom('shutdown')
+    stopWaitingForIntercomBubble()
   }
+}
+
+function startWaitingForIntercomBubble() {
+  if (waitForIntercom) return
+  waitForIntercom = setInterval(fixIntercomBubblePosition, 100)
+}
+
+function stopWaitingForIntercomBubble() {
+  if (!waitForIntercom) return
+  clearInterval(waitForIntercom)
+  waitForIntercom = null
+}
+
+function fixIntercomBubblePosition() {
+  try {
+    const launcher = document.querySelector("#intercom-container .intercom-launcher-frame")
+    if (launcher) {
+      stopWaitingForIntercomBubble()
+      launcher.style = "bottom: 50px !important"
+    }
+  } catch(err) {
+    stopWaitingForIntercomBubble()
+  }
+}
+
+function fixIntercomChatPosition() {
+  try {
+    const messenger = document.querySelector("#intercom-container .intercom-app-launcher-enabled .intercom-messenger-frame")
+    messenger.style = "bottom: 120px !important"
+  } catch(err) {}
 }
 
 // Copied from https://developers.intercom.com/docs/single-page-app
