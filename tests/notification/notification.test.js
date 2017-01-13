@@ -7,21 +7,14 @@ import {
   NotificationType
 } from "../../src/notification"
 
-import { createStore, combineReducers, applyMiddleware } from "redux"
-import thunk from "redux-thunk"
+import { createStore } from "redux"
 
 describe("Given an notification store", () => {
   var store, state
 
   beforeEach(() => {
-    jest.useFakeTimers()
-
-    store = createStore(
-      combineReducers({ notifications: reduceNotifications }),
-      applyMiddleware(thunk)
-    )
-
-    store.subscribe(() => state = store.getState().notifications)
+    store = createStore(reduceNotifications)
+    store.subscribe(() => state = store.getState())
   })
 
   describe("when no notifications are present", () => {
@@ -51,17 +44,6 @@ describe("Given an notification store", () => {
     it("should be able to remove errors", () => {
       store.dispatch(removeNotification(state[0]))
       expect(state[0].message).toEqual("second error")
-    })
-
-    it("should remove old errors a while after new errors were added", () => {
-      store.dispatch(pushNotification(
-        new Notification(NotificationType.ERROR, "new error")
-      ))
-      expect(state.length).toEqual(3)
-
-      jest.runAllTimers()
-      expect(state.length).toEqual(1)
-      expect(state[0].message).toEqual("new error")
     })
   })
 })

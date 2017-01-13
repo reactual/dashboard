@@ -1,4 +1,3 @@
-const REMOVE_OLD_NOTIFICATIONS_DELAY = 2000;
 const asArray = (values) => Array.isArray(values) ? values : [values]
 
 const Actions = {
@@ -22,18 +21,9 @@ export class Notification {
 }
 
 export function pushNotification(newNotifications) {
-  return (dispatch, getState) => {
-    const { notifications } = getState()
-
-    setTimeout(
-      () => dispatch(removeNotification(notifications)),
-      REMOVE_OLD_NOTIFICATIONS_DELAY
-    )
-
-    dispatch({
-      type: Actions.PUSH,
-      notifications: asArray(newNotifications)
-    })
+  return {
+    type: Actions.PUSH,
+    notifications: asArray(newNotifications)
   }
 }
 

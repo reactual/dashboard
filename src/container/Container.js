@@ -14,6 +14,8 @@ import IntercomWidget from '../external/intercom/Widget'
 import FaunaRepl from '../fauna-repl/FaunaRepl'
 import logo from '../logo.svg';
 
+const REMOVE_OLD_NOTIFICATIONS_DELAY = 2000;
+
 class Container extends Component {
   constructor(props) {
     super(props);
@@ -52,12 +54,16 @@ class Container extends Component {
   }
 
   showErrorMessages(messages) {
-    const errors = messages.map(
-      message => new Notification(NotificationType.ERROR, message)
+    const oldErrors = this.state.errors
+
+    setTimeout(
+      () => { this.props.dispatch(removeNotification(oldErrors)) },
+      REMOVE_OLD_NOTIFICATIONS_DELAY
     )
 
-    this.setState({ errors: this.state.errors.concat(errors) })
-    this.props.dispatch(pushNotification(errors))
+    const newErrors = messages.map(message => new Notification(NotificationType.ERROR, message))
+    this.props.dispatch(pushNotification(newErrors))
+    this.setState({ errors: this.state.errors.concat(newErrors) })
   }
 
   hideErrorMessages() {
