@@ -54,21 +54,20 @@ class Container extends Component {
   }
 
   showErrorMessages(messages) {
-    const oldErrors = this.state.errors
-
-    setTimeout(
-      () => { this.props.dispatch(removeNotification(oldErrors)) },
-      REMOVE_OLD_NOTIFICATIONS_DELAY
-    )
-
     const newErrors = messages.map(message => new Notification(NotificationType.ERROR, message))
+
+    newErrors.forEach(error => {
+      setTimeout(
+        () => { this.props.dispatch(removeNotification(error)) },
+        REMOVE_OLD_NOTIFICATIONS_DELAY
+      )
+    })
+
     this.props.dispatch(pushNotification(newErrors))
-    this.setState({ errors: this.state.errors.concat(newErrors) })
   }
 
   hideErrorMessages() {
-    this.props.dispatch(removeNotification(this.state.errors))
-    this.setState({ errors: [] })
+    this.props.dispatch(removeNotification(this.props.notifications))
   }
 
   updateSecret(data) {
@@ -153,6 +152,7 @@ class Container extends Component {
 
 export default connect(
   state => ({
-    currentUser: state.currentUser
+    currentUser: state.currentUser,
+    notifications: state.notifications
   })
 )(Container)
