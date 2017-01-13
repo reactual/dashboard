@@ -40,7 +40,7 @@ export function getAllIndexes(client) {
   return (dispatch, getState) => {
     const indexes = getState().indexes
 
-    if(indexes.fetchingData || Object.keys(indexes.byName || {}).length > 0)
+    if(indexes.fetchingData || indexes.byName)
       return Promise.resolve()
 
     dispatch(fetchingIndexes(true))
@@ -70,7 +70,7 @@ export function getAllIndexes(client) {
 export function reduceIndexes(state = {}, action) {
   switch(action.type) {
     case IndexesActions.UPDATE_INDEX_INFO: {
-      var byName = state.byName
+      var byName = state.byName || {}
 
       action.result.forEach(index => {
         byName = {...byName,

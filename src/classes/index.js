@@ -40,7 +40,7 @@ export function getAllClasses(client) {
   return (dispatch, getState) => {
     const classes = getState().classes
 
-    if(classes.fetchingData || Object.keys(classes.byName || {}).length > 0)
+    if(classes.fetchingData || classes.byName)
       return Promise.resolve()
 
     dispatch(fetchingClasses(true))
@@ -106,7 +106,7 @@ export function queryForIndexes(client, classRef) {
 export function reduceClasses(state = {}, action) {
   switch(action.type) {
     case ClassesActions.UPDATE_CLASS_INFO: {
-      var byName = state.byName
+      var byName = state.byName || {}
 
       action.result.forEach(clazz => {
         byName = {...byName,
