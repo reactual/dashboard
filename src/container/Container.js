@@ -3,75 +3,23 @@ import { connect } from 'react-redux'
 import { Link, browserHistory } from 'react-router';
 import { Button, MessageBar, MessageBarType, Breadcrumb } from 'office-ui-fabric-react'
 
-import { createClient, clientForSubDB } from '../persistence/FaunaDB';
-import { loginWithUnknownUser, logout } from "../authentication/login"
-import { pushNotification, removeNotification, Notification, NotificationType } from '../notification'
+import { clientForSubDB } from '../persistence/FaunaDB';
+import { logout } from "../authentication"
 import NotificationBar from '../notification/NotificationBar'
+import SecretForm from '../authentication/SecretForm'
 
 import {NavTree} from '../nav-tree/NavTree'
-import {SecretForm} from '../secrets/Secrets'
 import IntercomWidget from '../external/intercom/Widget'
 import FaunaRepl from '../fauna-repl/FaunaRepl'
 import logo from '../logo.svg';
-
-const REMOVE_OLD_NOTIFICATIONS_DELAY = 2000;
 
 class Container extends Component {
   constructor(props) {
     super(props);
     this.bumpSchema = this.bumpSchema.bind(this);
-    this.updateSecret = this.updateSecret.bind(this);
     this.logout = this.logout.bind(this);
-    this.hideErrorMessages = this.hideErrorMessages.bind(this)
-    this.showErrorMessages = this.showErrorMessages.bind(this)
     this._onBreadcrumbItemClicked = this._onBreadcrumbItemClicked.bind(this);
-
-    this.state = {
-      client: createClient(
-        props.currentUser,
-        this.hideErrorMessages,
-        this.showErrorMessages
-      ),
-      errors: [],
-      schemaBump: 0
-    };
-  }
-
-  componentWillReceiveProps(next) {
-    if (this.props.currentUser === next.currentUser) return;
-
-    this.setState({
-      client: createClient(
-        next.currentUser,
-        this.hideErrorMessages,
-        this.showErrorMessages
-      ),
-    })
-  }
-
-  componentDidMount() {
-    setTimeout(()=>{this.setState({viewportReady : true})}, 10);
-  }
-
-  showErrorMessages(messages) {
-    const newErrors = messages.map(message => new Notification(NotificationType.ERROR, message))
-
-    newErrors.forEach(error => {
-      setTimeout(
-        () => { this.props.dispatch(removeNotification(error)) },
-        REMOVE_OLD_NOTIFICATIONS_DELAY
-      )
-    })
-
-    this.props.dispatch(pushNotification(newErrors))
-  }
-
-  hideErrorMessages() {
-    this.props.dispatch(removeNotification(this.props.notifications))
-  }
-
-  updateSecret(data) {
-    this.props.dispatch(loginWithUnknownUser(data.endpoint, data.secret))
+    this.state = { schemaBump: 0 };
   }
 
   logout() {
@@ -82,20 +30,24 @@ class Container extends Component {
   bumpSchema(){
     this.setState({schemaBump : this.state.schemaBump+1})
   }
+
   _onBreadcrumbItemClicked(item, e, crumb) {
-    // console.log("Breadcrumb",item, e, crumb)
     browserHistory.push(crumb.url);
   }
+
   render() {
+    const rootClient = this.props.currentUser ? this.props.currentUser.client : null
+
     var splat = this.props.params.splat ?
       this.props.params.splat.replace(/^db\/?/,'') : "";
+
     var sharedProps = {
-      scopedClient : clientForSubDB(this.state.client, splat, "server"),
-      scopedAdminClient : clientForSubDB(this.state.client, splat, "admin"),
-      // rootClient: this.state.client,
+      scopedClient : clientForSubDB(rootClient, splat, "server"),
+      scopedAdminClient : clientForSubDB(rootClient, splat, "admin"),
       bumpSchema : this.bumpSchema,
       splat
     };
+
     const childrenWithProps = React.Children.map(this.props.children,
      (child) => React.cloneElement(child, sharedProps)
     );
@@ -107,7 +59,7 @@ class Container extends Component {
     var firstItem = {text : "/", key : "/"};
 
     var crumb = <Breadcrumb items={[firstItem]}/>;
-    if (this.state.client) {
+    if (rootClient) {
       contents = <div>
         {childrenWithProps}
       </div>
@@ -134,11 +86,11 @@ class Container extends Component {
             <div className="ms-Grid-row header">
               <Link to="/"><img src={logo} className="logo" alt="logo" /></Link>
               <Button className="logout" onClick={this.logout}>Log out</Button>
-              <SecretForm showDialog={!this.state.client} onSubmit={this.updateSecret} />
+              <SecretForm />
             </div>
             <NavTree
               nonce={this.state.schemaBump}
-              client={this.state.client}
+              client={rootClient}
               splat={splat} path={path}>
               <NotificationBar />
               {contents}

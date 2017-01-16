@@ -7,14 +7,14 @@ import {
   NotificationType
 } from "../../src/notification"
 
-import { createStore } from "redux"
-
 describe("Given an notification store", () => {
   var store, state
 
-  beforeEach(() => {
-    store = createStore(reduceNotifications)
-    store.subscribe(() => state = store.getState())
+  beforeAll(() => {
+    store = createStore(
+      { notifications: reduceNotifications },
+      (newState) => state = newState.notifications
+    )
   })
 
   describe("when no notifications are present", () => {
