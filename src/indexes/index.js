@@ -1,9 +1,6 @@
 import faunadb from 'faunadb';
 const q = faunadb.query, Ref = q.Ref;
 
-import IndexInfo from './Indexes'
-export { IndexInfo }
-
 // Actions
 
 export const IndexesActions = {
