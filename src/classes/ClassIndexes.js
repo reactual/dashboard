@@ -41,9 +41,11 @@ function mapStateToProps(state) {
   const indexesNames = classes.indexes[classes.selectedClass]
 
   const indexes = indexesNames
-    .map(index => state.indexes.byName[index])
+    .map(index => {
+      const info = state.indexes.byName[index]
+      return info ? info.indexInfo : null
+    })
     .filter(index => index)
-    .map(index => index.indexInfo)
 
   return {
     indexes: indexes
