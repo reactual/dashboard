@@ -59,7 +59,7 @@ class SecretForm extends Component {
   handleChange(key, value) {
     this.setState({
       [key]: value,
-      errors: { [key]: null }
+      errors: { ...this.state.errors, [key]: null }
     })
   }
 
