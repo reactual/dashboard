@@ -7,7 +7,8 @@ const Actions = {
 }
 
 export const NotificationType = {
-  ERROR: "ERROR"
+  ERROR: "ERROR",
+  SUCCESS: "SUCCESS"
 }
 
 var notificationId = 0

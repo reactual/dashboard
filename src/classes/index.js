@@ -1,11 +1,8 @@
 import faunadb from 'faunadb';
 const q = faunadb.query, Ref = q.Ref;
 
-import ClassInfo from './Classes'
-export { ClassInfo }
-
 // Actions
-export const ClassesActions = {
+const Actions = {
   UPDATE_CLASS_INFO: "UPDATE_CLASS_INFO",
   UPDATE_SELECTED_CLASS: "UPDATE_SELECTED_CLASS",
   FETCHING_CLASSES: "FETCHING_CLASSES",
@@ -17,21 +14,21 @@ export function updateClassInfo(result) {
     result = [result]
 
   return {
-    type: ClassesActions.UPDATE_CLASS_INFO,
+    type: Actions.UPDATE_CLASS_INFO,
     result: result
   }
 }
 
 export function updateSelectedClass(name) {
   return {
-    type: ClassesActions.UPDATE_SELECTED_CLASS,
+    type: Actions.UPDATE_SELECTED_CLASS,
     name: name
   }
 }
 
 export function fetchingClasses(fetching) {
   return {
-    type: ClassesActions.FETCHING_CLASSES,
+    type: Actions.FETCHING_CLASSES,
     fetching: fetching
   }
 }
@@ -48,12 +45,16 @@ export function getAllClasses(client) {
     return client.query(q.Map(q.Paginate(Ref("classes")), clazz => q.Get(clazz)))
       .then(result => dispatch(updateClassInfo(result.data)))
       .then(() => dispatch(fetchingClasses(false)))
+      .catch(error => {
+        dispatch(fetchingClasses(false))
+        throw error
+      })
   }
 }
 
 export function updateIndexOfClass(clazz, indexes) {
   return {
-    type: ClassesActions.UPDATE_INDEX_OF_CLASS,
+    type: Actions.UPDATE_INDEX_OF_CLASS,
     clazz: clazz,
     indexes: indexes
   }
@@ -83,6 +84,22 @@ export function queryForIndexes(client, classRef) {
   }
 }
 
+export function createInstance(client, classRef, data) {
+  return (dispatch, getState) => {
+    if(getState().classes.fetchingData)
+      return Promise.resolve()
+
+    dispatch(fetchingClasses(true))
+
+    return client.query(q.Create(classRef, { data: data }))
+      .then(() => dispatch(fetchingClasses(false)))
+      .catch(error => {
+        dispatch(fetchingClasses(false))
+        throw error
+      })
+  }
+}
+
 // Reducers
 
 /*
@@ -105,7 +122,7 @@ export function queryForIndexes(client, classRef) {
 
 export function reduceClasses(state = {}, action) {
   switch(action.type) {
-    case ClassesActions.UPDATE_CLASS_INFO: {
+    case Actions.UPDATE_CLASS_INFO: {
       var byName = state.byName || {}
 
       action.result.forEach(clazz => {
@@ -118,15 +135,15 @@ export function reduceClasses(state = {}, action) {
       return {...state, byName: byName}
     }
 
-    case ClassesActions.UPDATE_SELECTED_CLASS:
+    case Actions.UPDATE_SELECTED_CLASS:
       return {...state, selectedClass: action.name}
 
-    case ClassesActions.UPDATE_INDEX_OF_CLASS: {
+    case Actions.UPDATE_INDEX_OF_CLASS: {
       const indexes = {...state.indexes, [action.clazz]: [...action.indexes]}
       return {...state, indexes: indexes}
     }
 
-    case ClassesActions.FETCHING_CLASSES:
+    case Actions.FETCHING_CLASSES:
       return {...state, fetchingData: action.fetching}
 
     default:
