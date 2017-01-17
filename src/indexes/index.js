@@ -43,8 +43,14 @@ export function getAllIndexes(client) {
     dispatch(fetchingIndexes(true))
 
     return client.query(q.Map(q.Paginate(Ref("indexes")), index => q.Get(index)))
-      .then(result => dispatch(updateIndexInfo(result.data)))
-      .then(() => dispatch(fetchingIndexes(false)))
+      .then(result => {
+         dispatch(updateIndexInfo(result.data))
+         dispatch(fetchingIndexes(false))
+      })
+      .catch(error => {
+        dispatch(fetchingIndexes(false))
+        throw error
+      })
   }
 }
 
