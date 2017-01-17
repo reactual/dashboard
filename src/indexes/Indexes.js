@@ -5,15 +5,8 @@ import { updateSelectedIndex } from './index'
 
 class IndexInfo extends Component {
   componentDidMount() {
-    this.getIndexInfo(this.props.scopedClient, this.props.splat, this.props.params.name)
-  }
-  getIndexInfo(client, path, name) {
+    const name = this.props.params.name
     this.props.dispatch(updateSelectedIndex(name))
-  }
-  componentWillReceiveProps(nextProps) {
-    if (this.props.params.name !== nextProps.params.name) {
-      this.getIndexInfo(nextProps.scopedClient, nextProps.splat, nextProps.params.name)
-    }
   }
   render() {
     return (<div>
