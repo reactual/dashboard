@@ -6,14 +6,7 @@ import { updateSelectedClass } from "./index"
 
 class ClassInfo extends Component {
   componentDidMount() {
-    this.updateSelectedClass(this.props.params.name)
-  }
-  componentWillReceiveProps(nextProps) {
-    if (this.props.params.name !== nextProps.params.name) {
-      this.updateSelectedClass(nextProps.params.name)
-    }
-  }
-  updateSelectedClass(name) {
+    const name = this.props.params.name
     this.props.dispatch(updateSelectedClass(name))
   }
   render() {

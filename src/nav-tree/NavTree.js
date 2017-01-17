@@ -3,8 +3,8 @@ import { browserHistory } from 'react-router';
 import {Nav} from 'office-ui-fabric-react'
 import { clientForSubDB } from "../persistence/FaunaDB";
 import discoverKeyType from "../discoverKeyType";
-import { getAllIndexes } from '../indexes'
-import { getAllClasses } from '../classes'
+import { getAllIndexes, updateSelectedIndex } from '../indexes'
+import { getAllClasses, updateSelectedClass } from '../classes'
 import { resetState } from '../app'
 import faunadb from 'faunadb';
 const q = faunadb.query, Ref = q.Ref;
@@ -87,6 +87,7 @@ class NavSchema1 extends Component {
     e.preventDefault();
     browserHistory.push(link.url)
     this.props.dispatch(resetState())
+    this.props.dispatch(link.action)
   }
   render() {
     const dbpath = this.props.splat;
@@ -130,7 +131,8 @@ let mapStateToProp = (state, ownProps) => {
         return {
           name : name,
           url : "/db/"+slug+"/"+name,
-          key : slug+"/"+name
+          key : slug+"/"+name,
+          action: updateSelectedIndex(name)
         }
       })
 
@@ -144,7 +146,8 @@ let mapStateToProp = (state, ownProps) => {
         return {
           name : name,
           url : "/db/"+slug+"/"+name,
-          key : slug+"/"+name
+          key : slug+"/"+name,
+          action: updateSelectedClass(name)
         }
       })
 
