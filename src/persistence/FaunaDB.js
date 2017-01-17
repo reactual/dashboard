@@ -1,16 +1,67 @@
 import { parse as parseURL } from 'url'
 import faunadb from 'faunadb'
 
-export function createClient(user, onSuccess = () => null, onError = () => null) {
-  if (!user) return null;
+import {
+  Notification,
+  NotificationType,
+  pushNotification,
+  removeNotification
+} from '../notification'
 
-  var opts = {
-    secret: user.secret,
-    observer : observerCallback(onSuccess, onError)
+var errors = []
+
+const onSuccess = dispatch => () => {
+  dispatch(removeNotification(errors))
+  errors = []
+}
+
+const onError = dispatch => newErrors => {
+  const oldErrors = errors
+  errors = errors.concat(newErrors)
+
+  setTimeout(
+    () => dispatch(removeNotification(oldErrors)),
+    2000
+  )
+
+  dispatch(pushNotification(newErrors))
+}
+
+const buildErrorMessage = error => {
+  var message = ""
+  if (error.description) message += error.description
+
+  if (error.failures) {
+    error.failures.forEach(failure => {
+      message += " ("+ failure.field.join('.') +") " + failure.description
+    })
   }
 
-  if (user.endpoint) {
-    const endpointURL = parseURL(user.endpoint)
+  return new Notification(NotificationType.ERROR, message)
+}
+
+const observerCallback = (onSuccess, onError) => response => {
+  const errors = response.responseContent.errors
+
+  if (errors) {
+    onError(errors.map(buildErrorMessage))
+    return
+  }
+
+  onSuccess()
+}
+
+export function createClient(endpoint, secret, dispatch) {
+  var opts = {
+    secret,
+    observer : observerCallback(
+      onSuccess(dispatch),
+      onError(dispatch)
+    )
+  }
+
+  if (endpoint) {
+    const endpointURL = parseURL(endpoint)
     opts.domain = endpointURL.hostname
     opts.scheme = endpointURL.protocol.replace(/:$/,'')
 
@@ -20,33 +71,6 @@ export function createClient(user, onSuccess = () => null, onError = () => null)
   }
 
   return new faunadb.Client(opts)
-}
-
-function observerCallback(onSuccess, onError) {
-  return response => {
-    if (!response.responseContent.errors) {
-      onSuccess()
-    } else {
-      const errors = response.responseContent.errors.map(buildErrorMessage)
-      onError(errors)
-    }
-  }
-}
-
-function buildErrorMessage(error) {
-  var message = ""
-
-  if (error.description) {
-    message += error.description
-  }
-
-  if (error.failures) {
-    error.failures.forEach(failure => {
-      message += " ("+ failure.field.join('.') +") " + failure.description
-    })
-  }
-
-  return message
 }
 
 // https://github.com/faunadb/core/issues/3546 will admin keys able to do what server keys can do

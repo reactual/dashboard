@@ -1,7 +1,7 @@
-import { combineReducers } from 'redux';
+import { combineReducers } from 'redux'
 import { reduceClasses } from '../classes'
 import { reduceIndexes } from '../indexes'
-import { reduceAuthentication } from '../authentication/login'
+import { reduceAuthentication } from '../authentication'
 import { reduceNotifications } from '../notification'
 
 import App from './App'
