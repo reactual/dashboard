@@ -1,12 +1,9 @@
 import faunadb from 'faunadb';
 const q = faunadb.query, Ref = q.Ref;
 
-import IndexInfo from './Indexes'
-export { IndexInfo }
-
 // Actions
 
-export const IndexesActions = {
+const Actions = {
   UPDATE_INDEX_INFO: "UPDATE_INDEX_INFO",
   UPDATE_SELECTED_INDEX: "UPDATE_SELECTED_INDEX",
   FETCHING_INDEXES: "FETCHING_INDEXES"
@@ -17,21 +14,21 @@ export function updateIndexInfo(result) {
     result = [result]
 
   return {
-    type: IndexesActions.UPDATE_INDEX_INFO,
+    type: Actions.UPDATE_INDEX_INFO,
     result: result
   }
 }
 
 export function updateSelectedIndex(name) {
   return {
-    type: IndexesActions.UPDATE_SELECTED_INDEX,
+    type: Actions.UPDATE_SELECTED_INDEX,
     name: name
   }
 }
 
 export function fetchingIndexes(fetching) {
   return {
-    type: IndexesActions.FETCHING_INDEXES,
+    type: Actions.FETCHING_INDEXES,
     fetching: fetching
   }
 }
@@ -46,8 +43,14 @@ export function getAllIndexes(client) {
     dispatch(fetchingIndexes(true))
 
     return client.query(q.Map(q.Paginate(Ref("indexes")), index => q.Get(index)))
-      .then(result => dispatch(updateIndexInfo(result.data)))
-      .then(() => dispatch(fetchingIndexes(false)))
+      .then(result => {
+         dispatch(updateIndexInfo(result.data))
+         dispatch(fetchingIndexes(false))
+      })
+      .catch(error => {
+        dispatch(fetchingIndexes(false))
+        throw error
+      })
   }
 }
 
@@ -69,7 +72,7 @@ export function getAllIndexes(client) {
 
 export function reduceIndexes(state = {}, action) {
   switch(action.type) {
-    case IndexesActions.UPDATE_INDEX_INFO: {
+    case Actions.UPDATE_INDEX_INFO: {
       var byName = state.byName || {}
 
       action.result.forEach(index => {
@@ -84,10 +87,10 @@ export function reduceIndexes(state = {}, action) {
       return {...state, byName: byName}
     }
 
-    case IndexesActions.UPDATE_SELECTED_INDEX:
+    case Actions.UPDATE_SELECTED_INDEX:
       return {...state, selectedIndex: action.name}
 
-    case IndexesActions.FETCHING_INDEXES:
+    case Actions.FETCHING_INDEXES:
       return {...state, fetchingData: action.fetching}
 
     default:

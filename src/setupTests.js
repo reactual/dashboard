@@ -26,9 +26,10 @@ jest.mock("./persistence/FaunaDB", () => ({
 global.faunaClient = faunaClient
 
 // Util for creating redux stores
-global.createStore = (reducers, subscription) => {
+global.createStore = (reducers, subscription, initialState) => {
   const store = createStore(
     combineReducers(reducers),
+    initialState,
     applyMiddleware(thunk)
   )
 

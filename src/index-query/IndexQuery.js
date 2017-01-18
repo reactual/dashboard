@@ -31,8 +31,7 @@ export default class IndexQuery extends Component {
   }
   componentWillReceiveProps(nextProps) {
     if (this.props.info.name !== nextProps.info.name ||
-      this.props.term !== nextProps.term ||
-      this.props.client !== nextProps.client) {
+      this.props.term !== nextProps.term) {
       this.getIndexRows(nextProps.client, nextProps.info.name, nextProps.term)
     }
   }
