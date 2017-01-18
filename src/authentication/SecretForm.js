@@ -10,6 +10,8 @@ import {
   Dialog, DialogType, DialogFooter
 } from "office-ui-fabric-react"
 
+const DefaultEndpoint = "https://db.fauna.com/";
+
 class SecretForm extends Component {
   constructor(props) {
     super(props)
@@ -72,8 +74,10 @@ class SecretForm extends Component {
   validate() {
     let errors = {}
 
-    const url = parseURL(this.state.endpoint)
-    if (!url.hostname || !url.protocol) errors.endpoint = "Invalid URL."
+    if (this.state.endpoint) {
+      const url = parseURL(this.state.endpoint);
+      if (!url.hostname || !url.protocol) errors.endpoint = "Invalid URL."
+    }
     if (!this.state.secret.trim()) errors.secret = "Please, inform the key's secret for your FaunaDB key."
 
     this.setState({ errors })
@@ -101,7 +105,7 @@ class SecretForm extends Component {
         <form>
           <TextField label="FaunaDB Endpoint URL"
             description="Leave this empty for Fauna Cloud."
-            placeholder="https://db.fauna.com/"
+            placeholder={DefaultEndpoint}
             value={this.state.endpoint} onBeforeChange={this.handleChange.bind(this, "endpoint")}
             errorMessage={this.state.errors.endpoint} />
 
