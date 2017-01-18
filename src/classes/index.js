@@ -6,6 +6,7 @@ const Actions = {
   UPDATE_CLASS_INFO: "UPDATE_CLASS_INFO",
   UPDATE_SELECTED_CLASS: "UPDATE_SELECTED_CLASS",
   FETCHING_CLASSES: "FETCHING_CLASSES",
+  FETCHING_INDEXES_OF_CLASS: "FETCHING_INDEXES_OF_CLASS",
   UPDATE_INDEX_OF_CLASS: "UPDATE_INDEX_OF_CLASS"
 }
 
@@ -33,6 +34,13 @@ export function fetchingClasses(fetching) {
   }
 }
 
+export function fetchingIndexesOfClass(fetching) {
+  return {
+    type: Actions.FETCHING_INDEXES_OF_CLASS,
+    fetching: fetching
+  }
+}
+
 export function getAllClasses(client) {
   return (dispatch, getState) => {
     const classes = getState().classes
@@ -43,8 +51,10 @@ export function getAllClasses(client) {
     dispatch(fetchingClasses(true))
 
     return client.query(q.Map(q.Paginate(Ref("classes")), clazz => q.Get(clazz)))
-      .then(result => dispatch(updateClassInfo(result.data)))
-      .then(() => dispatch(fetchingClasses(false)))
+      .then(result => {
+        dispatch(updateClassInfo(result.data))
+        dispatch(fetchingClasses(false))
+      })
       .catch(error => {
         dispatch(fetchingClasses(false))
         throw error
@@ -65,9 +75,8 @@ export function queryForIndexes(client, classRef) {
     const name = classRef.id
     const classes = getState().classes
 
-    if(classes && classes.indexes && classes.indexes[name]) {
+    if(classes.fetchingIndexes || (classes.indexes && classes.indexes[name]))
       return Promise.resolve()
-    }
 
     const allIndexes = q.Filter(
       q.Map(q.Paginate(Ref("indexes")), indexRef => q.Get(indexRef)),
@@ -79,8 +88,17 @@ export function queryForIndexes(client, classRef) {
       }
     )
 
+    dispatch(fetchingIndexesOfClass(true))
+
     return client.query(q.Map(allIndexes, index => q.Select(['name'], index)))
-      .then(result => dispatch(updateIndexOfClass(name, result.data)))
+      .then(result => {
+        dispatch(updateIndexOfClass(name, result.data))
+        dispatch(fetchingIndexesOfClass(false))
+      })
+      .catch(error => {
+        dispatch(fetchingIndexesOfClass(false))
+        throw error
+      })
   }
 }
 
@@ -115,7 +133,8 @@ export function createInstance(client, classRef, data) {
       "class-1": ["index-1"]
     },
     selectedClass: "class-0",
-    fecthingData: true
+    fecthingData: true,
+    fetchingIndexes: false
   }
 
 */
@@ -145,6 +164,9 @@ export function reduceClasses(state = {}, action) {
 
     case Actions.FETCHING_CLASSES:
       return {...state, fetchingData: action.fetching}
+
+    case Actions.FETCHING_INDEXES_OF_CLASS:
+      return {...state, fetchingIndexes: action.fetching}
 
     default:
       return state

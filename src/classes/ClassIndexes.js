@@ -8,8 +8,7 @@ class ClassIndexes extends Component {
     this.queryForIndexes(this.props.scopedClient, this.props.info.ref)
   }
   componentWillReceiveProps(nextProps) {
-    if (this.props.info.ref !== nextProps.info.ref ||
-      this.props.scopedClient !== nextProps.scopedClient) {
+    if (this.props.info.ref !== nextProps.info.ref) {
       this.queryForIndexes(nextProps.scopedClient, nextProps.info.ref)
     }
   }
