@@ -73,7 +73,8 @@ describe("Given a classes store", () => {
       expect(classes).toEqual({
         indexes: {
           "test-class": ["index-0", "index-1"]
-        }
+        },
+        fetchingIndexes: false
       })
     })
   })
