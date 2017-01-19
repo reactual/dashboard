@@ -7,7 +7,6 @@ import { IndexForm } from '../index-form/IndexForm'
 import ClassInfo from '../classes/ClassInfo'
 import { ClassForm } from '../class-form/ClassForm'
 import { DatabaseInfo } from '../databases/Databases'
-import { DatabaseForm } from '../database-form/DatabaseForm'
 import './App.css';
 
 const Home = () =>(
@@ -26,9 +25,8 @@ class App extends Component {
         <Router history={browserHistory}>
           <Route path='/db' component={Container}>
             <IndexRoute component={Home} />
-            <Route path='/databases' component={DatabaseForm} />
-            <Route path='/**/databases' component={DatabaseForm} />
-            <Route path='/**/info' component={DatabaseInfo} />
+            <Route path='/databases' component={DatabaseInfo} />
+            <Route path='/**/databases' component={DatabaseInfo} />
 
             <Route path='/classes' component={ClassForm}/>
             <Route path='/classes/:name' component={ClassInfo}/>
