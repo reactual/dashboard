@@ -14,8 +14,7 @@ export class DatabaseInfo extends Component {
       <div>
         <h2>Database: {"/"+this.props.splat}</h2>
         <p>Each database in FaunaDB contains schema information like classes
-          and indexes. Access keys are also scoped to a database
-          and it's sub-databases. You can also set per-database quality-of-service.</p>
+          and indexes. Access keys are also scoped to a database. You can also set per-database quality-of-service.</p>
         {deleteForm}
         <DatabaseForm {...this.props}/>
       </div>
