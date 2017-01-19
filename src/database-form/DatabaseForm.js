@@ -25,11 +25,11 @@ export class DatabaseForm extends Component {
     this.setState({form})
   }
   render() {
-    var context = this.props.splat ? " in "+this.props.splat : "";
+    var context = this.props.splat ? " within /"+this.props.splat : "";
     const form = this.state.form;
     return (
-      <SchemaForm buttonText="Create Databases" onSubmit={this.onSubmit} bumpSchema={this.props.bumpSchema}>
-        <h3>Create a database{context}</h3>
+      <SchemaForm buttonText="Create Database" onSubmit={this.onSubmit} bumpSchema={this.props.bumpSchema}>
+        <h3>Create a new database{context}</h3>
         <TextField label="Name"
           required={true}
           description="This name is used in queries and API calls."
