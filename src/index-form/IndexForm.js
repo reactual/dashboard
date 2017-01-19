@@ -19,9 +19,7 @@ export class IndexForm extends Component {
     this.getClasses(this.props.scopedClient, this.props.splat)
   }
   componentWillReceiveProps(nextProps) {
-    if (this.props.splat !== nextProps.splat ||
-      this.props.params.name !== nextProps.params.name ||
-      this.props.scopedClient !==  nextProps.scopedClient) {
+    if (this.props.splat !== nextProps.splat) {
         this.setState({classes:[]});
         this.getClasses(nextProps.scopedClient, nextProps.splat)
     }
@@ -32,7 +30,6 @@ export class IndexForm extends Component {
       this.setState({classes : res.data})
     }).catch(console.error.bind(console, "getClasses"))
   }
-
   onSubmit() {
     return this.props.scopedClient
       .query(q.Create(Ref("indexes"), this.indexOptions())).then( (res) => {
