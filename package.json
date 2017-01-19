@@ -4,6 +4,7 @@
   "private": true,
   "devDependencies": {
     "react-scripts": "0.7.0",
+    "redux-logger": "^2.7.4",
     "redux-mock-store": "^1.2.1"
   },
   "dependencies": {
