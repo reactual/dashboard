@@ -32,7 +32,7 @@ global.faunaClient = faunaClient
 // Util for creating redux stores
 const createTestStore = (reducers, initialState) => (onStateChanged) => {
   const store = createStore(
-    combineReducers(reducers),
+    typeof reducers === 'function' ? reducers : combineReducers(reducers),
     initialState,
     applyMiddleware(thunk)
   )
