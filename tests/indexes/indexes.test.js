@@ -9,19 +9,13 @@ import {
   fetchingIndexes
 } from '../../src/indexes'
 
-import configureMockStore from 'redux-mock-store'
-import thunk from 'redux-thunk'
-
-const middlewares = [ thunk ]
-const mockStore = configureMockStore(middlewares)
-
 describe("Given an indexes store", () => {
   var store, indexes
 
   beforeEach(() => {
-    store = createStore(
-      { indexes: reduceIndexes },
-      state => indexes = state.indexes)
+    store = createTestStore({ indexes: reduceIndexes })(
+      state => indexes = state.indexes
+    )
   })
 
   it('should get all indexes', () => {
@@ -76,10 +70,9 @@ describe("Given an indexes store with indexes", () => {
       }
     }
 
-    store = createStore(
-      { indexes: reduceIndexes },
-      state => indexes = state.indexes,
-      initialState)
+    store = createTestStore({ indexes: reduceIndexes }, initialState)(
+      state => indexes = state.indexes
+    )
   })
 
   it('should not get index info', () => {

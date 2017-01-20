@@ -1,5 +1,5 @@
-import faunadb from 'faunadb';
-const q = faunadb.query, Ref = q.Ref;
+import { query as q } from 'faunadb';
+const Ref = q.Ref
 
 import {
   reduceClasses,
@@ -12,22 +12,11 @@ import {
   fetchingClasses
 } from '../../src/classes'
 
-import { createStore, combineReducers, applyMiddleware } from "redux"
-import thunk from "redux-thunk"
-
-function _createStore(initialState) {
-  return createStore(
-    combineReducers({classes: reduceClasses}),
-    initialState,
-    applyMiddleware(thunk)
-  )
-}
-
 describe("Given a classes store", () => {
   var store
 
   beforeEach(() => {
-    store = _createStore()
+    store = createTestStore({ classes: reduceClasses })()
   })
 
   it('should get all classes', () => {
@@ -134,7 +123,7 @@ describe("Given a classes store with classes information", () => {
       classes: { byName: {} }
     }
 
-    store = _createStore(initialState)
+    store = createTestStore({ classes: reduceClasses }, initialState)()
   })
 
   it('should not get class info', () => {
@@ -156,7 +145,7 @@ describe("Given a classes store with indexes information", () => {
       classes: { indexes: { "test-class": [] } }
     }
 
-    store = _createStore(initialState)
+    store = createTestStore({ classes: reduceClasses }, initialState)()
   })
 
   it('should not query for indexes', () => {

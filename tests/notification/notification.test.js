@@ -11,9 +11,8 @@ describe("Given an notification store", () => {
   var store, state
 
   beforeAll(() => {
-    store = createStore(
-      { notifications: reduceNotifications },
-      (newState) => state = newState.notifications
+    store = createTestStore({ notifications: reduceNotifications })(
+      newState => state = newState.notifications
     )
   })
 

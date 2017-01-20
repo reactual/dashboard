@@ -26,16 +26,22 @@ jest.mock("./persistence/FaunaDB", () => ({
 global.faunaClient = faunaClient
 
 // Util for creating redux stores
-global.createStore = (reducers, subscription, initialState) => {
+const createTestStore = (reducers, initialState) => (onStateChanged) => {
   const store = createStore(
     combineReducers(reducers),
     initialState,
     applyMiddleware(thunk)
   )
 
-  if (typeof subscription === "function") {
-    store.subscribe(() => subscription(store.getState()))
+  const unsubscribe = store.subscribe(() => onStateChanged && onStateChanged(store.getState()))
+
+  // Helper to create a copy of this store with a different initial state
+  store.withInitialState = (initialState) => {
+    unsubscribe()
+    return createTestStore(reducers, initialState)(onStateChanged)
   }
 
   return store
 }
+
+global.createTestStore = createTestStore
