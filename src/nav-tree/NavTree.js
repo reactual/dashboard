@@ -86,7 +86,6 @@ class NavSchema1 extends Component {
   navLinkClicked(e, link) {
     e.preventDefault();
     browserHistory.push(link.url)
-    this.props.dispatch(resetState())
     if (link.action) this.props.dispatch(link.action)
   }
   render() {
