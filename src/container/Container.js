@@ -45,6 +45,7 @@ class Container extends Component {
       scopedClient : clientForSubDB(rootClient, splat, "server"),
       scopedAdminClient : clientForSubDB(rootClient, splat, "admin"),
       bumpSchema : this.bumpSchema,
+      rootClient,
       splat
     };
 

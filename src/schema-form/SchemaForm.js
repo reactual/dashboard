@@ -22,13 +22,17 @@ export default class SchemaForm extends Component {
       <div className="SchemaForm">
         <form>
           {this.props.children}
-          <Button disabled={!!this.state.disabled}
+          <Button disabled={!!this.state.disabled || !!this.props.disabled}
             buttonType={ ButtonType.primary } onClick={this.onSubmit}>{this.props.buttonText}</Button>
         </form>
       </div>
     )
   }
 }
+
+SchemaForm.defaultProps = {
+  disabled: false
+};
 
 SchemaForm.propTypes = {
   bumpSchema : React.PropTypes.func.isRequired,
