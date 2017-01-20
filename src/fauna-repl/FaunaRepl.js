@@ -4,7 +4,7 @@ import SplitPane from "react-split-pane"
 import Ace from "./repl/Ace"
 import {QueryResult} from "../index-query/IndexQuery"
 import replEval from './repl/repl-eval';
-import { queryFunctions } from './repl/query-functions'
+import { query as q } from "faunadb"
 
 require('brace/mode/javascript');
 require('brace/theme/monokai');
@@ -17,7 +17,7 @@ export default class FaunaRepl extends Component {
       opened : false,
       expandedSize : 200,
       result : null,
-      aceCode : "Paginate(Ref(\"indexes\"))"
+      aceCode : "q.Paginate(q.Ref(\"indexes\"))"
     }
     this.handleAceChange = this.handleAceChange.bind(this);
     this.toggleRepl = this.toggleRepl.bind(this);
@@ -32,7 +32,7 @@ export default class FaunaRepl extends Component {
   }
   handleRunQuery() {
     this.setState({running:true})
-    replEval(this.scopedClient(), this.state.savedCode).then((result) => {
+    replEval(q, this.scopedClient(), this.state.savedCode).then((result) => {
       this.setState({running:false,result})
     }).catch((result) => {
       var outData = (result && result.requestResult && result.requestResult.responseContent) ? result.requestResult.responseContent : result;
@@ -48,9 +48,14 @@ export default class FaunaRepl extends Component {
     editor.setOption("enableBasicAutocompletion", true)
     editor.setOption("enableLiveAutocompletion", true)
 
+    const queryFunctions = Object.values(q)
+      .filter(fun => !!fun.name.match(/^[A-Z]/))
+      .map(fun => fun.name)
+
     const faunaCompleter = {
       getCompletions(editor, session, pos, prefix, callback) {
-        if (prefix.length === 0) {
+        const previousToken = session.getTokenAt(pos.row, pos.column - prefix.length - 1) || {}
+        if (previousToken.value !== "q") {
           callback(null, [])
           return
         }
