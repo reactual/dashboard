@@ -1,5 +1,8 @@
 /* eslint-disable */
-export default function replEval(q, client, __query) {
-  const query = eval(__query);
+import { query as q } from 'faunadb'
+import { queryFunctionsAsGlobalVariables } from './query-functions'
+
+export default function replEval(client, __query) {
+  const query = eval(`(function() {${queryFunctionsAsGlobalVariables}; return ${__query};})()`)
   return client.query(query)
 }
