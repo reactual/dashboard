@@ -113,50 +113,37 @@ describe("Given a classes store", () => {
       fetchingData: true
     })
   })
-})
 
-describe("Given a classes store with classes information", () => {
-  var store
+  describe("when the classes store with classes information", () => {
+    beforeEach(() => {
+      store = store.withInitialState({
+        classes: { byName: {} }
+      })
+    })
 
-  beforeEach(() => {
-    const initialState = {
-      classes: { byName: {} }
-    }
-
-    store = createTestStore({ classes: reduceClasses }, initialState)()
+    it('should not get class info', () => {
+      return store.dispatch(getAllClasses(faunaClient)).then(() => {
+        expect(faunaClient.query).not.toBeCalled()
+      })
+    })
   })
 
-  it('should not get class info', () => {
-    const client = {
-      query: jest.fn()
-    }
+  describe("when the classes store with indexes information", () => {
+    beforeEach(() => {
+      store = store.withInitialState({
+        classes: { indexes: { "test-class": [] } }
+      })
+    })
 
-    return store.dispatch(getAllClasses(client)).then(() => {
-      expect(client.query).not.toBeCalled()
+    it('should not query for indexes', () => {
+      const client = {
+        query: jest.fn()
+      }
+
+      const classRef = Ref("classes/test-class")
+      return store.dispatch(queryForIndexes(client, classRef)).then(() => {
+        expect(client.query).not.toBeCalled()
+      })
     })
   })
 })
-
-describe("Given a classes store with indexes information", () => {
-  var store
-
-  beforeEach(() => {
-    const initialState = {
-      classes: { indexes: { "test-class": [] } }
-    }
-
-    store = createTestStore({ classes: reduceClasses }, initialState)()
-  })
-
-  it('should not query for indexes', () => {
-    const client = {
-      query: jest.fn()
-    }
-
-    const classRef = Ref("classes/test-class")
-    return store.dispatch(queryForIndexes(client, classRef)).then(() => {
-      expect(client.query).not.toBeCalled()
-    })
-  })
-})
-
