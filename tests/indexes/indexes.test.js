@@ -1,6 +1,3 @@
-import faunadb from 'faunadb';
-const q = faunadb.query, Ref = q.Ref;
-
 import {
   reduceIndexes,
   updateIndexInfo,
@@ -19,18 +16,14 @@ describe("Given an indexes store", () => {
   })
 
   it('should get all indexes', () => {
-    const client = {
-      query: jest.fn()
-    }
-
     const index0 = {name: "index-0"}
     const index1 = {name: "index-1"}
 
-    client.query.mockReturnValue(Promise.resolve({
+    faunaClient.query.mockReturnValue(Promise.resolve({
       data: [index0, index1]
     }))
 
-    return store.dispatch(getAllIndexes(client)).then(() => {
+    return store.dispatch(getAllIndexes(faunaClient)).then(() => {
       expect(indexes).toEqual({
         byName: {
           "index-0": { indexInfo: index0 },
@@ -69,12 +62,8 @@ describe("Given an indexes store", () => {
     })
 
     it('should not get index info', () => {
-      const client = {
-        query: jest.fn()
-      }
-
-      return store.dispatch(getAllIndexes(client)).then(() => {
-        expect(client.query).not.toBeCalled()
+      return store.dispatch(getAllIndexes(faunaClient)).then(() => {
+        expect(faunaClient.query).not.toBeCalled()
       })
     })
 
