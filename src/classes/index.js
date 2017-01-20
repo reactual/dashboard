@@ -113,6 +113,7 @@ export function createClass(client, config) {
       .then(clazz => {
         dispatch(updateClassInfo(clazz))
         dispatch(fetchingClasses(false))
+        return clazz
       })
       .catch(error => {
         dispatch(fetchingClasses(false))

@@ -5,7 +5,7 @@ import Container from '../container/Container'
 import IndexInfo from '../indexes/IndexInfo'
 import { IndexForm } from '../index-form/IndexForm'
 import ClassInfo from '../classes/ClassInfo'
-import { ClassForm } from '../class-form/ClassForm'
+import ClassForm from '../classes/ClassForm'
 import { DatabaseInfo } from '../databases/Databases'
 import './App.css';
 
