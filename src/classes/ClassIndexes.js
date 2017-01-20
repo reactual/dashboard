@@ -37,7 +37,7 @@ function mapStateToProps(state) {
   if(!classes || !classes.indexes || !classes.selectedClass)
     return defaultProps
 
-  const indexesNames = classes.indexes[classes.selectedClass]
+  const indexesNames = classes.indexes[classes.selectedClass] || [];
 
   const indexes = indexesNames
     .map(index => {
@@ -54,4 +54,3 @@ function mapStateToProps(state) {
 export default connect(
   mapStateToProps
 )(ClassIndexes)
-
