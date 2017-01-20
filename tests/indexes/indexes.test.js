@@ -56,47 +56,39 @@ describe("Given an indexes store", () => {
       fetchingData: true
     })
   })
-})
 
-describe("Given an indexes store with indexes", () => {
-  var store, indexes
-
-  beforeEach(() => {
-    const initialState = {
-      indexes: {
-        byName: {
-          "test-index": {}
+  describe("Given an indexes store with indexes", () => {
+    beforeEach(() => {
+      store = store.withInitialState({
+        indexes: {
+          byName: {
+            "test-index": {}
+          }
         }
-      }
-    }
-
-    store = createTestStore({ indexes: reduceIndexes }, initialState)(
-      state => indexes = state.indexes
-    )
-  })
-
-  it('should not get index info', () => {
-    const client = {
-      query: jest.fn()
-    }
-
-    return store.dispatch(getAllIndexes(client)).then(() => {
-      expect(client.query).not.toBeCalled()
+      })
     })
-  })
 
-  it("should update index info", () => {
-    const index = {name: "new-index"}
-
-    store.dispatch(updateIndexInfo(index))
-
-    expect(indexes).toEqual({
-      byName: {
-        "test-index": {},
-        "new-index": { indexInfo: index }
+    it('should not get index info', () => {
+      const client = {
+        query: jest.fn()
       }
+
+      return store.dispatch(getAllIndexes(client)).then(() => {
+        expect(client.query).not.toBeCalled()
+      })
+    })
+
+    it("should update index info", () => {
+      const index = {name: "new-index"}
+
+      store.dispatch(updateIndexInfo(index))
+
+      expect(indexes).toEqual({
+        byName: {
+          "test-index": {},
+          "new-index": { indexInfo: index }
+        }
+      })
     })
   })
 })
-
-
