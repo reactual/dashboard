@@ -3,9 +3,9 @@ import { Router, Route, Redirect, IndexRoute, browserHistory } from 'react-route
 import { Provider } from 'react-redux'
 import Container from '../container/Container'
 import IndexInfo from '../indexes/IndexInfo'
-import { IndexForm } from '../index-form/IndexForm'
+import IndexForm from '../indexes/IndexForm'
 import ClassInfo from '../classes/ClassInfo'
-import { ClassForm } from '../class-form/ClassForm'
+import ClassForm from '../classes/ClassForm'
 import { DatabaseInfo } from '../databases/Databases'
 import './App.css';
 

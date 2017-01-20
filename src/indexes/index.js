@@ -33,6 +33,28 @@ export function fetchingIndexes(fetching) {
   }
 }
 
+export function createIndex(client, config) {
+  return (dispatch, getState) => {
+    const indexes = getState().indexes
+
+    if(indexes.fetchingData)
+      return Promise.resolve()
+
+    dispatch(fetchingIndexes(true))
+
+    return client.query(q.CreateIndex(config))
+      .then(index => {
+         dispatch(updateIndexInfo(index))
+         dispatch(fetchingIndexes(false))
+      })
+      .catch(error => {
+        dispatch(fetchingIndexes(false))
+        throw error
+      })
+  }
+}
+
+
 export function getAllIndexes(client) {
   return (dispatch, getState) => {
     const indexes = getState().indexes

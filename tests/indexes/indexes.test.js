@@ -1,42 +1,30 @@
-import faunadb from 'faunadb';
-const q = faunadb.query, Ref = q.Ref;
-
 import {
   reduceIndexes,
   updateIndexInfo,
   getAllIndexes,
   updateSelectedIndex,
-  fetchingIndexes
+  fetchingIndexes,
+  createIndex
 } from '../../src/indexes'
-
-import configureMockStore from 'redux-mock-store'
-import thunk from 'redux-thunk'
-
-const middlewares = [ thunk ]
-const mockStore = configureMockStore(middlewares)
 
 describe("Given an indexes store", () => {
   var store, indexes
 
   beforeEach(() => {
-    store = createStore(
-      { indexes: reduceIndexes },
-      state => indexes = state.indexes)
+    store = createTestStore({ indexes: reduceIndexes })(
+      state => indexes = state.indexes
+    )
   })
 
   it('should get all indexes', () => {
-    const client = {
-      query: jest.fn()
-    }
-
     const index0 = {name: "index-0"}
     const index1 = {name: "index-1"}
 
-    client.query.mockReturnValue(Promise.resolve({
+    faunaClient.query.mockReturnValue(Promise.resolve({
       data: [index0, index1]
     }))
 
-    return store.dispatch(getAllIndexes(client)).then(() => {
+    return store.dispatch(getAllIndexes(faunaClient)).then(() => {
       expect(indexes).toEqual({
         byName: {
           "index-0": { indexInfo: index0 },
@@ -62,48 +50,52 @@ describe("Given an indexes store", () => {
       fetchingData: true
     })
   })
-})
 
-describe("Given an indexes store with indexes", () => {
-  var store, indexes
+  it("should be able to create a new index", () => {
+    faunaClient.query.mockReturnValue(Promise.resolve({
+      name: "new-index"
+    }))
 
-  beforeEach(() => {
-    const initialState = {
-      indexes: {
+    return store.dispatch(createIndex(faunaClient, { name: "new-index" })).then(() => {
+      expect(indexes).toEqual({
         byName: {
-          "test-index": {}
-        }
-      }
-    }
-
-    store = createStore(
-      { indexes: reduceIndexes },
-      state => indexes = state.indexes,
-      initialState)
-  })
-
-  it('should not get index info', () => {
-    const client = {
-      query: jest.fn()
-    }
-
-    return store.dispatch(getAllIndexes(client)).then(() => {
-      expect(client.query).not.toBeCalled()
+          "new-index": {
+            indexInfo: { name: "new-index" }
+          }
+        },
+        fetchingData: false
+      })
     })
   })
 
-  it("should update index info", () => {
-    const index = {name: "new-index"}
+  describe("Given an indexes store with indexes", () => {
+    beforeEach(() => {
+      store = store.withInitialState({
+        indexes: {
+          byName: {
+            "test-index": {}
+          }
+        }
+      })
+    })
 
-    store.dispatch(updateIndexInfo(index))
+    it('should not get index info', () => {
+      return store.dispatch(getAllIndexes(faunaClient)).then(() => {
+        expect(faunaClient.query).not.toBeCalled()
+      })
+    })
 
-    expect(indexes).toEqual({
-      byName: {
-        "test-index": {},
-        "new-index": { indexInfo: index }
-      }
+    it("should update index info", () => {
+      const index = {name: "new-index"}
+
+      store.dispatch(updateIndexInfo(index))
+
+      expect(indexes).toEqual({
+        byName: {
+          "test-index": {},
+          "new-index": { indexInfo: index }
+        }
+      })
     })
   })
 })
-
-

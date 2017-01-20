@@ -13,9 +13,8 @@ describe("Given an user store", () => {
   var store, currentUser
 
   beforeAll(() => {
-    store = createStore(
-      { currentUser: reduceAuthentication },
-      (state) => currentUser = state.currentUser
+    store = createTestStore({ currentUser: reduceAuthentication })(
+      state => currentUser = state.currentUser
     )
   })
 
@@ -71,7 +70,11 @@ describe("Given an user store", () => {
   })
 
   describe("when there is a logged in user", () => {
-    beforeEach(() => login(unknownUser))
+    beforeEach(() => {
+      store = store.withInitialState({
+        currentUser: new UnknownUser(faunaClient, settings)
+      })
+    })
 
     it("should remove current user on logout", () => {
       store.dispatch(logout())
