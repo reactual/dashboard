@@ -13,10 +13,12 @@ import {
 } from '../../src/classes'
 
 describe("Given a classes store", () => {
-  var store
+  var store, classes
 
   beforeEach(() => {
-    store = createTestStore({ classes: reduceClasses })()
+    store = createTestStore({ classes: reduceClasses })(
+      state => classes = state.classes
+    )
   })
 
   it('should get all classes', () => {
@@ -28,8 +30,6 @@ describe("Given a classes store", () => {
     }))
 
     return store.dispatch(getAllClasses(faunaClient)).then(() => {
-      const classes = store.getState().classes
-
       expect(classes).toEqual({
         "byName": {
           "class-0": { classInfo: class0 },
@@ -47,10 +47,7 @@ describe("Given a classes store", () => {
 
     const classRef = Ref("classes/test-class")
     return store.dispatch(queryForIndexes(faunaClient, classRef)).then(() => {
-      const classes = store.getState().classes
-
       expect(faunaClient.query).toBeCalled()
-
       expect(classes).toEqual({
         indexes: {
           "test-class": ["index-0", "index-1"]
@@ -62,10 +59,7 @@ describe("Given a classes store", () => {
 
   it("should update class info", () => {
     const clazz = {name: "a-class"}
-
     store.dispatch(updateClassInfo(clazz))
-
-    const classes = store.getState().classes
 
     expect(classes).toEqual({
       byName: {
@@ -77,8 +71,6 @@ describe("Given a classes store", () => {
   it("should update index of class", () => {
     store.dispatch(updateIndexOfClass("a-class", ["index-0", "index-1"]))
 
-    const classes = store.getState().classes
-
     expect(classes).toEqual({
       indexes: {
         "a-class": ["index-0", "index-1"]
@@ -88,8 +80,6 @@ describe("Given a classes store", () => {
 
   it("should update selected class", () => {
     store.dispatch(updateSelectedClass("a-class"))
-
-    const classes = store.getState().classes
 
     expect(classes).toEqual({
       selectedClass: "a-class"
