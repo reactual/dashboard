@@ -20,18 +20,14 @@ describe("Given a classes store", () => {
   })
 
   it('should get all classes', () => {
-    const client = {
-      query: jest.fn()
-    }
-
     const class0 = {name: "class-0"}
     const class1 = {name: "class-1"}
 
-    client.query.mockReturnValue(Promise.resolve({
+    faunaClient.query.mockReturnValue(Promise.resolve({
       data: [class0, class1]
     }))
 
-    return store.dispatch(getAllClasses(client)).then(() => {
+    return store.dispatch(getAllClasses(faunaClient)).then(() => {
       const classes = store.getState().classes
 
       expect(classes).toEqual({
@@ -45,19 +41,15 @@ describe("Given a classes store", () => {
   })
 
   it('should query indexes of class', () => {
-    const client = {
-      query: jest.fn()
-    }
-
-    client.query.mockReturnValue(Promise.resolve({
+    faunaClient.query.mockReturnValue(Promise.resolve({
       data: ["index-0", "index-1"]
     }))
 
     const classRef = Ref("classes/test-class")
-    return store.dispatch(queryForIndexes(client, classRef)).then(() => {
+    return store.dispatch(queryForIndexes(faunaClient, classRef)).then(() => {
       const classes = store.getState().classes
 
-      expect(client.query).toBeCalled()
+      expect(faunaClient.query).toBeCalled()
 
       expect(classes).toEqual({
         indexes: {
@@ -136,13 +128,9 @@ describe("Given a classes store", () => {
     })
 
     it('should not query for indexes', () => {
-      const client = {
-        query: jest.fn()
-      }
-
       const classRef = Ref("classes/test-class")
-      return store.dispatch(queryForIndexes(client, classRef)).then(() => {
-        expect(client.query).not.toBeCalled()
+      return store.dispatch(queryForIndexes(faunaClient, classRef)).then(() => {
+        expect(faunaClient.query).not.toBeCalled()
       })
     })
   })

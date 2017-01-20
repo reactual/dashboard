@@ -12,11 +12,11 @@ global.sessionStorage = {
 const faunaClient = {
   _baseUrl: "localhost",
   _secret: "secret",
-  query: jest.fn()
+  query: null
 }
 
 beforeEach(() => {
-  faunaClient.query.mockReturnValue(Promise.resolve())
+  faunaClient.query = jest.fn(() => Promise.resolve())
 })
 
 jest.mock("./persistence/FaunaDB", () => ({
