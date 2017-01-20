@@ -3,7 +3,8 @@ import {
   updateIndexInfo,
   getAllIndexes,
   updateSelectedIndex,
-  fetchingIndexes
+  fetchingIndexes,
+  createIndex
 } from '../../src/indexes'
 
 describe("Given an indexes store", () => {
@@ -47,6 +48,23 @@ describe("Given an indexes store", () => {
 
     expect(indexes).toEqual({
       fetchingData: true
+    })
+  })
+
+  it("should be able to create a new index", () => {
+    faunaClient.query.mockReturnValue(Promise.resolve({
+      name: "new-index"
+    }))
+
+    return store.dispatch(createIndex(faunaClient, { name: "new-index" })).then(() => {
+      expect(indexes).toEqual({
+        byName: {
+          "new-index": {
+            indexInfo: { name: "new-index" }
+          }
+        },
+        fetchingData: false
+      })
     })
   })
 
