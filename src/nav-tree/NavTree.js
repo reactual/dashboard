@@ -80,7 +80,7 @@ class NavSchema1 extends Component {
     this.getInfos(this.props)
   }
   componentWillReceiveProps(nextProps) {
-    if(nextProps.splat)
+    if(nextProps.splat !== this.props.splat)
       this.getInfos(nextProps)
   }
   navLinkClicked(e, link) {
