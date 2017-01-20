@@ -69,6 +69,12 @@ export default class FaunaRepl extends Component {
       langTools.textCompleter,
       faunaCompleter
     ]
+
+    editor.commands.addCommand({
+      name: "execute",
+      bindKey: { win: "Ctrl-Enter", mac: "Command-Enter" },
+      exec: this.handleRunQuery
+    })
   }
 
   render() {
