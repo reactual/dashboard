@@ -3,9 +3,7 @@ import { connect } from "react-redux"
 import { TextField, Checkbox } from "office-ui-fabric-react"
 import SchemaForm from "../schema-form/SchemaForm"
 import { createClass } from "."
-
-import faunadb from "faunadb"
-const q = faunadb.query, Ref = q.Ref
+import { createIndex } from "../indexes"
 
 class ClassForm extends Component {
   constructor(props) {
@@ -43,9 +41,9 @@ class ClassForm extends Component {
     return this.props.dispatch(createClass(client, this.classConfig()))
       .then(clazz => {
         if (this.state.classIndex) {
-          return client.query(q.Create(Ref("indexes"), {
-            name : "all_"+this.state.form.name,
-            source : clazz.ref
+          return this.props.dispatch(createIndex(client, {
+            name: "all_" + this.state.form.name,
+            source: clazz.ref
           }))
         }
 

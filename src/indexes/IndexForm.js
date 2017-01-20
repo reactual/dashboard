@@ -36,8 +36,8 @@ class IndexForm extends Component {
       source: q.Ref(source)
     }
 
-    if (terms) config.terms = JSON.parse(this.state.form.terms)
-    if (values) config.values = JSON.parse(this.state.form.values)
+    if (terms) config.terms = JSON.parse(terms)
+    if (values) config.values = JSON.parse(values)
 
     return config
   }
