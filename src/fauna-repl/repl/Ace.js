@@ -27,7 +27,7 @@ export default class Ace extends Component {
     this.editor.setShowPrintMargin(props.setShowPrintMargin);
 
     if (props.onLoad) {
-      props.onLoad(this.editor);
+      props.onLoad(this.editor, ace);
     }
   }
 
@@ -55,7 +55,7 @@ export default class Ace extends Component {
     // }
     this.editor.renderer.setShowGutter(nextProps.showGutter);
     if (nextProps.onLoad) {
-      nextProps.onLoad(this.editor);
+      nextProps.onLoad(this.editor, ace);
     }
   }
 

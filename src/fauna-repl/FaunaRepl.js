@@ -8,6 +8,7 @@ import {query as q} from 'faunadb';
 
 require('brace/mode/javascript');
 require('brace/theme/monokai');
+require('brace/ext/language_tools');
 
 export default class FaunaRepl extends Component {
   constructor(props) {
@@ -21,6 +22,7 @@ export default class FaunaRepl extends Component {
     this.handleAceChange = this.handleAceChange.bind(this);
     this.toggleRepl = this.toggleRepl.bind(this);
     this.handleRunQuery = this.handleRunQuery.bind(this);
+    this.configureEditor = this.configureEditor.bind(this);
   }
   handleAceChange(aceCode) {
     this.setState({savedCode:aceCode})
@@ -39,6 +41,38 @@ export default class FaunaRepl extends Component {
   }
   toggleRepl() {
     this.setState({opened : !this.state.opened})
+  }
+
+  configureEditor(editor, ace) {
+    if (editor.getOption("enableBasicAutocompletion")) return
+    editor.setOption("enableBasicAutocompletion", true)
+    editor.setOption("enableLiveAutocompletion", true)
+
+    const queryFunctions = Object.values(q)
+      .map(fun => fun.name)
+      .filter(fun => !!fun.match(/^[A-Z]/))
+
+    const faunaCompleter = {
+      getCompletions(editor, session, pos, prefix, callback) {
+        if (prefix.length === 0) {
+          callback(null, [])
+          return
+        }
+
+        callback(null,
+          queryFunctions
+            .filter(fun => fun.startsWith(prefix))
+            .map(fun => ({ name: fun, value: fun, score: 0, meta: "query function" }))
+        )
+      }
+    }
+
+    const langTools = ace.acequire("ace/ext/language_tools")
+
+    editor.completers = [
+      langTools.textCompleter,
+      faunaCompleter
+    ]
   }
 
   render() {
@@ -63,6 +97,7 @@ export default class FaunaRepl extends Component {
                     <Ace
                       value={this.state.aceCode}
                       onChange={this.handleAceChange}
+                      onLoad={this.configureEditor}
                       ref="ace"
                       name="aceEditor"
                       mode={'javascript'} />
