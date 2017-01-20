@@ -3,9 +3,8 @@ import { browserHistory } from 'react-router';
 import {Nav} from 'office-ui-fabric-react'
 import { clientForSubDB } from "../persistence/FaunaDB";
 import discoverKeyType from "../discoverKeyType";
-import { getAllIndexes, updateSelectedIndex } from '../indexes'
-import { getAllClasses, updateSelectedClass } from '../classes'
-import { resetState } from '../app'
+import { getAllIndexes } from '../indexes'
+import { getAllClasses } from '../classes'
 import faunadb from 'faunadb';
 const q = faunadb.query, Ref = q.Ref;
 
@@ -80,13 +79,12 @@ class NavSchema1 extends Component {
     this.getInfos(this.props)
   }
   componentWillReceiveProps(nextProps) {
-    if(nextProps.splat !== this.props.splat)
+    if(nextProps.splat)
       this.getInfos(nextProps)
   }
   navLinkClicked(e, link) {
     e.preventDefault();
     browserHistory.push(link.url)
-    if (link.action) this.props.dispatch(link.action)
   }
   render() {
     const dbpath = this.props.splat;
@@ -130,8 +128,7 @@ let mapStateToProp = (state, ownProps) => {
         return {
           name : name,
           url : "/db/"+slug+"/"+name,
-          key : slug+"/"+name,
-          action: updateSelectedIndex(name)
+          key : slug+"/"+name
         }
       })
 
@@ -145,8 +142,7 @@ let mapStateToProp = (state, ownProps) => {
         return {
           name : name,
           url : "/db/"+slug+"/"+name,
-          key : slug+"/"+name,
-          action: updateSelectedClass(name)
+          key : slug+"/"+name
         }
       })
 
@@ -240,7 +236,6 @@ class NavDBTree1 extends Component {
     e.preventDefault();
     browserHistory.push(link.url)
     // todo we could save deep recursion til grandparent is unfolded
-    this.props.dispatch(resetState())
   }
   render() {
     return (

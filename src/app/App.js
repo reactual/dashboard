@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Router, Route, Redirect, IndexRoute, browserHistory } from 'react-router';
 import { Provider } from 'react-redux'
 import Container from '../container/Container'
@@ -7,6 +7,11 @@ import IndexForm from '../indexes/IndexForm'
 import ClassInfo from '../classes/ClassInfo'
 import ClassForm from '../classes/ClassForm'
 import { DatabaseInfo } from '../databases/Databases'
+
+import { resetState } from '../app'
+import { updateSelectedClass } from '../classes'
+import { updateSelectedIndex } from '../indexes'
+
 import './App.css';
 
 const Home = () =>(
@@ -18,33 +23,42 @@ const Home = () =>(
 
 const NotFound = () => (<h1>404.. This page is not found!</h1>);
 
-class App extends Component {
-  render() {
-    return (
-      <Provider store={this.props.store}>
-        <Router history={browserHistory}>
-          <Route path='/db' component={Container}>
-            <IndexRoute component={Home} />
-            <Route path='/databases' component={DatabaseInfo} />
-            <Route path='/**/databases' component={DatabaseInfo} />
+const onEnter = (dispatch, action) => (nextState, replace, callback) => {
+  dispatch(resetState())
 
-            <Route path='/classes' component={ClassForm}/>
-            <Route path='/classes/:name' component={ClassInfo}/>
-            <Route path='/**/classes' component={ClassForm}/>
-            <Route path='/**/classes/:name' component={ClassInfo}/>
-
-            <Route path='/indexes' component={IndexForm}/>
-            <Route path='/indexes/:name' component={IndexInfo}/>
-            <Route path='/**/indexes' component={IndexForm}/>
-            <Route path='/**/indexes/:name' component={IndexInfo}/>
-
-          </Route>
-          <Redirect from="/" to="/db" />
-          <Route path='*' component={NotFound} />
-        </Router>
-      </Provider>
-    );
+  if(action && nextState.params.name) {
+    dispatch(action(nextState.params.name))
   }
+
+  callback()
 }
 
-export default App;
+export default function App({store}) {
+  const dispatch = store.dispatch
+
+  return (
+    <Provider store={store}>
+      <Router history={browserHistory}>
+        <Route path='/db' component={Container} onEnter={onEnter(dispatch)}>
+          <IndexRoute component={Home} />
+          <Route path='/databases' component={DatabaseInfo} />
+          <Route path='/**/databases' component={DatabaseInfo} onEnter={onEnter(dispatch)} />
+
+          <Route path='/classes' component={ClassForm}/>
+          <Route path='/classes/:name' component={ClassInfo}/>
+          <Route path='/**/classes' component={ClassForm}/>
+          <Route path='/**/classes/:name' component={ClassInfo} onEnter={onEnter(dispatch, updateSelectedClass)} />
+
+          <Route path='/indexes' component={IndexForm}/>
+          <Route path='/indexes/:name' component={IndexInfo}/>
+          <Route path='/**/indexes' component={IndexForm}/>
+          <Route path='/**/indexes/:name' component={IndexInfo} onEnter={onEnter(dispatch, updateSelectedIndex)} />
+
+        </Route>
+        <Redirect from="/" to="/db" />
+        <Route path='*' component={NotFound} />
+      </Router>
+    </Provider>
+  );
+}
+

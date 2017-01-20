@@ -56,6 +56,7 @@ export function getAllClasses(client) {
         dispatch(fetchingClasses(false))
       })
       .catch(error => {
+        dispatch(updateClassInfo([]))
         dispatch(fetchingClasses(false))
         throw error
       })
