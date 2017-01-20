@@ -9,6 +9,7 @@ import {
   updateClassInfo,
   updateIndexOfClass,
   updateSelectedClass,
+  createClass,
   fetchingClasses
 } from '../../src/classes'
 
@@ -89,10 +90,25 @@ describe("Given a classes store", () => {
   it("should update fetching data", () => {
     store.dispatch(fetchingClasses(true))
 
-    const classes = store.getState().classes
-
     expect(classes).toEqual({
       fetchingData: true
+    })
+  })
+
+  it("should be able to create a new class", () => {
+    faunaClient.query.mockReturnValue(Promise.resolve({
+      name: "a-new-class"
+    }))
+
+    return store.dispatch(createClass(faunaClient, { name: "a-new-class" })).then(() => {
+      expect(classes).toEqual({
+        byName: {
+          "a-new-class": {
+            classInfo: { name: "a-new-class" }
+          }
+        },
+        fetchingData: false
+      })
     })
   })
 

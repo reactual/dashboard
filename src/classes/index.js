@@ -102,6 +102,25 @@ export function queryForIndexes(client, classRef) {
   }
 }
 
+export function createClass(client, config) {
+  return (dispatch, getState) => {
+    if(getState().classes.fetchingData)
+      return Promise.resolve()
+
+    dispatch(fetchingClasses(true))
+
+    return client.query(q.CreateClass(config))
+      .then(clazz => {
+        dispatch(updateClassInfo(clazz))
+        dispatch(fetchingClasses(false))
+      })
+      .catch(error => {
+        dispatch(fetchingClasses(false))
+        throw error
+      })
+  }
+}
+
 export function createInstance(client, classRef, data) {
   return (dispatch, getState) => {
     if(getState().classes.fetchingData)
