@@ -87,7 +87,7 @@ class NavSchema1 extends Component {
     e.preventDefault();
     browserHistory.push(link.url)
     this.props.dispatch(resetState())
-    this.props.dispatch(link.action)
+    if (link.action) this.props.dispatch(link.action)
   }
   render() {
     const dbpath = this.props.splat;

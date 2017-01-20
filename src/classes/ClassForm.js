@@ -40,7 +40,7 @@ class ClassForm extends Component {
   onSubmit() {
     const client = this.props.scopedClient
 
-    this.props.dispatch(createClass(client, this.classConfig()))
+    return this.props.dispatch(createClass(client, this.classConfig()))
       .then(clazz => {
         if (this.state.classIndex) {
           return client.query(q.Create(Ref("indexes"), {
