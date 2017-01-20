@@ -24,7 +24,7 @@ class Container extends Component {
 
   logout() {
     this.props.dispatch(logout())
-    browserHistory.push("/")
+    window.location = "/";
   }
 
   bumpSchema(){

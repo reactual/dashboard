@@ -64,8 +64,7 @@ export function reduceAuthentication(state = null, action) {
       return action.user
 
     case Actions.LOGOUT:
-      invalidateUserSession();
-      history.go(0);
+      invalidateUserSession()
       return null
 
     default:
