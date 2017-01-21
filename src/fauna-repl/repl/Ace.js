@@ -29,6 +29,10 @@ export default class Ace extends Component {
     if (props.onLoad) {
       props.onLoad(this.editor, ace);
     }
+
+    if (props.focus) {
+     this.editor.focus()
+    }
   }
 
   shouldComponentUpdate() {
@@ -56,6 +60,10 @@ export default class Ace extends Component {
     this.editor.renderer.setShowGutter(nextProps.showGutter);
     if (nextProps.onLoad) {
       nextProps.onLoad(this.editor, ace);
+    }
+
+    if (nextProps.focus) {
+      this.editor.focus()
     }
   }
 

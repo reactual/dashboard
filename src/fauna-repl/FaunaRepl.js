@@ -17,7 +17,7 @@ export default class FaunaRepl extends Component {
       opened : false,
       expandedSize : 200,
       result : null,
-      aceCode : "q.Paginate(q.Ref(\"indexes\"))"
+      savedCode : "q.Paginate(q.Ref(\"indexes\"))"
     }
     this.handleAceChange = this.handleAceChange.bind(this);
     this.toggleRepl = this.toggleRepl.bind(this);
@@ -40,7 +40,7 @@ export default class FaunaRepl extends Component {
     })
   }
   toggleRepl() {
-    this.setState({opened : !this.state.opened})
+    this.setState({opened: !this.state.opened, focus: !this.state.focus})
   }
 
   configureEditor(editor, ace) {
@@ -102,9 +102,10 @@ export default class FaunaRepl extends Component {
               {this.state.opened ?
                 (<div className="repl-workspace">
                     <Ace
-                      value={this.state.aceCode}
+                      value={this.state.savedCode}
                       onChange={this.handleAceChange}
                       onLoad={this.configureEditor}
+                      focus={this.state.focus}
                       ref="ace"
                       name="aceEditor"
                       mode={'javascript'} />
