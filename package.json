@@ -21,7 +21,7 @@
     "react-treebeard": "^1.1.4",
     "redux": "^3.6.0",
     "redux-thunk": "^2.1.0",
-    "superagent": "^3.3.2"
+    "superagent": "^1.8.2"
   },
   "scripts": {
     "start": "react-scripts start",
