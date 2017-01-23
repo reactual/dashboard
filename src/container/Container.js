@@ -7,7 +7,7 @@ import { logout } from "../authentication"
 import NotificationBar from '../notification/NotificationBar'
 import SecretForm from '../authentication/SecretForm'
 
-import {NavTree} from '../nav-tree/NavTree'
+import NavTree from '../nav-tree/NavTree'
 import IntercomWidget from '../external/intercom/Widget'
 import FaunaRepl from '../fauna-repl/FaunaRepl'
 import logo from '../logo.svg';
