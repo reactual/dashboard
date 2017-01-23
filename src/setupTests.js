@@ -2,11 +2,19 @@ import { createStore, combineReducers, applyMiddleware } from "redux"
 import thunk from "redux-thunk"
 
 // Mock session storage API
-global.sessionStorage = {
-  getItem: jest.fn(),
-  setItem: jest.fn(),
-  clear: jest.fn()
+const sessionStorage = {
+  getItem: null,
+  setItem: null,
+  clear: null
 }
+
+beforeEach(() => {
+  sessionStorage.getItem = jest.fn()
+  sessionStorage.setItem = jest.fn()
+  sessionStorage.clear = jest.fn()
+})
+
+global.sessionStorage = sessionStorage
 
 // Mock connections to FaunaDB
 const faunaClient = {

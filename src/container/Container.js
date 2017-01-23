@@ -4,8 +4,9 @@ import { Link, browserHistory } from 'react-router';
 import { Button, MessageBar, MessageBarType, Breadcrumb } from 'office-ui-fabric-react'
 
 import { logout } from "../authentication"
-import NotificationBar from '../notification/NotificationBar'
+import { logoutUrl } from "../authentication/session"
 import SecretForm from '../authentication/SecretForm'
+import NotificationBar from '../notification/NotificationBar'
 
 import NavTree from '../nav-tree/NavTree'
 import IntercomWidget from '../external/intercom/Widget'
@@ -22,8 +23,9 @@ class Container extends Component {
   }
 
   logout() {
+    const redirect = logoutUrl()
     this.props.dispatch(logout())
-    window.location = "/";
+    window.location = redirect
   }
 
   bumpSchema(){
