@@ -41,7 +41,7 @@ const login = (endpoint, secret) => createUser => (dispatch, getState) => {
       user: createUser({client, adminClient, serverClient})
     })
 
-    dispatch(updateClients(client, getState().currentDatabase)) // smell #96
+    return dispatch(updateClients(client, getState().currentDatabase)) // smell #96
   })
 }
 

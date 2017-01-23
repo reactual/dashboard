@@ -1,4 +1,7 @@
 import { clientForSubDB } from '../persistence/FaunaDB'
+import discoverKeyType from "../discoverKeyType";
+import { getAllClasses } from '../classes'
+import { getAllIndexes } from '../indexes'
 
 const Actions = {
   UPDATE: "@@clients/UPDATE"
@@ -9,13 +12,21 @@ export function updateClients(rootClient, splat) {
     splat = splat.join("/")
 
   return dispatch => {
+    const scopedServerClient = clientForSubDB(rootClient, splat, "server")
+    const scopedAdminClient = clientForSubDB(rootClient, splat, "admin")
+
     dispatch({
       type: Actions.UPDATE,
       rootClient: rootClient,
-      scopedServerClient: clientForSubDB(rootClient, splat, "server"),
-      scopedAdminClient: clientForSubDB(rootClient, splat, "admin"),
+      scopedServerClient: scopedServerClient,
+      scopedAdminClient: scopedAdminClient,
       splat: splat
     })
+
+    return Promise.all([
+      dispatch(getAllClasses(scopedServerClient)),
+      dispatch(getAllIndexes(scopedServerClient))
+    ])
   }
 }
 

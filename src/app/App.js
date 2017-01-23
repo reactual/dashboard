@@ -43,18 +43,14 @@ const onChangeDatabase = (dispatch, getState) => (nextState, replace, callback) 
 
   if(getState().currentUser) {
     const rootClient = getState().currentUser.client
-    dispatch(updateClients(rootClient, splat))
-    return callback()
+    return dispatch(updateClients(rootClient, splat))
+      .then(() => callback())
+      .catch(() => callback())
   }
 
   restoreUserSession()
-    .then(action => {
-      dispatch(action).then(() => {
-        const rootClient = getState().currentUser.client
-        dispatch(updateClients(rootClient, splat))
-        callback()
-      })
-    })
+    .then(action => dispatch(action))
+    .then(() => callback())
     .catch(() => callback())
 }
 

@@ -1,67 +1,42 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { Nav } from 'office-ui-fabric-react'
 import { browserHistory } from 'react-router';
-import { getAllIndexes } from '../indexes'
-import { getAllClasses } from '../classes'
 
 import { connect } from 'react-redux'
 
-class NavSchema extends Component {
-  constructor(props) {
-    super(props);
-    this.navLinkClicked = this.navLinkClicked.bind(this)
-  }
-  getInfos(props) {
-    this.getIndexes(props.serverClient)
-    this.getClasses(props.serverClient)
-  }
-  getIndexes(client) {
-    client && this.props.dispatch(getAllIndexes(client))
-  }
-  getClasses(client) {
-    client && this.props.dispatch(getAllClasses(client))
-  }
-  componentDidMount() {
-    this.getInfos(this.props)
-  }
-  componentWillReceiveProps(nextProps) {
-    if(nextProps.splat)
-      this.getInfos(nextProps)
-  }
-  navLinkClicked(e, link) {
-    e.preventDefault();
-    browserHistory.push(link.url)
-  }
-  render() {
-    const dbpath = this.props.splat;
-    var options = {
-      name : "Options",
-      links : [
-        {
-          name : "Create Database",
-          key : (dbpath+"/"||"")+"databases",
-          url : "/db/"+(dbpath?dbpath+"/":"")+"databases"
-        },
-        {
-          name : "Create Class",
-          key : (dbpath+"/"||"")+"classes",
-          url : "/db/"+(dbpath?dbpath+"/":"")+"classes"
-        },
-        {
-          name : "Create Index",
-          key : (dbpath+"/"||"")+"indexes",
-          url : "/db/"+(dbpath?dbpath+"/":"")+"indexes"
-        }
-      ]
-    };
-    return (
-      <Nav groups={[options, this.props.classes, this.props.indexes]}
-        onLinkClick={this.navLinkClicked}/>
-    );
-  }
+function navLinkClicked(e, link) {
+  e.preventDefault();
+  browserHistory.push(link.url)
 }
 
-let mapStateToProp = (state, ownProps) => {
+function NavSchema({splat, classes, indexes}) {
+  const dbpath = splat ? `${splat}/` : ""
+
+  const options = {
+    name : "Options",
+    links : [
+      {
+        name : "Create Database",
+        key : `${dbpath}databases`,
+        url : `/db/${dbpath}databases`
+      },
+      {
+        name : "Create Class",
+        key : `${dbpath}classes`,
+        url : `/db/${dbpath}classes`
+      },
+      {
+        name : "Create Index",
+        key : `${dbpath}indexes`,
+        url : `/db/${dbpath}indexes`
+      }
+    ]
+  }
+
+  return <Nav groups={[options, classes, indexes]} onLinkClick={navLinkClicked} />
+}
+
+function mapStateToProp(state, ownProps) {
   const dbpath = ownProps.splat;
 
   const indexesLinks = !state.indexes.byName ? [] :
