@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom'
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk'
 import createLogger from 'redux-logger'
-import { App, appReducer } from './app'
+import { appReducer } from './app'
+import App from './app/App'
 import './index.css';
 
 var middlewares = [thunk]

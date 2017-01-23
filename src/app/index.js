@@ -6,18 +6,15 @@ import { reduceNotifications } from '../notification'
 import { reduceDatabases } from '../databases'
 import { reduceClients } from './clients'
 
-import App from './App'
-export { App }
-
 // Actions
 
-export const AppActions = {
-  RESET_STATE: "RESET_STATE"
+const Actions = {
+  RESET_STATE: "@@app/RESET_STATE"
 }
 
 export function resetState() {
   return {
-    type: AppActions.RESET_STATE
+    type: Actions.RESET_STATE
   }
 }
 
@@ -48,8 +45,8 @@ const appReducer0 = combineReducers({
 
 export function appReducer(state = {}, action) {
   switch(action.type) {
-    case AppActions.RESET_STATE:
-      return {...state, classes: {}, indexes: {}}
+    case Actions.RESET_STATE:
+      return {...state, classes: {}, indexes: {}, currentDatabase: []}
 
     default:
       break
