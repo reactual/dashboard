@@ -34,7 +34,7 @@ export class DatabaseForm extends Component {
           required={true}
           description="This name is used in queries and API calls."
           value={form.name}
-          onChanged={this.onChange.bind(this, "name")}/>
+          onBeforeChange={this.onChange.bind(this, "name")}/>
       </SchemaForm>
     )
   }
