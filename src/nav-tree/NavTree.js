@@ -9,40 +9,24 @@ const q = faunadb.query, Ref = q.Ref;
 
 import { connect } from 'react-redux'
 
-class NavTree extends Component {
-  constructor(props) {
-    super(props);
-    this.scopedClient = this.scopedClient.bind(this);
-  }
-  scopedClient() { // todo this is available on the current user
-    if (this.props.adminClient) {
-      // return a client for the current page url path
-      return clientForSubDB(this.props.adminClient, this.props.splat, "server")
-    } else if (this.props.serverClient) {
-      // todo in the future server clients should be able to access nested scopes
-      return this.props.serverClient;
-    }
-  }
-  render() {
-    var path = this.props.path ? this.props.path.split('/') : [];
-    if (this.props.serverClient || this.props.adminClient) {
-      return (
-        <div className="NavTree ms-Grid-row">
-          {/* nav databases */}
-          <div className="ms-Grid-col ms-u-sm6 ms-u-md3 ms-u-lg2">
-            <NavDBTree nonce={this.props.nonce} path={path} adminClient={this.props.adminClient}/>
-          </div>
-          <div className="ms-Grid-col ms-u-sm6 ms-u-md3 ms-u-lg2">
-            <NavSchema nonce={this.props.nonce} splat={this.props.splat} serverClient={this.scopedClient()} expanded/>
-          </div>
-          <div className="ms-Grid-col ms-u-sm12 ms-u-md6 ms-u-lg8">
-            {this.props.children}
-          </div>
+function NavTree(props) {
+  if (props.adminClient || props.scopedServerClient) {
+    return (
+      <div className="NavTree ms-Grid-row">
+        {/* nav databases */}
+        <div className="ms-Grid-col ms-u-sm6 ms-u-md3 ms-u-lg2">
+          <NavDBTree nonce={props.nonce} adminClient={props.adminClient}/>
         </div>
-      );
-    }
-    return null;
+        <div className="ms-Grid-col ms-u-sm6 ms-u-md3 ms-u-lg2">
+          <NavSchema nonce={props.nonce} splat={props.splat} serverClient={props.scopedServerClient} expanded/>
+        </div>
+        <div className="ms-Grid-col ms-u-sm12 ms-u-md6 ms-u-lg8">
+          {props.children}
+        </div>
+      </div>
+    );
   }
+  return null;
 }
 
 function mapStateToProps(state) {
