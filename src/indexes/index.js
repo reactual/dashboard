@@ -4,9 +4,9 @@ const q = faunadb.query, Ref = q.Ref;
 // Actions
 
 const Actions = {
-  UPDATE_INDEX_INFO: "UPDATE_INDEX_INFO",
-  UPDATE_SELECTED_INDEX: "UPDATE_SELECTED_INDEX",
-  FETCHING_INDEXES: "FETCHING_INDEXES"
+  UPDATE_INDEX_INFO: "@@indexes/UPDATE_INDEX_INFO",
+  UPDATE_SELECTED_INDEX: "@@indexes/UPDATE_SELECTED_INDEX",
+  FETCHING_INDEXES: "@@indexes/FETCHING_INDEXES"
 }
 
 export function updateIndexInfo(result) {
