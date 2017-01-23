@@ -4,10 +4,11 @@ import SplitPane from "react-split-pane"
 import Ace from "./repl/Ace"
 import {QueryResult} from "../index-query/IndexQuery"
 import replEval from './repl/repl-eval';
-import {query as q} from 'faunadb';
+import { query as q } from "faunadb"
 
 require('brace/mode/javascript');
 require('brace/theme/monokai');
+require('brace/ext/language_tools');
 
 export default class FaunaRepl extends Component {
   constructor(props) {
@@ -16,11 +17,12 @@ export default class FaunaRepl extends Component {
       opened : false,
       expandedSize : 200,
       result : null,
-      aceCode : "q.Paginate(q.Ref(\"indexes\"))"
+      savedCode : "q.Paginate(q.Ref(\"indexes\"))"
     }
     this.handleAceChange = this.handleAceChange.bind(this);
     this.toggleRepl = this.toggleRepl.bind(this);
     this.handleRunQuery = this.handleRunQuery.bind(this);
+    this.configureEditor = this.configureEditor.bind(this);
   }
   handleAceChange(aceCode) {
     this.setState({savedCode:aceCode})
@@ -38,7 +40,46 @@ export default class FaunaRepl extends Component {
     })
   }
   toggleRepl() {
-    this.setState({opened : !this.state.opened})
+    this.setState({opened: !this.state.opened, focus: !this.state.focus})
+  }
+
+  configureEditor(editor, ace) {
+    if (editor.getOption("enableBasicAutocompletion")) return
+    editor.setOption("enableBasicAutocompletion", true)
+    editor.setOption("enableLiveAutocompletion", true)
+
+    const queryFunctions = Object.values(q)
+      .filter(fun => !!fun.name.match(/^[A-Z]/))
+      .map(fun => fun.name)
+
+    const faunaCompleter = {
+      getCompletions(editor, session, pos, prefix, callback) {
+        const previousToken = session.getTokenAt(pos.row, pos.column - prefix.length - 1) || {}
+        if (previousToken.value !== "q") {
+          callback(null, [])
+          return
+        }
+
+        callback(null,
+          queryFunctions
+            .filter(fun => fun.includes(prefix))
+            .map(fun => ({ name: fun, value: fun, score: 0, meta: "query function" }))
+        )
+      }
+    }
+
+    const langTools = ace.acequire("ace/ext/language_tools")
+
+    editor.completers = [
+      langTools.textCompleter,
+      faunaCompleter
+    ]
+
+    editor.commands.addCommand({
+      name: "execute",
+      bindKey: { win: "Ctrl-Enter", mac: "Command-Enter" },
+      exec: this.handleRunQuery
+    })
   }
 
   render() {
@@ -61,8 +102,10 @@ export default class FaunaRepl extends Component {
               {this.state.opened ?
                 (<div className="repl-workspace">
                     <Ace
-                      value={this.state.aceCode}
+                      value={this.state.savedCode}
                       onChange={this.handleAceChange}
+                      onLoad={this.configureEditor}
+                      focus={this.state.focus}
                       ref="ace"
                       name="aceEditor"
                       mode={'javascript'} />
