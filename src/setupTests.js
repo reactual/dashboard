@@ -20,7 +20,11 @@ beforeEach(() => {
 })
 
 jest.mock("./persistence/FaunaDB", () => ({
-  createClient: jest.fn(() => faunaClient)
+  createClient: jest.fn(() => faunaClient),
+  clientForSubDB: jest.fn((client, splat, type) => ({
+    ...client,
+    _secret: client._secret + ":" + splat + ":" + type
+  }))
 }))
 
 global.faunaClient = faunaClient
