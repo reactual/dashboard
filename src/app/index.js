@@ -3,6 +3,8 @@ import { reduceClasses } from '../classes'
 import { reduceIndexes } from '../indexes'
 import { reduceAuthentication } from '../authentication'
 import { reduceNotifications } from '../notification'
+import { reduceDatabases } from '../databases'
+import { reduceClients } from './clients'
 
 import App from './App'
 export { App }
@@ -30,6 +32,7 @@ export function resetState() {
     indexes: {},
     currentUser: {},
     notifications: {}
+    currentDatabase: []
   }
 
 */
@@ -38,7 +41,9 @@ const appReducer0 = combineReducers({
   classes: reduceClasses,
   indexes: reduceIndexes,
   currentUser: reduceAuthentication,
-  notifications: reduceNotifications
+  notifications: reduceNotifications,
+  currentDatabase: reduceDatabases,
+  clients: reduceClients
 })
 
 export function appReducer(state = {}, action) {

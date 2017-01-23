@@ -2,7 +2,6 @@ import React, { Component } from "react"
 import { connect } from "react-redux"
 import { parse as parseURL } from 'url'
 import { loginWithUnknownUser } from "."
-import { restoreUserSession } from "./session"
 
 import {
   TextField,
@@ -17,37 +16,15 @@ class SecretForm extends Component {
     super(props)
 
     this.state = {
-      show: false,
       endpoint: "",
       secret: "",
       errors: {}
     }
   }
 
-  componentDidMount() {
-    this.verifySession(this.props.currentUser)
-  }
-
-  componentWillReceiveProps(props) {
-    this.verifySession(props.currentUser)
-  }
-
-  verifySession(user) {
-    if (!user) {
-      this.login(restoreUserSession())
-    }
-  }
-
   login(action) {
-    if (!action) {
-      this.setState({ show: true })
-      return
-    }
-
     this.props.dispatch(action)
-      .then(() => this.setState({ show: false }))
       .catch(error => this.setState({
-        show: true,
         errors: { secret: this.formatError(error) }
       }))
   }
@@ -95,7 +72,7 @@ class SecretForm extends Component {
   render() {
     return (
       <Dialog
-        isOpen={this.state.show}
+        isOpen={this.props.show}
         type={DialogType.largeHeader}
         title="Connect to FaunaDB"
         subText="Visit https://fauna.com/account/keys or talk to your administrator to provision keys."
@@ -126,7 +103,8 @@ class SecretForm extends Component {
 }
 
 const stateToProps = state => ({
-  currentUser: state.currentUser
+  currentUser: state.currentUser,
+  show: !state.currentUser
 })
 
 // Dialog component is not consired pure by react-redux

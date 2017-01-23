@@ -70,6 +70,7 @@ export function getAllIndexes(client) {
          dispatch(fetchingIndexes(false))
       })
       .catch(error => {
+        dispatch(updateIndexInfo([]))
         dispatch(fetchingIndexes(false))
         throw error
       })

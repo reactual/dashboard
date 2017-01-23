@@ -3,12 +3,11 @@ import { connect } from 'react-redux'
 import { Link, browserHistory } from 'react-router';
 import { Button, MessageBar, MessageBarType, Breadcrumb } from 'office-ui-fabric-react'
 
-import { clientForSubDB } from '../persistence/FaunaDB';
 import { logout } from "../authentication"
 import NotificationBar from '../notification/NotificationBar'
 import SecretForm from '../authentication/SecretForm'
 
-import {NavTree} from '../nav-tree/NavTree'
+import NavTree from '../nav-tree/NavTree'
 import IntercomWidget from '../external/intercom/Widget'
 import FaunaRepl from '../fauna-repl/FaunaRepl'
 import logo from '../logo.svg';
@@ -36,16 +35,17 @@ class Container extends Component {
   }
 
   render() {
-    const rootClient = this.props.currentUser ? this.props.currentUser.client : null
-
-    var splat = this.props.params.splat ?
+    const splat = this.props.params.splat ?
       this.props.params.splat.replace(/^db\/?/,'') : "";
 
+    const clients = this.props.clients
+    const rootClient = clients.rootClient
+
     var sharedProps = {
-      scopedClient : clientForSubDB(rootClient, splat, "server"),
-      scopedAdminClient : clientForSubDB(rootClient, splat, "admin"),
-      bumpSchema : this.bumpSchema,
-      rootClient,
+      scopedClient: clients.scopedServerClient,
+      scopedAdminClient: clients.scopedAdminClient,
+      bumpSchema: this.bumpSchema,
+      rootClient: clients.rootClient,
       splat
     };
 
@@ -106,6 +106,7 @@ class Container extends Component {
 export default connect(
   state => ({
     currentUser: state.currentUser,
-    notifications: state.notifications
+    notifications: state.notifications,
+    clients: state.clients
   })
 )(Container)

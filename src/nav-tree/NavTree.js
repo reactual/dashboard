@@ -2,51 +2,35 @@ import React, { Component } from 'react';
 import { browserHistory } from 'react-router';
 import {Nav} from 'office-ui-fabric-react'
 import { clientForSubDB } from "../persistence/FaunaDB";
-import discoverKeyType from "../discoverKeyType";
-import { getAllIndexes, updateSelectedIndex } from '../indexes'
-import { getAllClasses, updateSelectedClass } from '../classes'
-import { resetState } from '../app'
+import { getAllIndexes } from '../indexes'
+import { getAllClasses } from '../classes'
 import faunadb from 'faunadb';
 const q = faunadb.query, Ref = q.Ref;
 
 import { connect } from 'react-redux'
 
-export class NavTree extends Component {
+class NavTree extends Component {
   constructor(props) {
     super(props);
     this.scopedClient = this.scopedClient.bind(this);
-    this.state = {adminClient:null, serverClient:null};
-  }
-  discoverKeyType(client) {
-    discoverKeyType(client).then(({adminClient, serverClient}) => {
-      this.setState({adminClient, serverClient});
-    })
-  }
-  componentDidMount() {
-    this.discoverKeyType(this.props.client)
-  }
-  componentWillReceiveProps(nextProps) {
-    if (this.props.client !== nextProps.client) {
-      this.discoverKeyType(nextProps.client)
-    }
   }
   scopedClient() {
-    if (this.state.adminClient) {
+    if (this.props.adminClient) {
       // return a client for the current page url path
-      return clientForSubDB(this.state.adminClient, this.props.splat, "server")
-    } else if (this.state.serverClient) {
+      return clientForSubDB(this.props.adminClient, this.props.splat, "server")
+    } else if (this.props.serverClient) {
       // todo in the future server clients should be able to access nested scopes
-      return this.state.serverClient;
+      return this.props.serverClient;
     }
   }
   render() {
     var path = this.props.path ? this.props.path.split('/') : [];
-    if (this.state.serverClient || this.state.adminClient) {
+    if (this.props.serverClient || this.props.adminClient) {
       return (
         <div className="NavTree ms-Grid-row">
           {/* nav databases */}
           <div className="ms-Grid-col ms-u-sm6 ms-u-md3 ms-u-lg2">
-            <NavDBTree nonce={this.props.nonce} path={path} adminClient={this.state.adminClient}/>
+            <NavDBTree nonce={this.props.nonce} path={path} adminClient={this.props.adminClient}/>
           </div>
           <div className="ms-Grid-col ms-u-sm6 ms-u-md3 ms-u-lg2">
             <NavSchema nonce={this.props.nonce} splat={this.props.splat} serverClient={this.scopedClient()} expanded/>
@@ -60,6 +44,15 @@ export class NavTree extends Component {
     return null;
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    adminClient: state.clients.adminClient,
+    serverClient: state.clients.serverClient
+  }
+}
+
+export default connect(mapStateToProps)(NavTree)
 
 class NavSchema1 extends Component {
   constructor(props) {
@@ -80,13 +73,12 @@ class NavSchema1 extends Component {
     this.getInfos(this.props)
   }
   componentWillReceiveProps(nextProps) {
-    if(nextProps.splat !== this.props.splat)
+    if(nextProps.splat)
       this.getInfos(nextProps)
   }
   navLinkClicked(e, link) {
     e.preventDefault();
     browserHistory.push(link.url)
-    if (link.action) this.props.dispatch(link.action)
   }
   render() {
     const dbpath = this.props.splat;
@@ -130,8 +122,7 @@ let mapStateToProp = (state, ownProps) => {
         return {
           name : name,
           url : "/db/"+slug+"/"+name,
-          key : slug+"/"+name,
-          action: updateSelectedIndex(name)
+          key : slug+"/"+name
         }
       })
 
@@ -145,8 +136,7 @@ let mapStateToProp = (state, ownProps) => {
         return {
           name : name,
           url : "/db/"+slug+"/"+name,
-          key : slug+"/"+name,
-          action: updateSelectedClass(name)
+          key : slug+"/"+name
         }
       })
 
@@ -240,7 +230,6 @@ class NavDBTree1 extends Component {
     e.preventDefault();
     browserHistory.push(link.url)
     // todo we could save deep recursion til grandparent is unfolded
-    this.props.dispatch(resetState())
   }
   render() {
     return (
