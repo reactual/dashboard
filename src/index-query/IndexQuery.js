@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-// import { Link } from 'react-router';
+
 import {
   DetailsList,
   DetailsListLayoutMode,
   DetailsRow,
+  CheckboxVisibility,
   Button,
   ButtonType
 } from 'office-ui-fabric-react'
@@ -218,7 +219,7 @@ export class QueryResult extends Component {
 class InstancePreview extends Component {
   constructor(props) {
     super(props);
-    this.state = {instance:false};
+    this.state = { instance: false, events: [] }
   }
   componentDidMount() {
     this.getInstanceData(this.props.instanceRef);
@@ -229,17 +230,53 @@ class InstancePreview extends Component {
     }
   }
   getInstanceData(instanceRef) {
-    this.setState({instance : false})
-    instanceRef && this.props.client && this.props.client.query(q.Get(Ref(instanceRef))).then((res) => {
-      this.setState({instance : res})
+    this.setState({instance: false})
+    if (!instanceRef || !this.props.client) return
+
+    const ref = Ref(instanceRef)
+
+    this.props.client.query({
+      instance: q.Get(ref),
+      events: q.Map(
+        q.Paginate(ref, { events: true, size: 100 }), // FIXME: need a better pagination strategy
+        event => ({
+          action: q.Select("action", event),
+          ts: q.Select("ts", event),
+          data: q.Select("data", q.Get(ref, q.Select("ts", event)))
+        })
+      )
+    }).then(res => {
+      this.setState({
+        instance: res.instance,
+        events: res.events.data
+      })
     })
   }
   render() {
-    const instance = this.state.instance;
-    if (!instance){
-      return null;
-    }
-    return (<div>
+    const { instance, events } = this.state
+    if (!instance) return null
+
+    const eventRows = events.map(
+      event => ({
+        ...event,
+        data: inspect(event.data, { depth: null })
+      })
+    )
+
+    const eventColumns = [
+      { name: "Action", fieldName: "action", minWidth: 0 },
+      { name: "TS", fieldName: "ts", minWidth: 110 },
+      { name: "Data", fieldName: "data", minWidth: 600 },
+    ]
+
+    return (
+      <div>
+        <Button
+          buttonType={ButtonType.icon}
+          onClick={this.getInstanceData.bind(this, this.props.instanceRef)}
+          icon="Refresh">
+            Refresh
+        </Button>
         <h3>Instance Preview</h3>
         <dl>
           <dt>Class</dt><dd>{instance.class.toString()}</dd>
@@ -248,7 +285,15 @@ class InstancePreview extends Component {
           <dt>Data</dt>
           <dd><pre>{inspect(instance.data, { depth: null })}</pre></dd>
         </dl>
-      </div>)
+        <h3>Instance History</h3>
+        <DetailsList
+          checkboxVisibility={CheckboxVisibility.hidden}
+          layoutMode={DetailsListLayoutMode.justified}
+          selectionMode="none"
+          items={eventRows}
+          columns={eventColumns} />
+      </div>
+    )
   }
 }
 
