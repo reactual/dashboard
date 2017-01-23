@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-// import { Link } from 'react-router';
+import { browserHistory } from 'react-router';
 import {TextField} from 'office-ui-fabric-react'
 import SchemaForm from "../schema-form/SchemaForm"
 import faunadb from 'faunadb';
@@ -13,10 +13,12 @@ export class DatabaseForm extends Component {
     this.onChange = this.onChange.bind(this);
   }
   onSubmit() {
+    var context = this.props.splat ? this.props.splat+"/"+this.state.form.name : this.state.form.name;
     return this.props.scopedAdminClient
       .query(q.Create(Ref("databases"), { name: this.state.form.name }))
       .then((res)=>{
         this.setState({form:{name:""}});
+        browserHistory.push("/db/"+context+"/databases");
       })
   }
   onChange(field, value) {
