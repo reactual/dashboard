@@ -1,9 +1,9 @@
 const asArray = (values) => Array.isArray(values) ? values : [values]
 
 const Actions = {
-  PUSH: 'PUSH',
-  REMOVE: 'REMOVE',
-  RESET: 'RESET'
+  PUSH: '@@notifications/PUSH',
+  REMOVE: '@@notifications/REMOVE',
+  RESET: '@@notifications/RESET'
 }
 
 export const NotificationType = {
