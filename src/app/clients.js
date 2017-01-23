@@ -7,6 +7,9 @@ const Actions = {
 }
 
 export function updateClients(rootClient, splat) {
+  if(Array.isArray(splat))
+    splat = splat.join("/")
+
   return dispatch => {
     dispatch({
       type: Actions.UPDATE,

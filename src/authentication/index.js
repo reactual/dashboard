@@ -1,5 +1,6 @@
 import { invalidateUserSession, saveUserSession } from "./session"
 import { createClient } from "../persistence/FaunaDB"
+import { updateClients } from "../app/clients"
 
 class User {
   constructor(client, settings = {}) {
@@ -23,7 +24,7 @@ const Actions = {
   LOGOUT: "@@authentication/LOGOUT"
 }
 
-const login = (endpoint, secret) => createUser => dispatch => {
+const login = (endpoint, secret) => createUser => (dispatch, getState) => {
   const client = createClient(
     endpoint,
     secret,
@@ -31,12 +32,14 @@ const login = (endpoint, secret) => createUser => dispatch => {
   )
 
   // Only dispatch LOGIN if endpoint and secret are correct
-  return client.query({}).then(() =>
+  return client.query({}).then(() => {
     dispatch({
       type: Actions.LOGIN,
       user: createUser(client)
     })
-  )
+
+    dispatch(updateClients(client, getState().currentDatabase))
+  })
 }
 
 export const loginWithUnknownUser = (endpoint, secret, settings) => {

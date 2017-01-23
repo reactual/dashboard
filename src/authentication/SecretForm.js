@@ -1,6 +1,5 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
-import { browserHistory } from 'react-router';
 import { parse as parseURL } from 'url'
 import { loginWithUnknownUser } from "."
 
@@ -47,7 +46,6 @@ class SecretForm extends Component {
     event.preventDefault()
     if (!this.validate()) return
     this.login(loginWithUnknownUser(this.state.endpoint, this.state.secret))
-    browserHistory.go("/db") //TODO: remove this
   }
 
   validate() {
