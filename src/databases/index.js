@@ -6,7 +6,7 @@ const Actions = {
 export function updateCurrentDatabase(currentDatabase) {
   return {
     type: Actions.UPDATE,
-    currentDatabase: currentDatabase ? currentDatabase.replace(/^db\//, "").split("/") : []
+    currentDatabase: currentDatabase ? currentDatabase.split("/") : []
   }
 }
 

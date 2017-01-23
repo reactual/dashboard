@@ -4,6 +4,7 @@ import { reduceIndexes } from '../indexes'
 import { reduceAuthentication } from '../authentication'
 import { reduceNotifications } from '../notification'
 import { reduceDatabases } from '../databases'
+import { reduceClients } from './clients'
 
 import App from './App'
 export { App }
@@ -41,7 +42,8 @@ const appReducer0 = combineReducers({
   indexes: reduceIndexes,
   currentUser: reduceAuthentication,
   notifications: reduceNotifications,
-  currentDatabase: reduceDatabases
+  currentDatabase: reduceDatabases,
+  clients: reduceClients
 })
 
 export function appReducer(state = {}, action) {

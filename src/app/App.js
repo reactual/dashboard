@@ -9,9 +9,11 @@ import ClassForm from '../classes/ClassForm'
 import { DatabaseInfo } from '../databases/Databases'
 
 import { resetState } from '../app'
+import { updateClients } from '../app/clients'
 import { updateSelectedClass } from '../classes'
 import { updateSelectedIndex } from '../indexes'
 import { updateCurrentDatabase } from '../databases'
+import { restoreUserSession } from "../authentication/session"
 
 import './App.css';
 
@@ -32,22 +34,42 @@ const onChangeSelection = (dispatch, action) => (nextState, replace, callback) =
   callback()
 }
 
-const onChangeDatabase = (dispatch) => (nextState, replace, callback) => {
+const onChangeDatabase = (dispatch, getState) => (nextState, replace, callback) => {
+  const splat = nextState.params.splat ?
+                nextState.params.splat.replace(/^db\/?/, "") : ""
+
   dispatch(resetState())
-  dispatch(updateCurrentDatabase(nextState.params.splat))
-  callback()
+  dispatch(updateCurrentDatabase(splat))
+
+  if(getState().currentUser) {
+    const rootClient = getState().currentUser.client
+    dispatch(updateClients(rootClient, splat))
+    return callback()
+  }
+
+  const loginUser = restoreUserSession()
+
+  if(!loginUser)
+    return callback()
+
+  dispatch(loginUser).then(() => {
+    const rootClient = getState().currentUser.client
+    dispatch(updateClients(rootClient, splat))
+    callback()
+  })
 }
 
 export default function App({store}) {
   const dispatch = store.dispatch
+  const getState = store.getState
 
   return (
     <Provider store={store}>
       <Router history={browserHistory}>
-        <Route path='/db' component={Container} onEnter={onChangeDatabase(dispatch)}>
+        <Route path='/db' component={Container} onEnter={onChangeDatabase(dispatch, getState)}>
           <IndexRoute component={Home} />
           <Route path='/databases' component={DatabaseInfo} />
-          <Route path='/**/databases' component={DatabaseInfo} onEnter={onChangeDatabase(dispatch)} />
+          <Route path='/**/databases' component={DatabaseInfo} onEnter={onChangeDatabase(dispatch, getState)} />
 
           <Route path='/classes' component={ClassForm}/>
           <Route path='/classes/:name' component={ClassInfo}/>
