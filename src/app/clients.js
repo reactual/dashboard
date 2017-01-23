@@ -14,6 +14,8 @@ export function updateClients(rootClient, splat) {
     dispatch({
       type: Actions.UPDATE,
       rootClient: rootClient,
+      scopedServerClient: clientForSubDB(rootClient, splat, "server"),
+      scopedAdminClient: clientForSubDB(rootClient, splat, "admin"),
       splat: splat
     })
 
@@ -31,8 +33,8 @@ export function reduceClients(state = {}, action) {
   switch(action.type) {
     case Actions.UPDATE:
       return {...state,
-        scopedServerClient: clientForSubDB(action.rootClient, action.splat, "server"),
-        scopedAdminClient: clientForSubDB(action.rootClient, action.splat, "admin"),
+        scopedServerClient: action.scopedServerClient,
+        scopedAdminClient: action.scopedAdminClient,
         rootClient: action.rootClient
       }
 
