@@ -4,6 +4,7 @@ import {
   DetailsList,
   DetailsListLayoutMode,
   DetailsRow,
+  CheckboxVisibility,
   Button,
   ButtonType
 } from 'office-ui-fabric-react'
@@ -255,6 +256,19 @@ class InstancePreview extends Component {
     const { instance, events } = this.state
     if (!instance) return null
 
+    const eventRows = events.map(
+      event => ({
+        ...event,
+        data: inspect(event.data, { depth: null })
+      })
+    )
+
+    const eventColumns = [
+      { name: "Action", fieldName: "action", minWidth: 0 },
+      { name: "TS", fieldName: "ts", minWidth: 110 },
+      { name: "Data", fieldName: "data", minWidth: 600 },
+    ]
+
     return (
       <div>
         <Button
@@ -272,20 +286,12 @@ class InstancePreview extends Component {
           <dd><pre>{inspect(instance.data, { depth: null })}</pre></dd>
         </dl>
         <h3>Instance History</h3>
-        <table>
-          <tr>
-            <th>Action</th>
-            <th>TS</th>
-            <th>Data</th>
-          </tr>
-          {events.map(event => (
-            <tr>
-              <td>{event.action}</td>
-              <td>{event.ts}</td>
-              <td>{inspect(event.data, { depth: null })}</td>
-            </tr>
-          ))}
-        </table>
+        <DetailsList
+          checkboxVisibility={CheckboxVisibility.hidden}
+          layoutMode={DetailsListLayoutMode.justified}
+          selectionMode="none"
+          items={eventRows}
+          columns={eventColumns} />
       </div>
     )
   }
