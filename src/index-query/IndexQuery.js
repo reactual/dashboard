@@ -248,7 +248,7 @@ class InstancePreview extends Component {
         event => ({
           action: q.Select("action", event),
           ts: q.Select("ts", event),
-          data: q.Select("data", q.Get(ref, q.Select("ts", event)))
+          data: q.Select("data", q.Get(ref, q.Select("ts", event)), null)
         })
       )
     }).then(res => {
