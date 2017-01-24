@@ -1,6 +1,7 @@
 import React from 'react';
 import { Router, Route, Redirect, IndexRoute, browserHistory } from 'react-router';
 import { Provider } from 'react-redux'
+import ReactGA from "react-ga"
 import Container from '../container/Container'
 import IndexInfo from '../indexes/IndexInfo'
 import IndexForm from '../indexes/IndexForm'
@@ -16,6 +17,20 @@ import { updateCurrentDatabase } from '../databases'
 import { restoreUserSession } from "../authentication/session"
 
 import './App.css';
+
+const isProduction = process.env.NODE_ENV === "production"
+
+if (isProduction) {
+  // FIXME: this should be in a config somewhere
+  ReactGA.initialize("UA-51914115-3")
+}
+
+const trackPage = () => {
+  if (isProduction) {
+    ReactGA.set({ page: window.location.pathname })
+    ReactGA.pageview(window.location.pathname)
+  }
+}
 
 const Home = () =>(
   <p>
@@ -64,7 +79,7 @@ export default function App({store}) {
 
   return (
     <Provider store={store}>
-      <Router history={browserHistory}>
+      <Router onUpdate={trackPage} history={browserHistory}>
         <Route path='/db' component={Container} onEnter={onChangeDatabase(dispatch, getState)}>
           <IndexRoute component={Home} />
           <Route path='/databases' component={DatabaseInfo} />
