@@ -33,7 +33,5 @@ export default function discoverKeyType(client) {
       // delete the test db in case we are out of sync
       return client.query(q.Delete(Ref("databases/dash_"+nonce+"_key_type_discovery_db_created_and_deleted_automatically_always_safe_to_delete")))
     }
-  }).catch((err)=>{
-    console.error(err)
   })
 }

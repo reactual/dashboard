@@ -1,9 +1,7 @@
 import { clientForSubDB } from '../persistence/FaunaDB'
-import discoverKeyType from "../discoverKeyType";
 
 const Actions = {
-  UPDATE: "@@clients/UPDATE",
-  UPDATE_TYPE: "@@clients/UPDATE_TYPE"
+  UPDATE: "@@clients/UPDATE"
 }
 
 export function updateClients(rootClient, splat) {
@@ -18,14 +16,6 @@ export function updateClients(rootClient, splat) {
       scopedAdminClient: clientForSubDB(rootClient, splat, "admin"),
       splat: splat
     })
-
-    return discoverKeyType(rootClient).then(({adminClient, serverClient}) => {
-      dispatch({
-        type: Actions.UPDATE_TYPE,
-        adminClient: adminClient,
-        serverClient: serverClient
-      })
-    })
   }
 }
 
@@ -36,12 +26,6 @@ export function reduceClients(state = {}, action) {
         scopedServerClient: action.scopedServerClient,
         scopedAdminClient: action.scopedAdminClient,
         rootClient: action.rootClient
-      }
-
-    case Actions.UPDATE_TYPE:
-      return {...state,
-        adminClient: action.adminClient,
-        serverClient: action.serverClient
       }
 
     default:

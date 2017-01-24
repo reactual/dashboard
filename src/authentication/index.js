@@ -1,10 +1,13 @@
 import { invalidateUserSession, saveUserSession } from "./session"
 import { createClient } from "../persistence/FaunaDB"
 import { updateClients } from "../app/clients"
+import discoverKeyType from "../discoverKeyType";
 
 class User {
-  constructor(client, settings = {}) {
+  constructor({client, adminClient, serverClient}, settings = {}) {
     this.client = client
+    this.adminClient = adminClient
+    this.serverClient = serverClient
     this.settings = settings
   }
 }
@@ -12,8 +15,8 @@ class User {
 export class UnknownUser extends User {}
 
 export class CloudUser extends User {
-  constructor(client, email, userId, settings = {}) {
-    super(client, settings)
+  constructor(clients, email, userId, settings = {}) {
+    super(clients, settings)
     this.email = email
     this.userId = userId
   }
@@ -31,26 +34,26 @@ const login = (endpoint, secret) => createUser => (dispatch, getState) => {
     dispatch
   )
 
-  // Only dispatch LOGIN if endpoint and secret are correct
-  return client.query({}).then(() => {
+  // determine what kind of key permissions the secret has
+  return discoverKeyType(client).then(({adminClient, serverClient}) => {
     dispatch({
       type: Actions.LOGIN,
-      user: createUser(client)
+      user: createUser({client, adminClient, serverClient})
     })
 
-    dispatch(updateClients(client, getState().currentDatabase))
+    dispatch(updateClients(client, getState().currentDatabase)) // smell #96
   })
 }
 
 export const loginWithUnknownUser = (endpoint, secret, settings) => {
   return login(endpoint, secret)(
-    client => new UnknownUser(client, settings)
+    clients => new UnknownUser(clients, settings)
   )
 }
 
 export const loginWithCloudUser = (endpoint, secret, email, userId, settings) => {
   return login(endpoint, secret)(
-    client => new CloudUser(client, email, userId, settings)
+    clients => new CloudUser(clients, email, userId, settings)
   )
 }
 
