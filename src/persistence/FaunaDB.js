@@ -11,8 +11,10 @@ import {
 var errors = []
 
 const onSuccess = dispatch => () => {
-  dispatch(removeNotification(errors))
-  errors = []
+  if (errors.length > 0) {
+    dispatch(removeNotification(errors))
+    errors = []
+  }
 }
 
 const onError = dispatch => newErrors => {
