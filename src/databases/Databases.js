@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { browserHistory } from 'react-router';
 import {TextField} from 'office-ui-fabric-react'
 import SchemaForm from "../schema-form/SchemaForm"
 import {DatabaseForm} from '../database-form/DatabaseForm';
@@ -39,6 +40,7 @@ export class DeleteDatabaseForm extends Component {
       .query(q.Delete(q.Ref("databases/"+this.state.name)))
       .then((res)=>{
         this.setState({name:"", correct : false});
+        browserHistory.push("/db/"+parentSplat+"/databases");
       })
   }
   nameChange(value) {
