@@ -47,8 +47,8 @@ class NavTree extends Component {
 
 function mapStateToProps(state) {
   return {
-    adminClient: state.currentUser.adminClient,
-    serverClient: state.currentUser.serverClient
+    adminClient: state.currentUser && state.currentUser.adminClient,
+    serverClient: state.currentUser && state.currentUser.serverClient
   }
 }
 
