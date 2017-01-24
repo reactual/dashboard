@@ -140,6 +140,12 @@ export class QueryResult extends Component {
     this._onRenderRow = this._onRenderRow.bind(this);
     this._renderItemColumn = this._renderItemColumn.bind(this);
   }
+  componentDidMount() {
+    this.setState({ instanceRef: null })
+  }
+  componentWillReceiveProps() {
+    this.setState({ instanceRef: null })
+  }
   makeResultIntoTableData(result) {
     if (!(result && result.data)) return null;
     var firstResult = result.data[0];
