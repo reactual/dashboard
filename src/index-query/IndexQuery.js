@@ -270,9 +270,9 @@ class InstancePreview extends Component {
     )
 
     const eventColumns = [
-      { key: "action", name: "Action", fieldName: "action", minWidth: 0 },
-      { key: "ts", name: "TS", fieldName: "ts", minWidth: 110 },
-      { key: "data", name: "Data", fieldName: "data", minWidth: 600 },
+      { key: "action", name: "Action", fieldName: "action", minWidth: 40, maxWidth: 40 },
+      { key: "ts", name: "TS", fieldName: "ts", minWidth: 110, maxWidth: 110 },
+      { key: "data", name: "Data", fieldName: "data", isMultiline: true },
     ]
 
     return (
