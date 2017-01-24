@@ -28,14 +28,14 @@ describe("Given an user store", () => {
     it("should be able to login with an unknown user", () =>
       login(unknownUser).then(() =>
         expect(currentUser)
-          .toEqual(new UnknownUser(faunaClient, settings))
+          .toEqual(new UnknownUser({adminClient: faunaClient, client:faunaClient}, settings))
       )
     )
 
     it("should be able to login with a cloud user", () =>
       login(cloudUser).then(() =>
         expect(currentUser)
-          .toEqual(new CloudUser(faunaClient, "user@example.com", "123", settings))
+          .toEqual(new CloudUser({adminClient: faunaClient, client:faunaClient}, "user@example.com", "123", settings))
       )
     )
 
@@ -72,7 +72,7 @@ describe("Given an user store", () => {
   describe("when there is a logged in user", () => {
     beforeEach(() => {
       store = store.withInitialState({
-        currentUser: new UnknownUser(faunaClient, settings)
+        currentUser: new UnknownUser({client:faunaClient}, settings)
       })
     })
 

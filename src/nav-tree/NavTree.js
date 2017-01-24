@@ -14,7 +14,7 @@ class NavTree extends Component {
     super(props);
     this.scopedClient = this.scopedClient.bind(this);
   }
-  scopedClient() {
+  scopedClient() { // todo this is available on the current user
     if (this.props.adminClient) {
       // return a client for the current page url path
       return clientForSubDB(this.props.adminClient, this.props.splat, "server")
@@ -47,8 +47,8 @@ class NavTree extends Component {
 
 function mapStateToProps(state) {
   return {
-    adminClient: state.clients.adminClient,
-    serverClient: state.clients.serverClient
+    adminClient: state.currentUser.adminClient,
+    serverClient: state.currentUser.serverClient
   }
 }
 
