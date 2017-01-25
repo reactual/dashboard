@@ -9,11 +9,14 @@ export function updateClients(rootClient, splat) {
     splat = splat.join("/")
 
   return dispatch => {
+    const scopedServerClient = clientForSubDB(rootClient, splat, "server")
+    const scopedAdminClient = clientForSubDB(rootClient, splat, "admin")
+
     dispatch({
       type: Actions.UPDATE,
       rootClient: rootClient,
-      scopedServerClient: clientForSubDB(rootClient, splat, "server"),
-      scopedAdminClient: clientForSubDB(rootClient, splat, "admin"),
+      scopedServerClient: scopedServerClient,
+      scopedAdminClient: scopedAdminClient,
       splat: splat
     })
   }

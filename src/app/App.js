@@ -11,8 +11,8 @@ import { DatabaseInfo } from '../databases/Databases'
 
 import { resetState } from '../app'
 import { updateClients } from '../app/clients'
-import { updateSelectedClass } from '../classes'
-import { updateSelectedIndex } from '../indexes'
+import { getAllClasses, updateSelectedClass } from '../classes'
+import { getAllIndexes, updateSelectedIndex } from '../indexes'
 import { updateCurrentDatabase } from '../databases'
 import { restoreUserSession } from "../authentication/session"
 
@@ -59,17 +59,16 @@ const onChangeDatabase = (dispatch, getState) => (nextState, replace, callback) 
   if(getState().currentUser) {
     const rootClient = getState().currentUser.client
     dispatch(updateClients(rootClient, splat))
-    return callback()
+    Promise.all([
+      dispatch(getAllClasses(getState().clients.scopedServerClient)),
+      dispatch(getAllIndexes(getState().clients.scopedServerClient))
+    ]).then(() => callback())
+    .catch(() => callback())
   }
 
   restoreUserSession()
-    .then(action => {
-      dispatch(action).then(() => {
-        const rootClient = getState().currentUser.client
-        dispatch(updateClients(rootClient, splat))
-        callback()
-      })
-    })
+    .then(action => dispatch(action))
+    .then(() => callback())
     .catch(() => callback())
 }
 
@@ -102,4 +101,3 @@ export default function App({store}) {
     </Provider>
   );
 }
-
