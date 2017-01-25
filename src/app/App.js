@@ -50,7 +50,7 @@ const onChangeSelection = (dispatch, action) => (nextState, replace, callback) =
   callback()
 }
 
-const onChangeDatabase = (dispatch, getState) => (nextState, replace, callback) => {
+const onChangeDatabase = (dispatch, getState) => (nextState, replace) => {
   const splat = nextState.params.splat ?
                 nextState.params.splat.replace(/^db\/?/, "") : ""
 
@@ -60,13 +60,12 @@ const onChangeDatabase = (dispatch, getState) => (nextState, replace, callback) 
   if(getState().currentUser) {
     const rootClient = getState().currentUser.client
     dispatch(updateClients(rootClient, splat))
-    Promise.all([
+    return Promise.all([
       dispatch(getAllClasses(getState().clients.scopedServerClient)),
       dispatch(getAllIndexes(getState().clients.scopedServerClient))
-    ]).then(() => callback())
-    .catch(() => callback())
+    ])
   }
-  callback()
+
   dispatch(restoringSession(true))
   restoreUserSession()
     .then(action => {
@@ -74,12 +73,10 @@ const onChangeDatabase = (dispatch, getState) => (nextState, replace, callback) 
         dispatch(restoringSession(false))
         const rootClient = getState().currentUser.client
         dispatch(updateClients(rootClient, splat))
-        callback()
       })
     })
     .catch(() => {
       dispatch(restoringSession(false))
-      callback()
     })
 }
 
