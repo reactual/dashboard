@@ -77,7 +77,10 @@ const onChangeDatabase = (dispatch, getState) => (nextState, replace, callback) 
         callback()
       })
     })
-    .catch(() => callback())
+    .catch(() => {
+      dispatch(restoringSession(false))
+      callback()
+    })
 }
 
 export default function App({store}) {
