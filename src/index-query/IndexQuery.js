@@ -148,6 +148,8 @@ export class QueryResult extends Component {
   }
   makeResultIntoTableData(result) {
     if (!(result && result.data)) return null;
+    if (!Array.isArray(result.data)) return null
+
     var firstResult = result.data[0];
     if (!firstResult) return [{message:"Empty result set, no matching data."}];
     var keynames, multiColumn;
