@@ -5,6 +5,7 @@ import Ace from "./repl/Ace"
 import {QueryResult} from "../index-query/IndexQuery"
 import replEval from './repl/repl-eval';
 import { query as q } from "faunadb"
+import queryFunctions from "./queryFunctions"
 
 require('brace/mode/javascript');
 require('brace/theme/monokai');
@@ -47,10 +48,6 @@ export default class FaunaRepl extends Component {
     if (editor.getOption("enableBasicAutocompletion")) return
     editor.setOption("enableBasicAutocompletion", true)
     editor.setOption("enableLiveAutocompletion", true)
-
-    const queryFunctions = Object.values(q)
-      .filter(fun => !!fun.name.match(/^[A-Z]/))
-      .map(fun => fun.name)
 
     const faunaCompleter = {
       getCompletions(editor, session, pos, prefix, callback) {
