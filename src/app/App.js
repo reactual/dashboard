@@ -15,6 +15,7 @@ import { getAllClasses, updateSelectedClass } from '../classes'
 import { getAllIndexes, updateSelectedIndex } from '../indexes'
 import { updateCurrentDatabase } from '../databases'
 import { restoreUserSession } from "../authentication/session"
+import { restoringSession } from "./lifecycle"
 
 import './App.css';
 
@@ -49,7 +50,7 @@ const onChangeSelection = (dispatch, action) => (nextState, replace, callback) =
   callback()
 }
 
-const onChangeDatabase = (dispatch, getState) => (nextState, replace, callback) => {
+const onChangeDatabase = (dispatch, getState) => (nextState, replace) => {
   const splat = nextState.params.splat ?
                 nextState.params.splat.replace(/^db\/?/, "") : ""
 
@@ -59,17 +60,24 @@ const onChangeDatabase = (dispatch, getState) => (nextState, replace, callback) 
   if(getState().currentUser) {
     const rootClient = getState().currentUser.client
     dispatch(updateClients(rootClient, splat))
-    Promise.all([
+    return Promise.all([
       dispatch(getAllClasses(getState().clients.scopedServerClient)),
       dispatch(getAllIndexes(getState().clients.scopedServerClient))
-    ]).then(() => callback())
-    .catch(() => callback())
+    ])
   }
 
+  dispatch(restoringSession(true))
   restoreUserSession()
-    .then(action => dispatch(action))
-    .then(() => callback())
-    .catch(() => callback())
+    .then(action => {
+      dispatch(action).then(() => {
+        dispatch(restoringSession(false))
+        const rootClient = getState().currentUser.client
+        dispatch(updateClients(rootClient, splat))
+      })
+    })
+    .catch(() => {
+      dispatch(restoringSession(false))
+    })
 }
 
 export default function App({store}) {
