@@ -3,9 +3,8 @@ import { loadIntercomWidget, unloadIntercomWidget } from './SDK'
 import Lead from './Lead'
 
 export default class IntercomWidget extends Component {
-  constructor(props) {
-    super(props)
-    this.updateWidget(props.user)
+  componentDidMount() {
+    this.updateWidget(this.props.user)
   }
 
   componentWillReceiveProps(next) {
