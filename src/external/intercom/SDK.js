@@ -77,10 +77,6 @@ function include(appId) {
       x.parentNode.insertBefore(s, x);
     }
 
-    if (w.attachEvent) {
-      w.attachEvent('onload', l);
-    } else {
-      w.addEventListener('load', l, false);
-    }
+    l()
   }
 }
