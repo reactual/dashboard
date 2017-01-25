@@ -5,6 +5,7 @@ import { reduceAuthentication } from '../authentication'
 import { reduceNotifications } from '../notification'
 import { reduceDatabases } from '../databases'
 import { reduceClients } from './clients'
+import { reduceLifecycle } from './lifecycle'
 
 // Actions
 
@@ -29,7 +30,10 @@ export function resetState() {
     indexes: {},
     currentUser: {},
     notifications: {}
-    currentDatabase: []
+    currentDatabase: [],
+    lifecycle : {
+      restoring : true/false
+    }
   }
 
 */
@@ -40,7 +44,8 @@ const appReducer0 = combineReducers({
   currentUser: reduceAuthentication,
   notifications: reduceNotifications,
   currentDatabase: reduceDatabases,
-  clients: reduceClients
+  clients: reduceClients,
+  lifecycle : reduceLifecycle
 })
 
 export function appReducer(state = {}, action) {
@@ -54,4 +59,3 @@ export function appReducer(state = {}, action) {
 
   return appReducer0(state, action)
 }
-

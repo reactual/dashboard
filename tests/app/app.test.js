@@ -7,6 +7,7 @@ it('should reset state', () => {
     currentDatabase: ["datbase-a", "nested-database"],
     currentUser: {},
     clients: {rootClient: {}},
+    lifecycle : {restoring: false},
     notifications: ["a notification"]
   })()
 
@@ -18,7 +19,7 @@ it('should reset state', () => {
     currentDatabase: [],
     currentUser: {},
     clients: {rootClient: {}},
+    lifecycle : {restoring: false},
     notifications: ["a notification"]
   })
 })
-

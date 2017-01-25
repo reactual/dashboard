@@ -15,6 +15,7 @@ import { getAllClasses, updateSelectedClass } from '../classes'
 import { getAllIndexes, updateSelectedIndex } from '../indexes'
 import { updateCurrentDatabase } from '../databases'
 import { restoreUserSession } from "../authentication/session"
+import { restoringSession } from "./lifecycle"
 
 import './App.css';
 
@@ -65,10 +66,17 @@ const onChangeDatabase = (dispatch, getState) => (nextState, replace, callback) 
     ]).then(() => callback())
     .catch(() => callback())
   }
-
+  callback()
+  dispatch(restoringSession(true))
   restoreUserSession()
-    .then(action => dispatch(action))
-    .then(() => callback())
+    .then(action => {
+      dispatch(action).then(() => {
+        dispatch(restoringSession(false))
+        const rootClient = getState().currentUser.client
+        dispatch(updateClients(rootClient, splat))
+        callback()
+      })
+    })
     .catch(() => callback())
 }
 

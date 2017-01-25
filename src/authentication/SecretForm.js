@@ -104,7 +104,7 @@ class SecretForm extends Component {
 
 const stateToProps = state => ({
   currentUser: state.currentUser,
-  show: !state.currentUser
+  show: !state.lifecycle.restoring && !state.currentUser
 })
 
 // Dialog component is not consired pure by react-redux

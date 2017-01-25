@@ -24,7 +24,8 @@ export class CloudUser extends User {
 
 const Actions = {
   LOGIN: "@@authentication/LOGIN",
-  LOGOUT: "@@authentication/LOGOUT"
+  LOGOUT: "@@authentication/LOGOUT",
+  RESTORING: "@@authentication/RESTORING"
 }
 
 const login = (endpoint, secret) => createUser => (dispatch, getState) => {
@@ -61,6 +62,13 @@ export const loginWithCloudUser = (endpoint, secret, email, userId, settings) =>
 export function logout() {
   return {
     type: Actions.LOGOUT
+  }
+}
+
+export function restoringSession(doingRequest) {
+  return {
+    type : Actions.RESTORING,
+    restoring : doingRequest
   }
 }
 
