@@ -8,8 +8,23 @@
   width: 260px;
 }
 
-.header .logout {
+.header ul.menu {
   float: right;
+}
+
+.header .menu li {
+  display: inline-block;
+  list-style: none;
+  padding:4px 20px 6px;
+}
+
+.header .menu li a {
+  color:white;
+  font-weight: bold;
+  text-decoration: none;
+}
+.header .menu li a:hover {
+  color:#00cfcf;
 }
 
 .sidebar {
