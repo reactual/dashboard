@@ -42,6 +42,12 @@ const Home = () =>(
 
 const NotFound = () => (<h1>404.. This page is not found!</h1>);
 
+const promptCreateDatabase = () => {
+  if (browserHistory.getCurrentLocation().pathname.length < 4) {
+    browserHistory.push("/db/databases");
+  }
+}
+
 const onChangeSelection = (dispatch, action) => (nextState, replace, callback) => {
   if(action && nextState.params.name) {
     dispatch(action(nextState.params.name))
@@ -88,7 +94,7 @@ export default function App({store}) {
     <Provider store={store}>
       <Router onUpdate={trackPage} history={browserHistory}>
         <Route path='/db' component={Container} onEnter={onChangeDatabase(dispatch, getState)}>
-          <IndexRoute component={Home} />
+          <IndexRoute component={Home} onEnter={promptCreateDatabase()}/>
           <Route path='/databases' component={DatabaseInfo} />
           <Route path='/**/databases' component={DatabaseInfo} onEnter={onChangeDatabase(dispatch, getState)} />
 
