@@ -3,7 +3,7 @@ import ReactDOM from "react-dom"
 import thunk from 'redux-thunk'
 import createLogger from 'redux-logger'
 import Immutable from "immutable"
-import { createStore, applyMiddleware } from "redux"
+import { createStore, applyMiddleware, compose } from "redux"
 import { combineReducers } from "redux-immutable"
 
 import App from "./app"
@@ -25,6 +25,14 @@ const store = (() => {
     }))
   }
 
+  // Add support for https://github.com/zalmoxisus/redux-devtools-extension
+  // eslint-disable-next-line
+  const composeEnhancers = process.env.NODE_ENV !== 'production' &&
+    typeof window === 'object' &&
+    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?
+    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ :
+    compose
+
   return createStore(
     combineReducers({
       schema: reduceSchemaTree,
@@ -32,7 +40,9 @@ const store = (() => {
       notifications: reduceNotifications,
       lock: reduceLock
     }),
-    applyMiddleware(...middlewares)
+    composeEnhancers(
+      applyMiddleware(...middlewares)
+    )
   )
 })()
 
