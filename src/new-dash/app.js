@@ -1,7 +1,9 @@
 import React, { Component } from "react"
 import { Provider, connect } from "react-redux"
-import { Router, Route, IndexRoute, browserHistory } from "react-router"
+import { Router, Route, IndexRoute, Link, browserHistory } from "react-router"
 
+import "./app.css"
+import logo from "./logo.svg"
 import FaunaClient from "./persistence/FaunaDB"
 import { updateSelected } from "./router"
 import { ActivityMonitor, withLock } from "./lock"
@@ -40,6 +42,11 @@ class Container extends Component {
 
   render() {
     return <div className="ms-Grid">
+        <div className="ms-Grid-row ms-bgColor-black">
+          <div className="ms-Grid-col ms-u-sm7 ms-u-md5 ms-u-lg2 padding-05">
+            <Link to="/"><img src={logo} alt="logo" /></Link>
+          </div>
+        </div>
         <div className="ms-Grid-row">
           <div className="ms-Grid-col ms-u-sm12 ms-u-md6 ms-u-lg4">
             <NavTree />
