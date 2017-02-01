@@ -10,7 +10,7 @@ import App from "./app"
 import { reduceSchemaTree } from "./schema"
 import { reduceRouter } from "./router"
 import { reduceNotifications } from "./notifications"
-import { reduceLock } from "./lock"
+import { reduceActivityMonitor } from "./activity-monitor"
 
 const store = (() => {
   const middlewares = [thunk]
@@ -38,7 +38,7 @@ const store = (() => {
       schema: reduceSchemaTree,
       router: reduceRouter,
       notifications: reduceNotifications,
-      lock: reduceLock
+      activityMonitor: reduceActivityMonitor
     }),
     composeEnhancers(
       applyMiddleware(...middlewares)

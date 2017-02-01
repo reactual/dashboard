@@ -6,7 +6,7 @@ import "./app.css"
 import logo from "./logo.svg"
 import FaunaClient from "./persistence/FaunaDB"
 import { updateSelected } from "./router"
-import { ActivityMonitor, withLock } from "./lock"
+import { ActivityMonitor, monitorActivity } from "./activity-monitor"
 import { NotificationBar, watchForError } from "./notifications"
 import { loadSchemaTree, NavTree, DatabaseForm } from "./schema"
 
@@ -28,7 +28,7 @@ class Container extends Component {
 
   updateSelectedResource(splat) {
     this.props.dispatch(
-      withLock(
+      monitorActivity(
         watchForError(
           "Unexpected error while loading database. It may not exist or your key can't access it",
           (dispatch) => {
