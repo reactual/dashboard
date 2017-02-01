@@ -4,9 +4,7 @@ import { Nav } from "office-ui-fabric-react"
 
 import { classesInSelectedDatabase, indexesInSelectedDatabase } from "../"
 
-const onClick = (e) => {
-  e.preventDefault()
-}
+const onClick = (e) => e.preventDefault()
 
 const asLinks = (items) => {
   return items.map(name => {
@@ -38,10 +36,8 @@ const NavSchema = (props) => {
 }
 
 export default connect(
-  state => {
-    return {
-      classes: classesInSelectedDatabase(state),
-      indexes: indexesInSelectedDatabase(state)
-    }
-  }
+  state => ({
+    classes: classesInSelectedDatabase(state),
+    indexes: indexesInSelectedDatabase(state)
+  })
 )(NavSchema)
