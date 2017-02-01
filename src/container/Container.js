@@ -89,8 +89,8 @@ class Container extends Component {
             <div className="ms-Grid-row header">
               <Link to="/"><img src={logo} className="logo" alt="logo" /></Link>
               <ul className="menu">
-                <li><a href="http://fauna.com/tutorials">Tutorials</a></li>
-                <li><a href="http://fauna.com/documentation">Documentation</a></li>
+                <li><a href="http://fauna.com/tutorials" target="_blank">Tutorials</a></li>
+                <li><a href="http://fauna.com/documentation" target="_blank">Documentation</a></li>
                 <li><Button className="logout" onClick={this.logout}>Log out</Button></li>
               </ul>
               <SecretForm />
