@@ -4,7 +4,7 @@ const Actions = {
   UPDATE_SELECTED: "@@router/UPDATE_SELECTED"
 }
 
-export const updateSelected = (databasePath, resourceType, resourceName) => (dispatch) => {
+export const updateSelected = (databasePath) => (dispatch) => {
   const resource = Immutable.fromJS({
     database: (databasePath && databasePath.split("/")) || []
   })
