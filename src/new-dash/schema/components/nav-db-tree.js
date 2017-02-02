@@ -1,46 +1,70 @@
-import React from "react"
-import Immutable from "immutable"
+import React, { Component } from "react"
+import { Map } from "immutable"
 import { connect } from "react-redux"
 import { browserHistory } from "react-router"
 import { Nav, css } from "office-ui-fabric-react";
 
-const databaseLinks = (schema, dbUrl = "") => {
-  const databaseTree = (db) => {
-    const name = db.getIn(["info", "name"])
-    const url = `${dbUrl}/${name}`
+class NavDBTree extends Component {
+  constructor(props) {
+    super(props)
+     this.state = { links: [] }
+  }
 
-    return {
-      name,
-      url,
-      key: url,
-      isExpanded: true,
-      links: databaseLinks(db, url)
+  componentDidMount() {
+    this.buildLinks(this.props.schema)
+  }
+
+  componentWillReceiveProps(next) {
+    if (this.props.schema !== next.schema) {
+      this.buildLinks(next.schema)
     }
   }
 
-  return schema
-    .getIn(["databases", "byName"], Immutable.Map())
-    .map(nested => databaseTree(nested))
-    .toList()
-    .toJS()
+  buildLinks(schema) {
+    this.setState({
+      links: this.databaseLinks(schema, this.state.links)
+    })
+  }
+
+  databaseLinks(schema, links, partenUrl = "") {
+    const databaseTree = (db) => {
+      const name = db.getIn(["info", "name"])
+      const key = `${partenUrl}/${name}`
+      const link = links.find(l => l.key === key) || {}
+
+      return {
+        name,
+        key,
+        url: key,
+        links: this.databaseLinks(db, link.links || [], key),
+        isExpanded: (typeof link.isExpanded === "undefined" ? true : link.isExpanded)
+      }
+    }
+
+    return schema
+      .getIn(["databases", "byName"], Map())
+      .map(nested => databaseTree(nested))
+      .toList()
+      .toJS()
+  }
+
+  onClick(e, link) {
+    e.preventDefault()
+    browserHistory.push(link.url)
+  }
+
+  render() {
+    const links = [{
+      name: "Databases",
+      links: this.state.links
+    }]
+
+    return <Flav groups={links} onLinkClick={this.onClick.bind(this)} />
+  }
 }
 
-const onClick = (e, link) => {
-  e.preventDefault()
-  browserHistory.push(link.url)
-}
 
-const NavDBTree = (props) => {
-  const links = [{
-    name: "Databases",
-    isExpanded: true,
-    links: databaseLinks(props.schema)
-  }]
-
-  return <Flav groups={links} onLinkClick={onClick} />
-}
-
-// Custom nav tree to add chevron icon to all sub databases
+// Custom Nav to add chevron icon to all sub levels
 class Flav extends Nav {
   _renderCompositeLink(link, linkIndex, nestingLevel) {
     const key = link.key || linkIndex
