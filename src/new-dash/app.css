@@ -1,1 +1,24 @@
-.padding-05 { padding: 0.5em; }
+.header {
+    padding: 0.5em;
+}
+
+.header ul {
+    float: right;
+}
+
+.header ul li {
+    display: inline-block;
+    list-style: none;
+    padding: 0.5em;
+    vertical-align: middle;
+}
+
+.header a {
+    color: white;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.header a:hover {
+    color: #0078d7;
+}

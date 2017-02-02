@@ -2,11 +2,12 @@ import React from "react"
 import { connect } from "react-redux"
 import { Spinner } from "office-ui-fabric-react"
 
+import "./activity-monitor.css"
 import { isBusy } from "../"
 
 const ActivityMonitor = (props) => {
   if (!props.isBusy) return null
-  return <Spinner label="Processing request..." />
+  return <Spinner className="activity-monitor" />
 }
 
 export default connect(
