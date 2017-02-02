@@ -75,7 +75,7 @@ export function createClient(endpoint, secret, dispatch) {
   return new faunadb.Client(opts)
 }
 
-// https://github.com/faunadb/core/issues/3546 will admin keys able to do what server keys can do
+// https://github.com/fauna/core/issues/3546 will admin keys able to do what server keys can do
 export function clientForSubDB(adminClient, dbName, type) {
   if (!adminClient) return null;
   if (!dbName) return adminClient;

@@ -2,8 +2,8 @@ import faunadb from 'faunadb';
 const q = faunadb.query, Ref = q.Ref;
 
 // this is bad tech debt, will fix when
-// https://github.com/faunadb/core/issues/3546 makes admin keys able to do what server keys can do
-// and https://github.com/faunadb/core/issues/3584 allows keys to know what kind they are
+// https://github.com/fauna/core/issues/3546 makes admin keys able to do what server keys can do
+// and https://github.com/fauna/core/issues/3584 allows keys to know what kind they are
 export default function discoverKeyType(client) {
   if (!client) return Promise.resolve({});
   const nonce = Math.random().toString(12).slice(2);

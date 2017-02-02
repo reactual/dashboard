@@ -10,7 +10,7 @@ is an admin secret but we support any type of secret by using capability detecti
 Clone this repo, install the dependencies, and launch the development server.
 
 ```sh
-git clone https://github.com/faunadb/dashboard
+git clone https://github.com/fauna/dashboard
 cd dashboard
 npm install
 npm start
