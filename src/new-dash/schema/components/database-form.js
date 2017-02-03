@@ -6,6 +6,7 @@ import SchemaForm from "./schema-form"
 import { createDatabase } from "../"
 import { selectedDatabasePath } from "../../router"
 import { notify } from "../../notifications"
+import { faunaClient } from "../../authentication"
 
 class DatabaseForm extends Component {
   constructor(props) {
@@ -60,6 +61,7 @@ class DatabaseForm extends Component {
 
 export default connect(
   state => ({
-    selectedDatabase: selectedDatabasePath(state)
+    selectedDatabase: selectedDatabasePath(state),
+    faunaClient: faunaClient(state)
   })
 )(DatabaseForm)

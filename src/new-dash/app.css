@@ -1,5 +1,5 @@
 .header {
-    padding: 0.5em;
+    padding: 0.5em 0 0.5em 0;
 }
 
 .header ul {
@@ -9,16 +9,22 @@
 .header ul li {
     display: inline-block;
     list-style: none;
-    padding: 0.5em;
+    padding: 0 0 0 1em;
     vertical-align: middle;
 }
 
+.header .ms-Button,
 .header a {
-    color: white;
+    color: white
+}
+
+.header a {
     font-weight: bold;
     text-decoration: none;
 }
 
-.header a:hover {
+.header a:hover,
+.header .ms-Button:hover {
     color: #0078d7;
 }
+

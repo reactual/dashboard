@@ -2,7 +2,7 @@ import Immutable, { Map } from "immutable"
 import { query as q } from "faunadb"
 
 import { loadSchemaTree, createDatabase, reduceSchemaTree } from "../"
-import { KeyType } from "../../persistence/FaunaDB"
+import { KeyType } from "../../persistence/faunadb-wrapper"
 
 const rootDatabase = {
   adminKeyResponse: {
