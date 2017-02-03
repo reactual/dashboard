@@ -2,6 +2,7 @@ import React from "react"
 import { connect } from "react-redux"
 import { MessageBar, MessageBarType } from "office-ui-fabric-react"
 
+import "./notification-bar.css"
 import { NotificationType } from "../"
 
 const messageBarTypeFor = (notificationType) => {
@@ -13,16 +14,18 @@ const messageBarTypeFor = (notificationType) => {
 }
 
 const NotificationBar = (props) => {
-  return <ul>{
-    props.notifications.map((notification, index) => (
-      <li key={index}>
-        <MessageBar
-          messageBarType={messageBarTypeFor(notification.type)}>
-          {notification.message}
-        </MessageBar>
-      </li>
-    ))
-  }</ul>
+  return <div className="notification-bar">
+      <ul>{
+      props.notifications.map((notification, index) => (
+        <li key={index} className="ms-u-fadeIn100">
+          <MessageBar
+            messageBarType={messageBarTypeFor(notification.type)}>
+            {notification.message}
+          </MessageBar>
+        </li>
+      ))
+    }</ul>
+  </div>
 }
 
 export default connect(

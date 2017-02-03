@@ -10,29 +10,26 @@ const asLinks = (items) => {
   return items.map(name => {
     return {
       name: name,
-      key: name,
-      onClick: onClick
+      key: name
     }
   }).toJS()
 }
 
 const NavSchema = (props) => {
-  const links = [{
-    links: [
-      {
-        name: "Classes",
-        links: asLinks(props.classes),
-        isExpanded: true
-      },
-      {
-        name: "Indexes",
-        links: asLinks(props.indexes),
-        isExpanded: true
-      }
-    ]
-  }]
+  const links = [
+    {
+      name: "Classes",
+      links: asLinks(props.classes),
+      isExpanded: true
+    },
+    {
+      name: "Indexes",
+      links: asLinks(props.indexes),
+      isExpanded: true
+    }
+  ]
 
-  return <Nav groups={links} />
+  return <Nav groups={links} onLinkClick={onClick} />
 }
 
 export default connect(
