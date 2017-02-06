@@ -7,8 +7,8 @@ import logo from "./logo.svg"
 import { updateSelected } from "./router"
 import { ActivityMonitor, monitorActivity } from "./activity-monitor"
 import { NotificationBar, watchForError } from "./notifications"
-import { NavTree, DatabaseForm, loadSchemaTree } from "./schema"
 import { LoginForm, UserAccount, faunaClient } from "./authentication"
+import { NavTree, DatabaseForm, ClassForm, loadSchemaTree } from "./schema"
 import { IntercomWidget } from "./external/intercom"
 
 class Container extends Component {
@@ -90,6 +90,8 @@ export default class App extends Component {
         <Router history={browserHistory}>
           <Route path="/" component={App.Container}>
             <IndexRoute component={DatabaseForm} />
+            <Route path="classes" component={ClassForm} />
+            <Route path="**/classes" component={ClassForm} />
             <Route path="**" component={DatabaseForm} />
           </Route>
         </Router>
