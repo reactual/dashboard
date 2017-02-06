@@ -72,7 +72,7 @@ export const loadSchemaTree = (client, dbPath = []) => (dispatch, getState) => {
   )
 }
 
-const create = (keyType, createQuery, nodeToUpdate, mapper = x => x) => (client, dbPath, config) => (dispatch) => {
+const create = (nodeToUpdate, keyType, createQuery, mapper = x => x) => (client, dbPath, config) => (dispatch) => {
   return client.query(dbPath, keyType, createQuery(config)).then(
     instance => dispatch({
       type: Actions.UPDATE,
@@ -82,8 +82,9 @@ const create = (keyType, createQuery, nodeToUpdate, mapper = x => x) => (client,
   )
 }
 
-export const createDatabase = create(KeyType.ADMIN, q.CreateDatabase, "databases", toDatabase)
-export const createClass = create(KeyType.SERVER, q.CreateClass, "classes")
+export const createDatabase = create("databases", KeyType.ADMIN, q.CreateDatabase, toDatabase)
+export const createClass = create("classes", KeyType.SERVER, q.CreateClass)
+export const createIndex = create("indexes", KeyType.SERVER, q.CreateIndex)
 
 const ensureTreeInfo = (tree, path) => {
   if (path.isEmpty()) return tree
