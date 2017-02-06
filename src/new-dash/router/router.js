@@ -1,13 +1,12 @@
-import Immutable, { Map } from "immutable"
+import { Map, List } from "immutable"
 
 const Actions = {
   UPDATE_SELECTED: "@@router/UPDATE_SELECTED"
 }
 
 export const updateSelected = (databasePath) => (dispatch) => {
-  const resource = Immutable.fromJS({
-    database: (databasePath && databasePath.split("/")) || []
-  })
+  const path = List((databasePath && databasePath.split("/")) || [])
+  const resource = Map({ database: path.filter(elem => elem.trim()) })
 
   dispatch({
     type: Actions.UPDATE_SELECTED,
