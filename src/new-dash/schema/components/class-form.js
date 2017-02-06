@@ -3,7 +3,7 @@ import { connect } from "react-redux"
 import { TextField, Checkbox } from "office-ui-fabric-react"
 
 import SchemaForm from "./schema-form"
-import { createClass } from "../"
+import { createClass, createIndex } from "../"
 import { selectedDatabasePath } from "../../router"
 import { notify } from "../../notifications"
 
@@ -45,11 +45,23 @@ class ClassForm extends Component {
   }
 
   onSubmit() {
-    return notify("Class created successfully", createClass(
-      this.props.faunaClient,
-      this.props.selectedDatabase,
-      this.classConfig()
-    ))
+    return notify("Class created successfully", dispatch => {
+      let res = dispatch(createClass(
+        this.props.faunaClient,
+        this.props.selectedDatabase,
+        this.classConfig()
+      ))
+
+      if (this.state.classIndex) {
+        res = res.then(clazz => dispatch(createIndex(
+          this.props.faunaClient,
+          this.props.selectedDatabase,
+          this.indexConfig(clazz)
+        )))
+      }
+
+      return res
+    })
   }
 
   classConfig() {
@@ -60,6 +72,13 @@ class ClassForm extends Component {
     if (history) config.history_days = parseInt(history, 10)
 
     return config
+  }
+
+  indexConfig(clazz) {
+    return {
+      name: `all_${clazz.name}`,
+      source: clazz.ref
+    }
   }
 
   render() {
