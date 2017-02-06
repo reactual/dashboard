@@ -68,11 +68,18 @@ class ClassForm extends Component {
     const { name, history, ttl } = this.state
 
     const config = { name }
-    if (ttl) config.ttl_days = parseInt(ttl, 10)
-    if (history) config.history_days = parseInt(history, 10)
+    if (ttl) config.ttl_days = this.parseIntOfFail(ttl)
+    if (history) config.history_days = this.parseIntOfFail(history)
 
     return config
   }
+
+  parseIntOfFail(n) {
+    const res = parseInt(n, 10)
+    if (isNaN(res)) throw Error(`Invalid integer ${n}`)
+    return res
+  }
+
 
   indexConfig(clazz) {
     return {
