@@ -1,8 +1,8 @@
-import { Seq } from "immutable"
+import { Map, List } from "immutable"
 import { createSelector } from "reselect"
 
 export const selectedDatabasePath = (state) =>
-  state.getIn(["router", "database"], Seq())
+  state.getIn(["router", "database"], List())
 
 export const selectedDatabaseUrl = createSelector(
   [selectedDatabasePath],
@@ -11,3 +11,14 @@ export const selectedDatabaseUrl = createSelector(
     return url ? `/${url}` : ""
   }
 )
+
+const databasePath = state => state.getIn(["router", "database"], List())
+
+export const selectedResource = createSelector([databasePath], path => {
+  return Map.of(
+    "database", Map.of(
+      "path", path,
+      "url", `/${path.join("/")}`
+    )
+  )
+})

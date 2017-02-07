@@ -1,6 +1,6 @@
 import Immutable from "immutable"
 
-import { selectedDatabasePath, selectedDatabaseUrl } from "../"
+import { selectedDatabasePath, selectedDatabaseUrl, selectedResource } from "../"
 
 describe("selectedDatabasePath", () => {
   it("returns selected path", () => {
@@ -39,5 +39,33 @@ describe("selectedDatabaseUrl", () => {
     }))
 
     expect(path).toEqual("")
+  })
+})
+
+describe("selectedResource", () => {
+  describe("when there is a database selected", () => {
+    const state = Immutable.fromJS({
+      router: {
+        database: ["a", "b"]
+      }
+    })
+
+    const selected = selectedResource(state).toJS()
+
+    it("contains database path", () => expect(selected.database.path).toEqual(["a", "b"]))
+    it("contains database url", () => expect(selected.database.url).toEqual("/a/b"))
+  })
+
+  describe("when there is NO database selected", () => {
+    const state = Immutable.fromJS({
+      router: {
+        database: []
+      }
+    })
+
+    const selected = selectedResource(state).toJS()
+
+    it("contains empty database path", () => expect(selected.database.path).toEqual([]))
+    it("contains root url", () => expect(selected.database.url).toEqual("/"))
   })
 })
