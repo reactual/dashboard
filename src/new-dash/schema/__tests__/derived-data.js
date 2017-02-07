@@ -2,6 +2,7 @@ import Immutable from "immutable"
 
 import {
   selectedDatabase,
+  databaseTree,
   subDatabasesInSelectedDatabase,
   classesInSelectedDatabase,
   indexesInSelectedDatabase
@@ -88,6 +89,35 @@ describe("selectedDatabase", () => {
     it("contains root db name", () => expect(database.name).toEqual("/"))
     it("contains no classes", () => expect(database.classes).toEqual([]))
     it("contains no indexes", () =>  expect(database.indexes).toEqual([]))
+  })
+})
+
+describe("databaseTree", () => {
+  it("returns the database tree", () => {
+    const state = Immutable.fromJS({
+      schema: schemaTree,
+      router: {
+        database: []
+      }
+    })
+
+    expect(databaseTree(state).toJS()).toEqual({
+      url: "/",
+      name: "/",
+      databases: [
+        {
+          url: "/my-app",
+          name: "my-app",
+          databases: [
+            {
+              url: "/my-app/my-blog",
+              name: "my-blog",
+              databases: []
+            }
+          ]
+        }
+      ]
+    })
   })
 })
 

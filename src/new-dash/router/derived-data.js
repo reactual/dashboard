@@ -25,6 +25,8 @@ export const selectedResource = createSelector([databasePath], path => {
 
 export const buildUrl = (parentUrl, ...parts) => {
   const url = parts.join("/")
-  if (parentUrl !== "/") return `${parentUrl}/${url}`
-  return `/${url}`
+  if (url === "/") return parentUrl
+  if (parentUrl === "/") return `/${url}`
+
+  return `${parentUrl}/${url}`
 }

@@ -39,8 +39,25 @@ export const selectedDatabase = createSelector([schema, database0], (schema, sel
   return Map.of(
     "path", path,
     "url", url,
-    "name", db.getIn(["info", "name"], ""),
+    "name", db.getIn(["info", "name"]),
     "classes", extract("classes", db, url),
     "indexes", extract("indexes", db, url)
   )
+})
+
+export const databaseTree = createSelector([schema], schema => {
+  const buildTree = (node, parentUrl = "/") => {
+    const name = node.getIn(["info", "name"])
+    const url = buildUrl(parentUrl, name)
+
+    return Map.of(
+      "url", url,
+      "name", name,
+      "databases", node.getIn(["databases", "byName"], Map()).toList().map(
+        db => buildTree(db, url)
+      )
+    )
+  }
+
+  return buildTree(schema)
 })
