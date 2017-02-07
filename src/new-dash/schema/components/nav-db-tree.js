@@ -1,8 +1,9 @@
 import React, { Component } from "react"
-import { Map } from "immutable"
 import { connect } from "react-redux"
 import { browserHistory } from "react-router"
 import { Nav, css } from "office-ui-fabric-react";
+
+import { databaseTree } from "../"
 
 class NavDBTree extends Component {
   constructor(props) {
@@ -11,40 +12,39 @@ class NavDBTree extends Component {
   }
 
   componentDidMount() {
-    this.buildLinks(this.props.schema)
+    this.buildLinks(this.props.databaseTree)
   }
 
   componentWillReceiveProps(next) {
-    if (this.props.schema !== next.schema) {
-      this.buildLinks(next.schema)
+    if (this.props.databaseTree !== next.databaseTree) {
+      this.buildLinks(next.databaseTree)
     }
   }
 
-  buildLinks(schema) {
+  buildLinks(databaseTree) {
     this.setState({
-      links: this.databaseLinks(schema, this.state.links)
+      links: this.databaseLinks(databaseTree, this.state.links)
     })
   }
 
-  databaseLinks(schema, links, partenUrl = "") {
-    const databaseTree = (db) => {
-      const name = db.getIn(["info", "name"])
-      const key = `${partenUrl}/${name}`
+  databaseLinks(databaseTree, links) {
+    const toLink = (db) => {
+      const name = db.get("name")
+      const key = db.get("url")
       const link = links.find(l => l.key === key) || {}
 
       return {
         name,
         key,
         url: key,
-        links: this.databaseLinks(db, link.links || [], key),
+        links: this.databaseLinks(db, link.links || []),
         isExpanded: (typeof link.isExpanded === "undefined" ? true : link.isExpanded)
       }
     }
 
-    return schema
-      .getIn(["databases", "byName"], Map())
-      .map(nested => databaseTree(nested))
-      .toList()
+    return databaseTree
+      .get("databases")
+      .map(toLink)
       .toJS()
   }
 
@@ -62,7 +62,6 @@ class NavDBTree extends Component {
     return <Flav groups={links} onLinkClick={this.onClick.bind(this)} />
   }
 }
-
 
 // Custom Nav to add chevron icon to all sub levels
 class Flav extends Nav {
@@ -87,6 +86,6 @@ class Flav extends Nav {
 
 export default connect(
   state => ({
-    schema: state.get("schema")
+    databaseTree: databaseTree(state)
   })
 )(NavDBTree)
