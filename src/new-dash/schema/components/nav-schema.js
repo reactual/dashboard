@@ -4,6 +4,7 @@ import { browserHistory } from "react-router"
 import { Nav } from "office-ui-fabric-react"
 
 import { selectedDatabase } from "../"
+import { buildUrl } from "../../router"
 
 const onClick = (e, link) => {
   e.preventDefault()
@@ -37,7 +38,7 @@ const NavSchema = ({ selectedDatabase }) => {
         {
           name: "Create Class",
           key: "create-class",
-          url: `${url}/classes`
+          url: buildUrl(url, "classes")
         }
       ],
       isExpanded: true
