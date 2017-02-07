@@ -1,12 +1,6 @@
 import Immutable from "immutable"
 
-import {
-  selectedDatabase,
-  databaseTree,
-  subDatabasesInSelectedDatabase,
-  classesInSelectedDatabase,
-  indexesInSelectedDatabase
-} from "../"
+import { selectedDatabase, databaseTree } from "../"
 
 const schemaTree = Immutable.fromJS({
   info: {
@@ -118,79 +112,5 @@ describe("databaseTree", () => {
         }
       ]
     })
-  })
-})
-
-describe("subDatabasesInSelectedDatabase", () => {
-  it("returns a list of sub databases", () => {
-    const state = Immutable.fromJS({
-      schema: schemaTree,
-      router: {
-        database: ["my-app"]
-      }
-    })
-
-    expect(subDatabasesInSelectedDatabase(state).toJS())
-      .toEqual(["my-blog"])
-  })
-
-  it("returns empty list when no selected database", () => {
-    const state = Immutable.fromJS({
-      schema: schemaTree,
-      router: {
-        database: ["not-loaded"]
-      }
-    })
-
-    expect(subDatabasesInSelectedDatabase(state).toJS())
-      .toEqual([])
-  })
-})
-
-describe("classesInSelectedDatabase", () => {
-  it("returns a list of selected classes", () => {
-    const state = Immutable.fromJS({
-      schema: schemaTree,
-      router: {
-        database: ["my-app", "my-blog"]
-      }
-    })
-
-    expect(classesInSelectedDatabase(state).toJS())
-      .toEqual(["people", "users"])
-  })
-
-  it("returns empty list when no selected database", () => {
-    const state = Immutable.fromJS({
-      schema: schemaTree,
-      router: {}
-    })
-
-    expect(classesInSelectedDatabase(state).toJS())
-      .toEqual([])
-  })
-})
-
-describe("indexesInSelectedDatabase", () => {
-  it("returns a list of selected indexes", () => {
-    const state = Immutable.fromJS({
-      schema: schemaTree,
-      router: {
-        database: ["my-app", "my-blog"]
-      }
-    })
-
-    expect(indexesInSelectedDatabase(state).toJS())
-      .toEqual(["all_people", "all_users"])
-  })
-
-  it("returns empty list when no selected database", () => {
-    const state = Immutable.fromJS({
-      schema: schemaTree,
-      router: {}
-    })
-
-    expect(indexesInSelectedDatabase(state).toJS())
-      .toEqual([])
   })
 })

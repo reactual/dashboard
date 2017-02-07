@@ -2,24 +2,10 @@ import { Map } from "immutable"
 import { createSelector } from "reselect"
 
 import { nestedDatabaseNodeIn } from "./path"
-import { selectedDatabasePath, selectedResource, buildUrl } from "../router"
+import { selectedResource, buildUrl } from "../router"
 
 const schema = (state) => state.get("schema")
-const getAll = (node) => (tree) => tree.getIn([node, "byName"], Map()).keySeq()
-
-const database = createSelector(
-  [schema, selectedDatabasePath],
-  (schema, path) => schema.getIn(nestedDatabaseNodeIn(path), Map())
-)
-
-export const subDatabasesInSelectedDatabase = createSelector([database], getAll("databases"))
-export const classesInSelectedDatabase = createSelector([database], getAll("classes"))
-export const indexesInSelectedDatabase = createSelector([database], getAll("indexes"))
-
-const database0 = createSelector(
-  [selectedResource],
-  resource => resource.get("database")
-)
+const database = createSelector([selectedResource], resource => resource.get("database"))
 
 const extract = (node, db, url) => {
   return db.getIn([node, "byName"], Map()).toList().map(instance => {
@@ -31,7 +17,7 @@ const extract = (node, db, url) => {
   })
 }
 
-export const selectedDatabase = createSelector([schema, database0], (schema, selected) => {
+export const selectedDatabase = createSelector([schema, database], (schema, selected) => {
   const path = selected.get("path")
   const url = selected.get("url")
   const db = schema.getIn(nestedDatabaseNodeIn(path), Map())
