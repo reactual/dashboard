@@ -74,11 +74,14 @@ export const loadSchemaTree = (client, dbPath = []) => (dispatch, getState) => {
 
 const create = (nodeToUpdate, keyType, createQuery, mapper = x => x) => (client, dbPath, config) => (dispatch) => {
   return client.query(dbPath, keyType, createQuery(config)).then(
-    instance => dispatch({
-      type: Actions.UPDATE,
-      path: nestedDatabaseNodeIn(dbPath, [nodeToUpdate, "byName", instance.name]),
-      data: mapper(instance)
-    })
+    instance => {
+      dispatch({
+        type: Actions.UPDATE,
+        path: nestedDatabaseNodeIn(dbPath, [nodeToUpdate, "byName", instance.name]),
+        data: mapper(instance)
+      })
+      return instance
+    }
   )
 }
 
