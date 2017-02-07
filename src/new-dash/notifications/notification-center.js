@@ -30,7 +30,15 @@ const push = (dispatch, type, message) => {
 }
 
 export const watchForError = (message, action) => (dispatch) => {
-  return dispatch(action).catch(error => {
+  let res
+
+  try {
+    res = dispatch(action)
+  } catch (error) {
+    res = Promise.reject(error)
+  }
+
+  return res.catch(error => {
     push(dispatch, NotificationType.ERROR, `${message ? message + ". " : ""}${error}`)
     throw error
   })

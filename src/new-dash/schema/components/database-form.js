@@ -43,13 +43,11 @@ class DatabaseForm extends Component {
   }
 
   render() {
-    const context = this.props.selectedDatabase.join("/")
-
     return <SchemaForm
+        title="Create a new database"
         buttonText="Create Database"
         onSubmit={this.onSubmit.bind(this)}
         onFinish={this.reset.bind(this)}>
-          <h3>Create a new database {context ? "in " + context : ""}</h3>
           <TextField label="Name"
             required={true}
             value={this.state.name}

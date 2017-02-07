@@ -45,6 +45,13 @@ describe("Given a notification store", () => {
       })
     })
 
+    it("should notify for errors when exception is thrown", () => {
+      return store.dispatch(watchForError(null, () => { throw "Some error" })).catch(finalError => {
+        expect(notifications).toEqual([{ type: "error", message: "Some error" }])
+        expect(finalError).toEqual("Some error")
+      })
+    })
+
     it("should not notify on success", () => {
       return store.dispatch(watchForError("Some error", successfull)).then(finalResult => {
         expect(notifications).toEqual([])

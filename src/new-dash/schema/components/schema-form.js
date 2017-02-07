@@ -2,6 +2,7 @@ import React from "react"
 import { connect } from "react-redux"
 import { Button, ButtonType } from "office-ui-fabric-react"
 
+import { selectedDatabaseUrl } from "../../router"
 import { monitorActivity, isBusy } from "../../activity-monitor"
 
 const SchemaForm = (props) => {
@@ -13,6 +14,7 @@ const SchemaForm = (props) => {
   }
 
   return <form>
+      <h3>{props.title}{props.url ? " in " + props.url : null}</h3>
       {props.children}
       <Button
         disabled={props.disabled}
@@ -25,6 +27,7 @@ const SchemaForm = (props) => {
 
 export default connect(
   state => ({
-    disabled: isBusy(state)
+    disabled: isBusy(state),
+    url: selectedDatabaseUrl(state)
   })
 )(SchemaForm)

@@ -1,7 +1,14 @@
 import Immutable, { Map } from "immutable"
 import { query as q } from "faunadb"
 
-import { loadSchemaTree, createDatabase, reduceSchemaTree } from "../"
+import {
+  loadSchemaTree,
+  createDatabase,
+  createClass,
+  createIndex,
+  reduceSchemaTree
+} from "../"
+
 import { KeyType } from "../../persistence/faunadb-wrapper"
 
 const rootDatabase = {
@@ -221,7 +228,38 @@ describe("Given a schema tree store", () => {
       })
     })
 
-    xit("should be able to create a new class", () => {})
-    xit("should be able to create a new index", () => {})
+    it("should be able to create a new class", () => {
+      faunaClient.query.mockReturnValue(Promise.resolve({
+        name: "new-class"
+      }))
+
+      return store.dispatch(createClass(faunaClient, ["my-app"], { name: "new-class" })).then(() => {
+        expect(schema).toEqual(
+          rootDatabase.schemaTree.setIn(
+            ["databases", "byName", "my-app", "classes", "byName", "new-class"],
+            Immutable.fromJS({
+              name: "new-class"
+            })
+          ).toJS()
+        )
+      })
+    })
+
+    it("should be able to create a new index", () => {
+      faunaClient.query.mockReturnValue(Promise.resolve({
+        name: "new-index"
+      }))
+
+      return store.dispatch(createIndex(faunaClient, ["my-app"], { name: "new-index" })).then(() => {
+        expect(schema).toEqual(
+          rootDatabase.schemaTree.setIn(
+            ["databases", "byName", "my-app", "indexes", "byName", "new-index"],
+            Immutable.fromJS({
+              name: "new-index"
+            })
+          ).toJS()
+        )
+      })
+    })
   })
 })

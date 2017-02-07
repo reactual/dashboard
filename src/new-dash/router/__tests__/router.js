@@ -18,4 +18,9 @@ describe("Given a router store", () => {
     store.dispatch(updateSelected("my-app/my-blog"))
     expect(selectedResource).toEqual({ database: ["my-app", "my-blog"] })
   })
+
+  it("should empty paths", () => {
+    store.dispatch(updateSelected("my-app///my-blog/"))
+    expect(selectedResource).toEqual({ database: ["my-app", "my-blog"] })
+  })
 })
