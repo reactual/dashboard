@@ -1,7 +1,7 @@
 import Immutable, { Map, List } from "immutable"
 import { query as q } from "faunadb"
 
-import { KeyType } from "../persistence/FaunaDB"
+import { KeyType } from "../persistence/faunadb-wrapper"
 import { nestedDatabaseNodeIn } from "./path"
 
 const Actions = {
