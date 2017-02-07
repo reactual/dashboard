@@ -8,7 +8,10 @@ import { selectedDatabaseUrl } from "../../router"
 
 const onClick = (e, link) => {
   e.preventDefault()
-  browserHistory.push(link.url)
+
+  if (link.url) {
+    browserHistory.push(link.url)
+  }
 }
 
 const asLinks = (items) => {

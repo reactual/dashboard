@@ -4,6 +4,7 @@ import { TextField, Checkbox } from "office-ui-fabric-react"
 
 import SchemaForm from "./schema-form"
 import { createClass, createIndex } from "../"
+import { faunaClient } from "../../authentication"
 import { selectedDatabasePath } from "../../router"
 import { notify } from "../../notifications"
 
@@ -130,6 +131,7 @@ class ClassForm extends Component {
 
 export default connect(
   state => ({
-    selectedDatabase: selectedDatabasePath(state)
+    selectedDatabase: selectedDatabasePath(state),
+    faunaClient: faunaClient(state)
   })
 )(ClassForm)
