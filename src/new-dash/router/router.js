@@ -18,10 +18,7 @@ export const updateSelectedResource = ({ splat }) => (dispatch) => {
 
 export const reduceRouter = (state = Map(), action) => {
   switch (action.type) {
-    case Actions.UPDATE_SELECTED:
-      return state.set("selectedResource", action.resource)
-
-    default:
-      return state
+    case Actions.UPDATE_SELECTED: return action.resource
+    default:                      return state
   }
 }

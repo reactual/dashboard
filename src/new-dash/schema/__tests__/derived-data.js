@@ -50,9 +50,7 @@ describe("selectedDatabase", () => {
     const state = Immutable.fromJS({
       schema: schemaTree,
       router: {
-        selectedResource: {
-          database: ["my-app", "my-blog"]
-        }
+        database: ["my-app", "my-blog"]
       }
     })
 
@@ -63,9 +61,7 @@ describe("selectedDatabase", () => {
     const state = Immutable.fromJS({
       schema: schemaTree,
       router: {
-        selectedResource: {
-          database: ["not-loaded"]
-        }
+        database: ["not-loaded"]
       }
     })
 
@@ -78,9 +74,7 @@ describe("subDatabasesInSelectedDatabase", () => {
     const state = Immutable.fromJS({
       schema: schemaTree,
       router: {
-        selectedResource: {
-          database: ["my-app"]
-        }
+        database: ["my-app"]
       }
     })
 
@@ -92,9 +86,7 @@ describe("subDatabasesInSelectedDatabase", () => {
     const state = Immutable.fromJS({
       schema: schemaTree,
       router: {
-        selectedResource: {
-          database: ["not-loaded"]
-        }
+        database: ["not-loaded"]
       }
     })
 
@@ -108,9 +100,7 @@ describe("classesInSelectedDatabase", () => {
     const state = Immutable.fromJS({
       schema: schemaTree,
       router: {
-        selectedResource: {
-          database: ["my-app", "my-blog"]
-        }
+        database: ["my-app", "my-blog"]
       }
     })
 
@@ -134,9 +124,7 @@ describe("indexesInSelectedDatabase", () => {
     const state = Immutable.fromJS({
       schema: schemaTree,
       router: {
-        selectedResource: {
-          database: ["my-app", "my-blog"]
-        }
+        database: ["my-app", "my-blog"]
       }
     })
 

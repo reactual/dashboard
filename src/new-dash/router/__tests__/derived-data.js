@@ -6,9 +6,7 @@ describe("selectedDatabasePath", () => {
   it("returns selected path", () => {
     const path = selectedDatabasePath(Immutable.fromJS({
       router: {
-        selectedResource: {
-          database: ["a", "b"]
-        }
+        database: ["a", "b"]
       }
     }))
 
@@ -28,9 +26,7 @@ describe("selectedDatabaseUrl", () => {
   it("returns selected db's url", () => {
     const path = selectedDatabaseUrl(Immutable.fromJS({
       router: {
-        selectedResource: {
-          database: ["a", "b"]
-        }
+        database: ["a", "b"]
       }
     }))
 

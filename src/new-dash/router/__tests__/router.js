@@ -6,7 +6,7 @@ describe("Given a router store", () => {
   beforeEach(() => {
     store = createImmutableTestStore({
       router: reduceRouter
-    })(state => selectedResource = state.getIn(["router", "selectedResource"]).toJS())
+    })(state => selectedResource = state.get("router").toJS())
   })
 
   it("should selected root database", () => {
