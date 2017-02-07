@@ -4,7 +4,7 @@ import { Router, Route, IndexRoute, Link, browserHistory } from "react-router"
 
 import "./app.css"
 import logo from "./logo.svg"
-import { updateSelected } from "./router"
+import { updateSelectedResource } from "./router"
 import { ActivityMonitor, monitorActivity } from "./activity-monitor"
 import { NotificationBar, watchForError } from "./notifications"
 import { LoginForm, UserAccount, faunaClient } from "./authentication"
@@ -22,16 +22,16 @@ class Container extends Component {
 
   componentWillReceiveProps(next) {
     if (this.props.faunaClient !== next.faunaClient ||
-      this.props.params.splat !== next.params.splat) {
+      this.props.params !== next.params) {
 
       this.updateSelectedResource(
         next.faunaClient,
-        next.params.splat
+        next.params
       )
     }
   }
 
-  updateSelectedResource(client, splat) {
+  updateSelectedResource(client, params) {
     if (!client) return
 
     this.props.dispatch(
@@ -39,7 +39,7 @@ class Container extends Component {
         watchForError(
           "Unexpected error while loading database. It may not exist or your key can't access it",
           (dispatch) => {
-            const selected = dispatch(updateSelected(splat))
+            const selected = dispatch(updateSelectedResource(params))
             return dispatch(loadSchemaTree(client, selected.get("database")))
           }
         )
