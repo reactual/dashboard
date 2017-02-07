@@ -1,3 +1,12 @@
+dl dt {
+    margin-top: 1em;
+    font-weight: bold;
+}
+
+dl dd {
+    margin: 0.1em 0 0 0;
+}
+
 .header {
     padding: 0.5em 0 0.5em 0;
 }
@@ -27,4 +36,3 @@
 .header .ms-Button:hover {
     color: #0078d7;
 }
-

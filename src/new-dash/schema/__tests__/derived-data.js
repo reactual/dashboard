@@ -1,6 +1,7 @@
 import Immutable from "immutable"
+import { query as q } from "faunadb"
 
-import { selectedDatabase, databaseTree } from "../"
+import { selectedDatabase, selectedClass, databaseTree } from "../"
 
 const schemaTree = Immutable.fromJS({
   info: {
@@ -20,14 +21,25 @@ const schemaTree = Immutable.fromJS({
               },
               classes: {
                 byName: {
-                  "people": { name: "people" },
+                  "people": {
+                    name: "people",
+                    ref: q.Ref("classes/people"),
+                    history_days: 10,
+                    ttl_days: 1
+                  },
                   "users": { name: "users" }
                 }
               },
               indexes: {
                 byName: {
-                  "all_people": { name: "all_people" },
-                  "all_users": { name: "all_users" }
+                  "all_people": {
+                    name: "all_people",
+                    source: q.Ref("classes/people")
+                  },
+                  "all_users": {
+                    name: "all_users",
+                    source: q.Ref("classes/users")
+                  }
                 }
               }
             })
@@ -83,6 +95,31 @@ describe("selectedDatabase", () => {
     it("contains root db name", () => expect(database.name).toEqual("/"))
     it("contains no classes", () => expect(database.classes).toEqual([]))
     it("contains no indexes", () =>  expect(database.indexes).toEqual([]))
+  })
+})
+
+describe("selectedClass", () => {
+  it("returns the selected class", () => {
+    const state = Immutable.fromJS({
+      schema: schemaTree,
+      router: {
+        database: ["my-app", "my-blog"],
+        resource: {
+          type: "classes",
+          name: "people"
+        }
+      }
+    })
+
+    expect(selectedClass(state).toJS()).toEqual({
+      name: "people",
+      historyDays: 10,
+      ttlDays: 1,
+      ref: q.Ref("classes/people"),
+      indexes: [
+        { name: "all_people", url: "/my-app/my-blog/indexes/all_people" }
+      ]
+    })
   })
 })
 
