@@ -7,24 +7,6 @@ import {
   indexesInSelectedDatabase
 } from "../"
 
-const myBlog = Immutable.fromJS({
-  info: {
-    name: "my-blog"
-  },
-  classes: {
-    byName: {
-      "people": {},
-      "users": {}
-    }
-  },
-  indexes: {
-    byName: {
-      "all_people": {},
-      "all_users": {}
-    }
-  }
-})
-
 const schemaTree = Immutable.fromJS({
   info: {
     name: "/"
@@ -37,7 +19,23 @@ const schemaTree = Immutable.fromJS({
         },
         databases: {
           byName: {
-            "my-blog": myBlog
+            "my-blog": Immutable.fromJS({
+              info: {
+                name: "my-blog"
+              },
+              classes: {
+                byName: {
+                  "people": { name: "people" },
+                  "users": { name: "users" }
+                }
+              },
+              indexes: {
+                byName: {
+                  "all_people": { name: "all_people" },
+                  "all_users": { name: "all_users" }
+                }
+              }
+            })
           }
         }
       }
@@ -46,7 +44,7 @@ const schemaTree = Immutable.fromJS({
 })
 
 describe("selectedDatabase", () => {
-  it("returns selected database", () => {
+  describe("when there is a database selected", () => {
     const state = Immutable.fromJS({
       schema: schemaTree,
       router: {
@@ -54,18 +52,42 @@ describe("selectedDatabase", () => {
       }
     })
 
-    expect(selectedDatabase(state).toJS()).toEqual(myBlog.toJS())
+    const database = selectedDatabase(state).toJS()
+
+    it("contains database path", () => expect(database.path).toEqual(["my-app", "my-blog"]))
+    it("contains database url", () => expect(database.url).toEqual("/my-app/my-blog"))
+    it("contains database name", () => expect(database.name).toEqual("my-blog"))
+
+    it("contains database classes", () => {
+      expect(database.classes).toEqual([
+        { name: "people", url: "/my-app/my-blog/classes/people" },
+        { name: "users", url: "/my-app/my-blog/classes/users" }
+      ])
+    })
+
+    it("contains database indexes", () => {
+      expect(database.indexes).toEqual([
+        { name: "all_people", url: "/my-app/my-blog/indexes/all_people" },
+        { name: "all_users", url: "/my-app/my-blog/indexes/all_users" }
+      ])
+    })
   })
 
-  it("returns empty if selected database is not present", () => {
+  describe("when there is NO database selected", () => {
     const state = Immutable.fromJS({
       schema: schemaTree,
       router: {
-        database: ["not-loaded"]
+        database: []
       }
     })
 
-    expect(selectedDatabase(state).toJS()).toEqual({})
+    const database = selectedDatabase(state).toJS()
+
+    it("contains emtpy database path", () => expect(database.path).toEqual([]))
+    it("contains root url", () => expect(database.url).toEqual("/"))
+    it("contains root db name", () => expect(database.name).toEqual("/"))
+    it("contains no classes", () => expect(database.classes).toEqual([]))
+    it("contains no indexes", () =>  expect(database.indexes).toEqual([]))
   })
 })
 
