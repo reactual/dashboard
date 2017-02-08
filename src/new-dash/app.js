@@ -70,7 +70,7 @@ class Container extends Component {
           </div>
           <div className="ms-Grid-col ms-u-sm12 ms-u-md6 ms-u-lg8">
             <NotificationBar />
-            {this.props.children}
+            {this.props.faunaClient ? this.props.children : null}
           </div>
         </div>
         <LoginForm />
@@ -95,7 +95,7 @@ export default class App extends Component {
             <Route path="indexes/:indexName" component={IndexInfo} />
             <Route path="classes/:className" component={ClassInfo} />
             <Route path="classes" component={ClassForm} />
-            <Route path="**/indexes/:indexInfo" component={IndexInfo} />
+            <Route path="**/indexes/:indexName" component={IndexInfo} />
             <Route path="**/classes/:className" component={ClassInfo} />
             <Route path="**/classes" component={ClassForm} />
             <Route path="**" component={DatabaseForm} />

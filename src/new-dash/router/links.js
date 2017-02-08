@@ -14,14 +14,15 @@ const supportedRefTypes = [
 ]
 
 export const linkForRef = (parentUrl, ref) => {
-  const [ type ] = ref.value.split("/")
+  const path = (ref && ref.value) || ""
+  const [ type ] = path.split("/")
 
   if (!supportedRefTypes.includes(type)) {
-    return Map.of("name", ref.value, "url", null)
+    return Map.of("name", path, "url", null)
   }
 
   return Map.of(
-    "name", ref.value,
-    "url", buildUrl(parentUrl, ref.value)
+    "name", path,
+    "url", buildUrl(parentUrl, path)
   )
 }
