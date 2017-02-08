@@ -1,3 +1,4 @@
+import Immutable from "immutable"
 import React, { Component } from "react"
 import { Provider, connect } from "react-redux"
 import { Router, Route, IndexRoute, Link, browserHistory } from "react-router"
@@ -21,9 +22,10 @@ class Container extends Component {
   }
 
   componentWillReceiveProps(next) {
-    if (this.props.faunaClient !== next.faunaClient ||
-      this.props.params !== next.params) {
+    const oldParams = Immutable.Map(this.props.params)
+    const newParams = Immutable.Map(next.params)
 
+    if (this.props.faunaClient !== next.faunaClient || !oldParams.equals(newParams)) {
       this.updateSelectedResource(
         next.faunaClient,
         next.params
