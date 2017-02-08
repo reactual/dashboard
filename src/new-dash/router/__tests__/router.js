@@ -1,4 +1,4 @@
-import { reduceRouter, updateSelected } from "../"
+import { reduceRouter, updateSelectedResource } from "../"
 
 describe("Given a router store", () => {
   let store, selectedResource
@@ -6,21 +6,21 @@ describe("Given a router store", () => {
   beforeEach(() => {
     store = createImmutableTestStore({
       router: reduceRouter
-    })(state => selectedResource = state.getIn(["router", "selectedResource"]).toJS())
+    })(state => selectedResource = state.get("router").toJS())
   })
 
   it("should selected root database", () => {
-    store.dispatch(updateSelected(null))
+    store.dispatch(updateSelectedResource({}))
     expect(selectedResource).toEqual({ database: [] })
   })
 
   it("should select a sub database", () => {
-    store.dispatch(updateSelected("my-app/my-blog"))
+    store.dispatch(updateSelectedResource({ splat: "my-app/my-blog" }))
     expect(selectedResource).toEqual({ database: ["my-app", "my-blog"] })
   })
 
   it("should empty paths", () => {
-    store.dispatch(updateSelected("my-app///my-blog/"))
+    store.dispatch(updateSelectedResource({ splat: "my-app///my-blog/" }))
     expect(selectedResource).toEqual({ database: ["my-app", "my-blog"] })
   })
 })

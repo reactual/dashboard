@@ -3,8 +3,8 @@ import { connect } from "react-redux"
 import { browserHistory } from "react-router"
 import { Nav } from "office-ui-fabric-react"
 
-import { classesInSelectedDatabase, indexesInSelectedDatabase } from "../"
-import { selectedDatabaseUrl } from "../../router"
+import { selectedDatabase } from "../"
+import { buildUrl } from "../../router"
 
 const onClick = (e, link) => {
   e.preventDefault()
@@ -15,15 +15,17 @@ const onClick = (e, link) => {
 }
 
 const asLinks = (items) => {
-  return items.map(name => {
+  return items.map(item => {
     return {
-      name: name,
-      key: name
+      name: item.get("name"),
+      key: item.get("url")
     }
   }).toJS()
 }
 
-const NavSchema = ({ url, classes, indexes }) => {
+const NavSchema = ({ selectedDatabase }) => {
+  const url = selectedDatabase.get("url")
+
   const links = [
     {
       name: "Options",
@@ -36,19 +38,19 @@ const NavSchema = ({ url, classes, indexes }) => {
         {
           name: "Create Class",
           key: "create-class",
-          url: `${url}/classes`
+          url: buildUrl(url, "classes")
         }
       ],
       isExpanded: true
     },
     {
       name: "Classes",
-      links: asLinks(classes),
+      links: asLinks(selectedDatabase.get("classes")),
       isExpanded: true
     },
     {
       name: "Indexes",
-      links: asLinks(indexes),
+      links: asLinks(selectedDatabase.get("indexes")),
       isExpanded: true
     }
   ]
@@ -58,8 +60,6 @@ const NavSchema = ({ url, classes, indexes }) => {
 
 export default connect(
   state => ({
-    url: selectedDatabaseUrl(state),
-    classes: classesInSelectedDatabase(state),
-    indexes: indexesInSelectedDatabase(state)
+    selectedDatabase: selectedDatabase(state)
   })
 )(NavSchema)

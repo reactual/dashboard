@@ -13,10 +13,10 @@ const messageBarTypeFor = (notificationType) => {
   }
 }
 
-const NotificationBar = (props) => {
+const NotificationBar = ({ notifications }) => {
   return <div className="notification-bar">
       <ul>{
-      props.notifications.map((notification, index) => (
+      notifications.map((notification, index) => (
         <li key={index} className="ms-u-fadeIn100">
           <MessageBar
             messageBarType={messageBarTypeFor(notification.type)}>

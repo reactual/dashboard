@@ -3,8 +3,7 @@ import { connect } from "react-redux"
 import { TextField } from "office-ui-fabric-react"
 
 import SchemaForm from "./schema-form"
-import { createDatabase } from "../"
-import { selectedDatabasePath } from "../../router"
+import { createDatabase, selectedDatabase } from "../"
 import { notify } from "../../notifications"
 import { faunaClient } from "../../authentication"
 
@@ -37,7 +36,7 @@ class DatabaseForm extends Component {
   onSubmit() {
     return notify("Database created successfully", createDatabase(
       this.props.faunaClient,
-      this.props.selectedDatabase,
+      this.props.selectedPath,
       this.state
     ))
   }
@@ -59,7 +58,7 @@ class DatabaseForm extends Component {
 
 export default connect(
   state => ({
-    selectedDatabase: selectedDatabasePath(state),
+    selectedPath: selectedDatabase(state).get("path"),
     faunaClient: faunaClient(state)
   })
 )(DatabaseForm)

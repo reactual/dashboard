@@ -3,9 +3,8 @@ import { connect } from "react-redux"
 import { TextField, Checkbox } from "office-ui-fabric-react"
 
 import SchemaForm from "./schema-form"
-import { createClass, createIndex } from "../"
+import { createClass, createIndex, selectedDatabase } from "../"
 import { faunaClient } from "../../authentication"
-import { selectedDatabasePath } from "../../router"
 import { notify } from "../../notifications"
 
 class ClassForm extends Component {
@@ -49,14 +48,14 @@ class ClassForm extends Component {
     return notify("Class created successfully", dispatch => {
       let res = dispatch(createClass(
         this.props.faunaClient,
-        this.props.selectedDatabase,
+        this.props.selectedPath,
         this.classConfig()
       ))
 
       if (this.state.classIndex) {
         res = res.then(clazz => dispatch(createIndex(
           this.props.faunaClient,
-          this.props.selectedDatabase,
+          this.props.selectedPath,
           this.indexConfig(clazz)
         )))
       }
@@ -131,7 +130,7 @@ class ClassForm extends Component {
 
 export default connect(
   state => ({
-    selectedDatabase: selectedDatabasePath(state),
+    selectedPath: selectedDatabase(state).get("path"),
     faunaClient: faunaClient(state)
   })
 )(ClassForm)
