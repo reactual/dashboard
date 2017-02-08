@@ -4,17 +4,19 @@ const Actions = {
   UPDATE_SELECTED: "@@router/UPDATE_SELECTED"
 }
 
-const resourceFor = (className) => {
+const resourceFor = ({ className, indexName }) => {
   if (className) return Map.of("type", "classes", "name", className)
+  if (indexName) return Map.of("type", "indexes", "name", indexName)
   return null
 }
 
-export const updateSelectedResource = ({ splat, className } = {}) => (dispatch) => {
-  const path = List((splat && splat.split("/")) || []).filter(elem => elem.trim())
+export const updateSelectedResource = (params) => (dispatch) => {
+  const path = List((params.splat && params.splat.split("/")) || [])
+    .filter(elem => elem.trim())
 
   const resource = Map.of(
     "database", path,
-    "resource", resourceFor(className)
+    "resource", resourceFor(params)
   )
 
   dispatch({
