@@ -1,8 +1,8 @@
-import { Map } from "immutable"
+import { Map, List } from "immutable"
 import { createSelector } from "reselect"
 
 import { nestedDatabaseNodeIn } from "./path"
-import { selectedResource, buildUrl } from "../router"
+import { selectedResource, buildUrl, linkForRef } from "../router"
 
 const schema = (state) => state.get("schema")
 const database = createSelector([selectedResource], resource => resource.get("database"))
@@ -33,10 +33,21 @@ export const selectedDatabase = createSelector([schema, database], (schema, data
 })
 
 export const selectedClass = createSelector([schema, database, resource], (schema, database, resource) => {
-  const classPath = nestedDatabaseNodeIn(database.get("path"), ["classes", "byName", resource.get("name")])
-  const indexesPath = nestedDatabaseNodeIn(database.get("path"), ["indexes", "byName"])
-  const clazz = schema.getIn(classPath, Map())
-  const indexes = schema.getIn(indexesPath, Map()).toList()
+  const clazz = schema.getIn(
+    nestedDatabaseNodeIn(
+      database.get("path"),
+      ["classes", "byName", resource.get("name")]
+    ),
+    Map()
+  )
+
+  const indexes = schema.getIn(
+    nestedDatabaseNodeIn(
+      database.get("path"),
+      ["indexes", "byName"]
+    ),
+    Map()
+  ).toList()
 
   const coveringIndexes = indexes
     .filter(
@@ -58,19 +69,39 @@ export const selectedClass = createSelector([schema, database, resource], (schem
   )
 })
 
-export const databaseTree = createSelector([schema], schema => {
-  const buildTree = (node, parentUrl = "/") => {
-    const name = node.getIn(["info", "name"])
-    const url = buildUrl(parentUrl, name)
+export const selectedIndex = createSelector([schema, database, resource], (schema, database, resource) => {
+  const index = schema.getIn(
+    nestedDatabaseNodeIn(
+      database.get("path"),
+      ["indexes", "byName", resource.get("name")]
+    ),
+    Map()
+  )
 
-    return Map.of(
-      "url", url,
-      "name", name,
-      "databases", node.getIn(["databases", "byName"], Map()).toList().map(
-        db => buildTree(db, url)
-      )
+  return Map.of(
+    "name", index.get("name", ""),
+    "active", index.get("active", false),
+    "unique", index.get("unique", false),
+    "partitions", index.get("partitions", null),
+    "source", linkForRef(database.get("url"), index.get("source")),
+    "terms", index.get("terms", List()).map(term => term.get("field").join(".")),
+    "values", index.get("values", List()).map(term => term.get("field").join("."))
+  )
+})
+
+const buildTree = (node, parentUrl = "/") => {
+  const name = node.getIn(["info", "name"])
+  const url = buildUrl(parentUrl, name)
+
+  return Map.of(
+    "url", url,
+    "name", name,
+    "databases", node.getIn(["databases", "byName"], Map()).toList().map(
+      db => buildTree(db, url)
     )
-  }
+  )
+}
 
+export const databaseTree = createSelector([schema], schema => {
   return buildTree(schema)
 })
