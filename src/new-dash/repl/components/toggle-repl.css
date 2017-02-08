@@ -1,0 +1,64 @@
+.toggle-repl .Resizer.disabled {
+    cursor: auto;
+}
+
+.toggle-repl .Pane {
+    overflow: scroll;
+}
+
+.toggle-repl .repl-bar {
+    border-top: 1px solid #ddd;
+    background-color: #f4f4f5;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 42px;
+    overflow: hidden;
+}
+
+.toggle-repl .repl-bar .buttons {
+    float: right;
+}
+
+.toggle-repl .repl-bar .ms-Breadcrumb {
+    margin: 0.25em;
+}
+
+.toggle-repl .editor-area {
+    background-color: #f4f4f5;
+    position: absolute;
+    width: 100%;
+    height: calc(100% - 43px);
+}
+
+.toggle-repl .editor-area .query-result {
+    padding: 0 5px 0 5px;
+}
+
+.toggle-repl .editor-area .key-selector {
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 5px;
+}
+
+.toggle-repl .editor-area .key-selector div {
+    display: inline-table;
+}
+
+.toggle-repl .editor-area .key-selector .ms-Label {
+    display: none;
+}
+
+.toggle-repl .editor-area .key-selector .ms-Dropdown {
+    margin: 0;
+}
+
+.toggle-repl .editor-area .key-selector .ms-Dropdown .ms-Dropdown-title {
+    border: none;
+    background-color: #f4f4f5;
+    font-weight: bold;
+}
+
+.toggle-repl .editor-area .key-selector .ms-Button {
+    float: right;
+}
