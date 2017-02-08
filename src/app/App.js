@@ -79,6 +79,10 @@ const onChangeDatabase = (dispatch, getState) => (nextState, replace) => {
         dispatch(restoringSession(false))
         const rootClient = getState().currentUser.client
         dispatch(updateClients(rootClient, splat))
+        return Promise.all([
+          dispatch(getAllClasses(getState().clients.scopedServerClient)),
+          dispatch(getAllIndexes(getState().clients.scopedServerClient))
+        ])
       })
     })
     .catch(() => {
