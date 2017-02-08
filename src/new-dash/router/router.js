@@ -4,9 +4,18 @@ const Actions = {
   UPDATE_SELECTED: "@@router/UPDATE_SELECTED"
 }
 
-export const updateSelectedResource = ({ splat }) => (dispatch) => {
-  const path = List((splat && splat.split("/")) || [])
-  const resource = Map({ database: path.filter(elem => elem.trim()) })
+const resourceFor = (className) => {
+  if (className) return Map.of("type", "classes", "name", className)
+  return null
+}
+
+export const updateSelectedResource = ({ splat, className } = {}) => (dispatch) => {
+  const path = List((splat && splat.split("/")) || []).filter(elem => elem.trim())
+
+  const resource = Map.of(
+    "database", path,
+    "resource", resourceFor(className)
+  )
 
   dispatch({
     type: Actions.UPDATE_SELECTED,

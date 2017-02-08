@@ -8,20 +8,14 @@ import { buildUrl } from "../../router"
 
 const onClick = (e, link) => {
   e.preventDefault()
-
-  if (link.url) {
-    browserHistory.push(link.url)
-  }
+  browserHistory.push(link.url)
 }
 
-const asLinks = (items) => {
-  return items.map(item => {
-    return {
-      name: item.get("name"),
-      key: item.get("url")
-    }
-  }).toJS()
-}
+const asLinks = (items) => items.map(item => ({
+  name: item.get("name"),
+  key: item.get("url"),
+  url: item.get("url")
+})).toJS()
 
 const NavSchema = ({ selectedDatabase }) => {
   const url = selectedDatabase.get("url")
