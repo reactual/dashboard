@@ -1,16 +1,10 @@
 import { Map, List } from "immutable"
 import { createSelector } from "reselect"
 
+import { buildUrl } from "."
+
 const databasePath = state => state.getIn(["router", "database"], List())
 const resource = state => state.getIn(["router", "resource"])
-
-export const buildUrl = (parentUrl, ...parts) => {
-  const url = parts.join("/")
-  if (url === "/") return parentUrl
-  if (parentUrl === "/") return `/${url}`
-
-  return `${parentUrl}/${url}`
-}
 
 export const selectedResource = createSelector([databasePath, resource], (path, resource) => {
   const url = `/${path.join("/")}`

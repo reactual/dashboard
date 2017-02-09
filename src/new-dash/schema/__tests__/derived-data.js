@@ -1,7 +1,12 @@
 import Immutable from "immutable"
 import { query as q } from "faunadb"
 
-import { selectedDatabase, selectedClass, databaseTree } from "../"
+import {
+  selectedDatabase,
+  selectedClass,
+  selectedIndex,
+  databaseTree
+} from "../"
 
 const schemaTree = Immutable.fromJS({
   info: {
@@ -15,7 +20,7 @@ const schemaTree = Immutable.fromJS({
         },
         databases: {
           byName: {
-            "my-blog": Immutable.fromJS({
+            "my-blog": {
               info: {
                 name: "my-blog"
               },
@@ -39,10 +44,24 @@ const schemaTree = Immutable.fromJS({
                   "all_users": {
                     name: "all_users",
                     source: q.Ref("classes/users")
+                  },
+                  "people_by_name": {
+                    name: "people_by_name",
+                    source: q.Ref("classes/people"),
+                    unique: false,
+                    active: true,
+                    partitions: 8,
+                    values: [
+                      { field: [ "data", "name" ] },
+                      { field: [ "ref" ] },
+                    ],
+                    terms: [
+                      { field: [ "data", "name" ] }
+                    ]
                   }
                 }
               }
-            })
+            }
           }
         }
       }
@@ -75,7 +94,8 @@ describe("selectedDatabase", () => {
     it("contains database indexes", () => {
       expect(database.indexes).toEqual([
         { name: "all_people", url: "/my-app/my-blog/indexes/all_people" },
-        { name: "all_users", url: "/my-app/my-blog/indexes/all_users" }
+        { name: "all_users", url: "/my-app/my-blog/indexes/all_users" },
+        { name: "people_by_name", url: "/my-app/my-blog/indexes/people_by_name" }
       ])
     })
   })
@@ -117,7 +137,41 @@ describe("selectedClass", () => {
       ttlDays: 1,
       ref: q.Ref("classes/people"),
       indexes: [
-        { name: "all_people", url: "/my-app/my-blog/indexes/all_people" }
+        { name: "all_people", url: "/my-app/my-blog/indexes/all_people" },
+        { name: "people_by_name", url: "/my-app/my-blog/indexes/people_by_name" }
+      ]
+    })
+  })
+})
+
+describe("selectedIndex", () => {
+  it("returns the selected index", () => {
+    const state = Immutable.fromJS({
+      schema: schemaTree,
+      router: {
+        database: ["my-app", "my-blog"],
+        resource: {
+          type: "indexes",
+          name: "people_by_name"
+        }
+      }
+    })
+
+    expect(selectedIndex(state).toJS()).toEqual({
+      name: "people_by_name",
+      active: true,
+      unique: false,
+      partitions: 8,
+      source: {
+        name: "classes/people",
+        url: "/my-app/my-blog/classes/people"
+      },
+      values: [
+        "data.name",
+        "ref"
+      ],
+      terms: [
+        "data.name"
       ]
     })
   })

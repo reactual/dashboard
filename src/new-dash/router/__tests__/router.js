@@ -34,4 +34,15 @@ describe("Given a router store", () => {
       }
     })
   })
+
+  it("should select a index", () => {
+    store.dispatch(updateSelectedResource({ splat: "my-app/my-blog", indexName: "all_people" }))
+    expect(selectedResource).toEqual({
+      database: ["my-app", "my-blog"],
+      resource: {
+        type: "indexes",
+        name: "all_people"
+      }
+    })
+  })
 })

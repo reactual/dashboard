@@ -1,3 +1,4 @@
+import Immutable from "immutable"
 import React, { Component } from "react"
 import { Provider, connect } from "react-redux"
 import { Router, Route, IndexRoute, Link, browserHistory } from "react-router"
@@ -8,7 +9,7 @@ import { updateSelectedResource } from "./router"
 import { ActivityMonitor, monitorActivity } from "./activity-monitor"
 import { NotificationBar, watchForError } from "./notifications"
 import { LoginForm, UserAccount, faunaClient } from "./authentication"
-import { NavTree, DatabaseForm, ClassForm, ClassInfo, loadSchemaTree } from "./schema"
+import { NavTree, DatabaseForm, ClassForm, ClassInfo, IndexInfo, loadSchemaTree } from "./schema"
 import { IntercomWidget } from "./external/intercom"
 
 class Container extends Component {
@@ -21,9 +22,10 @@ class Container extends Component {
   }
 
   componentWillReceiveProps(next) {
-    if (this.props.faunaClient !== next.faunaClient ||
-      this.props.params !== next.params) {
+    const oldParams = Immutable.Map(this.props.params)
+    const newParams = Immutable.Map(next.params)
 
+    if (this.props.faunaClient !== next.faunaClient || !oldParams.equals(newParams)) {
       this.updateSelectedResource(
         next.faunaClient,
         next.params
@@ -68,7 +70,7 @@ class Container extends Component {
           </div>
           <div className="ms-Grid-col ms-u-sm12 ms-u-md6 ms-u-lg8">
             <NotificationBar />
-            {this.props.children}
+            {this.props.faunaClient ? this.props.children : null}
           </div>
         </div>
         <LoginForm />
@@ -90,8 +92,10 @@ export default class App extends Component {
         <Router history={browserHistory}>
           <Route path="/" component={App.Container}>
             <IndexRoute component={DatabaseForm} />
+            <Route path="indexes/:indexName" component={IndexInfo} />
             <Route path="classes/:className" component={ClassInfo} />
             <Route path="classes" component={ClassForm} />
+            <Route path="**/indexes/:indexName" component={IndexInfo} />
             <Route path="**/classes/:className" component={ClassInfo} />
             <Route path="**/classes" component={ClassForm} />
             <Route path="**" component={DatabaseForm} />
