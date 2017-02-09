@@ -2,6 +2,8 @@
 
 This dashboard should eventually provide access to the entire Fauna API as accesible to cloud users and developers at on-premise sites, but at first it will be narrowly focussed on a few screens and use cases. It will have a companion UI that is accesible to our cloud ops team, and to on-premise customer ops teams. Both will be shipped as part of the Fauna JAR. The Dev dashboard is where you land when you first join cloud.
 
+[Sign up for FaunaDB in the cloud](https://fauna.com/serverless-cloud-sign-up) to try this dashboard directly.
+
 ## To Run in Development
 
 First get a Fauna secret that you want to use as your root. It's better if this
