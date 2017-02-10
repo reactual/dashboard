@@ -68,6 +68,9 @@ export default class FaunaClient {
     this.secret = secret
     this.config = config
     this.keyType = keyType
+
+    this.availablePrivileges = Object.values(FaunaClient.KeyType)
+      .filter(type => this.hasPrivileges(type))
   }
 
   query(dbPath, keyType, expr) {
