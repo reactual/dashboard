@@ -25,10 +25,16 @@ const faunaLangCompleter = {
 
 export default class ReplEditor extends Component {
 
+  static Mode = {
+    CODE_EDITOR: "in-place-editor",
+    FORM_FIELD: "form-field"
+  }
+
   componentDidMount() {
     const {
       name,
       value,
+      mode = ReplEditor.Mode.CODE_EDITOR,
       focus = false,
       shortcuts = []
     } = this.props
@@ -37,7 +43,6 @@ export default class ReplEditor extends Component {
     this.editor.$blockScrolling = Infinity // Disable warning
     this.editor.setValue(value)
     this.editor.setFontSize(12)
-    this.editor.renderer.setShowGutter(true)
     this.editor.setOption("highlightActiveLine", true)
     this.editor.setOption("enableBasicAutocompletion", true)
     this.editor.setOption("enableLiveAutocompletion", true)
@@ -46,6 +51,7 @@ export default class ReplEditor extends Component {
     this.editor.getSession().setTabSize(2)
     this.editor.getSession().setUseWorker(false)
     this.editor.on("change", this.onChange.bind(this))
+    this.editor.renderer.setShowGutter(mode === ReplEditor.Mode.CODE_EDITOR)
 
     this.editor.completers = [
       Ace.acequire("ace/ext/language_tools").textCompleter,
@@ -83,8 +89,9 @@ export default class ReplEditor extends Component {
 
   render() {
     const divStyle = {
-      width: this.props.width || "100%",
-      height: this.props.height || "100%"
+      width: "100%",
+      height: this.props.mode === ReplEditor.Mode.FORM_FIELD ? "12em" : "100%",
+      border: this.props.mode === ReplEditor.Mode.FORM_FIELD ? "1px solid #767676" : "none"
     }
 
     return <div id={this.props.name} style={divStyle}></div>

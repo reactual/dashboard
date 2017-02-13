@@ -90,12 +90,10 @@ class ToggleRepl extends Component {
   }
 
   executeQuery() {
-    evalQuery(
-      this.props.faunaClient,
-      this.props.selectedPath,
-      this.state.privilege,
-      this.state.code
-    ).then(
+    const { faunaClient, selectedPath } = this.props
+    const { privilege, code } = this.state
+
+    evalQuery(q => faunaClient.query(selectedPath, privilege, q))(code).then(
       (result) => this.setState({ result, error: null }),
       (error) => this.setState({ error, result: null })
     )
