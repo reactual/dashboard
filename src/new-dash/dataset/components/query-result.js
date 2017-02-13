@@ -104,6 +104,8 @@ export default class QueryResult extends Component {
 
   renderItemColumn(item, index, column) {
     const value = item[column.key || index]
+    if (!value) return null
+
     const specialItem = renderSpecialType(item)
     const specialValue = renderSpecialType(value)
     const result = specialItem || specialValue || value
