@@ -79,6 +79,7 @@ export const selectedIndex = createSelector([schema, database, resource], (schem
   )
 
   return Map.of(
+    "ref", index.get("ref", null),
     "name", index.get("name", ""),
     "active", index.get("active", false),
     "unique", index.get("unique", false),
