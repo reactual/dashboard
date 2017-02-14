@@ -2,25 +2,80 @@ import React, { Component } from "react"
 import { connect } from "react-redux"
 import { query as q } from "faunadb"
 import { Link } from "react-router"
+import { Button, ButtonType } from "office-ui-fabric-react"
 
 import { selectedIndex, selectedDatabase } from "../"
 import { faunaClient } from "../../authentication"
+import { isBusy } from "../../activity-monitor"
 import { KeyType } from "../../persistence/faunadb-wrapper"
 import { Pagination } from "../../dataset"
+import { ReplEditor, evalQuery } from "../../repl"
 
 class IndexInfo extends Component {
-  queryIndex(options) {
-    const { client, index, path } = this.props
+  constructor(props) {
+    super(props)
+    this.state = this.initialState(props)
+  }
+
+  initialState(props) {
+    return {
+      terms: '""',
+      queryFn: this.buildQuery(props)
+    }
+  }
+
+  componentDidMount() {
+    this.reset(this.props)
+  }
+
+  componentWillReceiveProps(next) {
+    if (!this.props.index.equals(next.index)) {
+      this.reset(next)
+    }
+  }
+
+  reset(props) {
+    this.setState(this.initialState(props))
+  }
+
+  buildQuery({ client, index, path }, terms = null) {
     if (!index.get("ref")) return
 
-    return client.query(path, KeyType.SERVER, q.Paginate(
-      q.Match(index.get("ref")),
-      options
-    ))
+    if (index.get("terms").size !== 0) {
+      if (!terms) return
+
+      return options =>
+        evalQuery(parsedTerms =>
+          client.query(path, KeyType.SERVER, q.Paginate(
+            q.Match(index.get("ref"), parsedTerms),
+            options
+          ))
+        )(terms)
+    }
+
+    return (options) =>
+      client.query(path, KeyType.SERVER, q.Paginate(
+        q.Match(index.get("ref")),
+        options
+      ))
+  }
+
+  onChange(terms) {
+    this.setState({ terms })
+  }
+
+  onSubmit() {
+    this.setState({
+      queryFn: this.buildQuery(
+        this.props,
+        this.state.terms
+      )
+    })
   }
 
   render() {
-    const { index } = this.props
+    const { index, isBusy } = this.props
+    const { terms, queryFn } = this.state
 
     return <div>
       <h3>Index Details</h3>
@@ -65,7 +120,41 @@ class IndexInfo extends Component {
         </div>
       </div>
 
-      <Pagination query={this.queryIndex.bind(this)} />
+      {index.get("terms").size !== 0 ?
+        <div className="ms-Grid-row">
+          <div className="ms-Grid-col ms-u-sm12">
+            <h3>Lookup</h3>
+            <ReplEditor
+              mode={ReplEditor.Mode.TEXT_FIELD}
+              name="index-lookup-editor"
+              focus={true}
+              value={terms}
+              onChange={this.onChange.bind(this)}
+              shortcuts={[{
+                name: "search",
+                bindKey: { win: "Enter", mac: "Enter" },
+                exec: this.onSubmit.bind(this)
+              }]} />
+
+            <p className="ms-TextField-description">
+              The contents of this field will be evaluated with the context of a repl and placed in
+              the "terms" field of the index look up query.
+            </p>
+
+            <Button
+              disabled={isBusy}
+              buttonType={ButtonType.primary}
+              onClick={this.onSubmit.bind(this)}>
+              Search
+            </Button>
+          </div>
+        </div> : null}
+
+      <div className="ms-Grid-row">
+        <div className="ms-Grid-col ms-u-sm12">
+          <Pagination query={queryFn} />
+        </div>
+      </div>
     </div>
   }
 }
@@ -74,6 +163,7 @@ export default connect(
   state => ({
     client: faunaClient(state),
     index: selectedIndex(state),
-    path: selectedDatabase(state).get("path")
+    path: selectedDatabase(state).get("path"),
+    isBusy: isBusy(state)
   })
 )(IndexInfo)

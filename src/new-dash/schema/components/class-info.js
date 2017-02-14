@@ -72,7 +72,7 @@ class ClassInfo extends Component {
             buttonText="Create Instance"
             onSubmit={this.onSubmit.bind(this)}>
               <ReplEditor
-                mode={ReplEditor.Mode.FORM_FIELD}
+                mode={ReplEditor.Mode.TEXT_AREA}
                 name="class-data-editor"
                 focus={true}
                 value={this.state.data}

@@ -1,6 +1,7 @@
 import React, { Component } from "react"
 import Ace from "brace"
 
+import "./editor.css"
 import queryFunctions from "../query-functions"
 
 const faunaLangCompleter = {
@@ -26,17 +27,18 @@ const faunaLangCompleter = {
 export default class ReplEditor extends Component {
 
   static Mode = {
-    CODE_EDITOR: "in-place-editor",
-    FORM_FIELD: "form-field"
+    CODE_EDITOR: "editor code-editor",
+    TEXT_FIELD: "editor form-field text-field",
+    TEXT_AREA: "editor form-field text-area"
   }
 
   componentDidMount() {
     const {
       name,
       value,
-      mode = ReplEditor.Mode.CODE_EDITOR,
       focus = false,
-      shortcuts = []
+      shortcuts = [],
+      mode = ReplEditor.Mode.CODE_EDITOR
     } = this.props
 
     this.editor = Ace.edit(name)
@@ -71,10 +73,6 @@ export default class ReplEditor extends Component {
     if (this.editor.getValue() !== nextProps.value) {
       this.editor.setValue(nextProps.value)
     }
-
-    if (!this.editor.isFocused() && nextProps.focus) {
-      this.editor.focus()
-    }
   }
 
   onChange() {
@@ -88,12 +86,9 @@ export default class ReplEditor extends Component {
   }
 
   render() {
-    const divStyle = {
-      width: "100%",
-      height: this.props.mode === ReplEditor.Mode.FORM_FIELD ? "12em" : "100%",
-      border: this.props.mode === ReplEditor.Mode.FORM_FIELD ? "1px solid #767676" : "none"
-    }
-
-    return <div id={this.props.name} style={divStyle}></div>
+    return <div
+      id={this.props.name}
+      className={this.props.mode || ReplEditor.Mode.CODE_EDITOR}>
+    </div>
   }
 }

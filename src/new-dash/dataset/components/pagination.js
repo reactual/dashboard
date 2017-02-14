@@ -40,12 +40,7 @@ class Pagination extends Component {
   }
 
   queryIndex(query) {
-    const queryResult = query({
-      ...this.state.cursor,
-      size: this.state.size,
-    })
-
-    if (!queryResult) {
+    if (!query) {
       this.reset()
       return
     }
@@ -54,7 +49,10 @@ class Pagination extends Component {
       monitorActivity(
         watchForError(
           "Could not paginate through the dataset",
-          () => queryResult
+          () => query({
+            ...this.state.cursor,
+            size: this.state.size,
+          })
         )
       )
     ).then(
@@ -84,11 +82,11 @@ class Pagination extends Component {
   }
 
   render() {
-    const { result } = this.state
     const { isBusy } = this.props
+    const { result } = this.state
     if (!result) return null
 
-    return <div className="ms-Grid-row">
+    return <div className="ms-Grid pagination">
       <div className="ms-Grid-row">
         <div className="ms-Grid-col ms-u-sm9">
           <Button
@@ -104,7 +102,7 @@ class Pagination extends Component {
             onClick={this.setCursor("before", result.before)}
             icon="ChevronLeft" />
         </div>
-        <div className="ms-Grid-col ms-u-sm1 pagination">
+        <div className="ms-Grid-col ms-u-sm1">
           <TextField
             disabled={isBusy}
             value={this.state.size}
@@ -120,7 +118,9 @@ class Pagination extends Component {
       </div>
 
       <div className="ms-Grid-row">
-        <QueryResult result={result} />
+        <div className="ms-Grid-col ms-u-sm12">
+          <QueryResult result={result} />
+        </div>
       </div>
     </div>
   }

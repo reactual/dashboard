@@ -1,0 +1,24 @@
+.editor {
+    width: 100%;
+}
+
+.editor.code-editor {
+    height: 100%;
+    border: none;
+}
+
+.editor.form-field {
+    border: 1px solid #c8c8c8;
+}
+
+.editor.form-field:hover {
+    border-color: #767676;
+}
+
+.editor.text-field {
+    height: 2em;
+}
+
+.editor.text-area {
+    height: 12em;
+}
