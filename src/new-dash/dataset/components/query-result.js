@@ -9,6 +9,7 @@ import {
 } from "office-ui-fabric-react"
 
 import { renderSpecialType } from "../special-types"
+import { stringify } from "../stringify"
 
 export default class QueryResult extends Component {
 
@@ -24,7 +25,7 @@ export default class QueryResult extends Component {
     if (error.requestResult && error.requestResult.responseContent) { // Query Error
       return <div>
           <p>{error.toString()}</p>
-          <pre>{this.stringify(error.requestResult.responseContent)}</pre>
+          <pre>{stringify(error.requestResult.responseContent)}</pre>
         </div>
     }
 
@@ -50,7 +51,7 @@ export default class QueryResult extends Component {
             </span>}
         </PivotItem>
         <PivotItem linkText="JS">
-          <pre>{this.stringify(this.props.result)}</pre>
+          <pre>{stringify(this.props.result)}</pre>
         </PivotItem>
       </Pivot>
   }
@@ -111,32 +112,10 @@ export default class QueryResult extends Component {
     const result = specialItem || specialValue || value
 
     if (typeof result === "object") {
-      return this.stringify(result)
+      return stringify(result)
     }
 
     return result
-  }
-
-  stringify(obj) {
-    const replacements = []
-
-    let string = JSON.stringify(obj, (key, value) => {
-      const parsed = renderSpecialType(value)
-
-      if (parsed) {
-        const placeHolder = "$$dash_replacement_$" + replacements.length + "$$"
-        replacements.push(parsed)
-        return placeHolder
-      }
-
-      return value
-    }, 2)
-
-    replacements.forEach((replace, index) => {
-      string = string.replace('"$$dash_replacement_$' + index + '$$"', replace)
-    })
-
-    return string
   }
 
 }
