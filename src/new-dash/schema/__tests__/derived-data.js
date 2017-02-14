@@ -46,17 +46,18 @@ const schemaTree = Immutable.fromJS({
                     source: q.Ref("classes/users")
                   },
                   "people_by_name": {
+                    ref: q.Ref("indexes/people_by_name"),
                     name: "people_by_name",
                     source: q.Ref("classes/people"),
                     unique: false,
                     active: true,
                     partitions: 8,
                     values: [
-                      { field: [ "data", "name" ] },
+                      { field: [ "data", "name" ], transform: "casefold" },
                       { field: [ "ref" ] },
                     ],
                     terms: [
-                      { field: [ "data", "name" ] }
+                      { field: [ "data", "name" ], transform: "casefold" }
                     ]
                   }
                 }
@@ -159,6 +160,7 @@ describe("selectedIndex", () => {
 
     expect(selectedIndex(state).toJS()).toEqual({
       name: "people_by_name",
+      ref: q.Ref("indexes/people_by_name"),
       active: true,
       unique: false,
       partitions: 8,
@@ -167,11 +169,11 @@ describe("selectedIndex", () => {
         url: "/my-app/my-blog/classes/people"
       },
       values: [
-        "data.name",
-        "ref"
+        { field: "data.name", transform: "casefold" },
+        { field: "ref", transform: null }
       ],
       terms: [
-        "data.name"
+        { field: "data.name", transform: "casefold" }
       ]
     })
   })

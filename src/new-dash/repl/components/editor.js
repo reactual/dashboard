@@ -1,6 +1,7 @@
 import React, { Component } from "react"
 import Ace from "brace"
 
+import "./editor.css"
 import queryFunctions from "../query-functions"
 
 const faunaLangCompleter = {
@@ -25,19 +26,25 @@ const faunaLangCompleter = {
 
 export default class ReplEditor extends Component {
 
+  static Mode = {
+    CODE_EDITOR: "editor code-editor",
+    TEXT_FIELD: "editor form-field text-field",
+    TEXT_AREA: "editor form-field text-area"
+  }
+
   componentDidMount() {
     const {
       name,
       value,
       focus = false,
-      shortcuts = []
+      shortcuts = [],
+      mode = ReplEditor.Mode.CODE_EDITOR
     } = this.props
 
     this.editor = Ace.edit(name)
     this.editor.$blockScrolling = Infinity // Disable warning
     this.editor.setValue(value)
     this.editor.setFontSize(12)
-    this.editor.renderer.setShowGutter(true)
     this.editor.setOption("highlightActiveLine", true)
     this.editor.setOption("enableBasicAutocompletion", true)
     this.editor.setOption("enableLiveAutocompletion", true)
@@ -46,6 +53,7 @@ export default class ReplEditor extends Component {
     this.editor.getSession().setTabSize(2)
     this.editor.getSession().setUseWorker(false)
     this.editor.on("change", this.onChange.bind(this))
+    this.editor.renderer.setShowGutter(mode === ReplEditor.Mode.CODE_EDITOR)
 
     this.editor.completers = [
       Ace.acequire("ace/ext/language_tools").textCompleter,
@@ -65,10 +73,6 @@ export default class ReplEditor extends Component {
     if (this.editor.getValue() !== nextProps.value) {
       this.editor.setValue(nextProps.value)
     }
-
-    if (!this.editor.isFocused() && nextProps.focus) {
-      this.editor.focus()
-    }
   }
 
   onChange() {
@@ -82,11 +86,9 @@ export default class ReplEditor extends Component {
   }
 
   render() {
-    const divStyle = {
-      width: this.props.width || "100%",
-      height: this.props.height || "100%"
-    }
-
-    return <div id={this.props.name} style={divStyle}></div>
+    return <div
+      id={this.props.name}
+      className={this.props.mode || ReplEditor.Mode.CODE_EDITOR}>
+    </div>
   }
 }

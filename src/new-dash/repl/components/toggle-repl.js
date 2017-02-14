@@ -7,6 +7,7 @@ import { Button, ButtonType, Breadcrumb, Dropdown } from "office-ui-fabric-react
 
 import "./toggle-repl.css"
 import { ReplEditor, evalQuery } from "../"
+import { monitorActivity, isBusy } from "../../activity-monitor"
 import { QueryResult } from "../../dataset"
 import { faunaClient } from "../../authentication"
 import { selectedResource, buildUrl } from "../../router"
@@ -90,11 +91,13 @@ class ToggleRepl extends Component {
   }
 
   executeQuery() {
-    evalQuery(
-      this.props.faunaClient,
-      this.props.selectedPath,
-      this.state.privilege,
-      this.state.code
+    const { faunaClient, selectedPath } = this.props
+    const { privilege, code } = this.state
+
+    this.props.dispatch(
+      monitorActivity(() =>
+        evalQuery(q => faunaClient.query(selectedPath, privilege, q))(code)
+      )
     ).then(
       (result) => this.setState({ result, error: null }),
       (error) => this.setState({ error, result: null })
@@ -169,7 +172,7 @@ class ToggleRepl extends Component {
         <div className="repl-bar">
           <div className="buttons">
             <Button
-              disabled={!this.state.isOpen}
+              disabled={!this.state.isOpen || this.props.isBusy}
               buttonType={ButtonType.primary}
               onClick={this.executeQuery.bind(this)}>
                 Run
@@ -192,6 +195,7 @@ class ToggleRepl extends Component {
 
 export default connect(
   state => ({
+    isBusy: isBusy(state),
     faunaClient: faunaClient(state),
     selectedPath: selectedResource(state).getIn(["database", "path"])
   })

@@ -1,6 +1,8 @@
 import { values as v } from "faunadb"
 
 export const renderSpecialType = (type) => {
+  if (!type) return null
+
   if (type instanceof v.Value) {
     if (type instanceof v.Ref) return `q.Ref("${type.value}")`
     if (type instanceof v.FaunaTime) return `q.Time("${type.value}")`

@@ -32,4 +32,9 @@ describe("When rendering special fauna types", () => {
     expect(renderSpecialType({ "@ts": "1970-01-01T00:00:12Z"}))
       .toEqual('q.Time("1970-01-01T00:00:12Z")')
   })
+
+  it("returns null", () => {
+    expect(renderSpecialType(null)).toBeNull()
+    expect(renderSpecialType(undefined)).toBeNull()
+  })
 })
