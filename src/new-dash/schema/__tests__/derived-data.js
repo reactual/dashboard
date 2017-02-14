@@ -53,11 +53,11 @@ const schemaTree = Immutable.fromJS({
                     active: true,
                     partitions: 8,
                     values: [
-                      { field: [ "data", "name" ] },
+                      { field: [ "data", "name" ], transform: "casefold" },
                       { field: [ "ref" ] },
                     ],
                     terms: [
-                      { field: [ "data", "name" ] }
+                      { field: [ "data", "name" ], transform: "casefold" }
                     ]
                   }
                 }
@@ -169,11 +169,11 @@ describe("selectedIndex", () => {
         url: "/my-app/my-blog/classes/people"
       },
       values: [
-        "data.name",
-        "ref"
+        { field: "data.name", transform: "casefold" },
+        { field: "ref", transform: null }
       ],
       terms: [
-        "data.name"
+        { field: "data.name", transform: "casefold" }
       ]
     })
   })

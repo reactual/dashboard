@@ -73,6 +73,15 @@ class IndexInfo extends Component {
     })
   }
 
+  renderField(prefix) {
+    return field => {
+      return <li key={`prefix-${field.get("field")}`}>
+        {field.get("field")}
+        {field.get("transform") ?  " => " + field.get("transform") : ""}
+      </li>
+    }
+  }
+
   render() {
     const { index, isBusy } = this.props
     const { terms, queryFn } = this.state
@@ -105,17 +114,13 @@ class IndexInfo extends Component {
         <div className="ms-Grid-col ms-u-sm12 ms-u-md6">
           <h3>Terms</h3>
           <ul>
-            {index.get("terms").map(term => (
-              <li key={`term-${term}`}>{term}</li>)
-            )}
+            {index.get("terms").map(this.renderField("term"))}
           </ul>
         </div>
         <div className="ms-Grid-col ms-u-sm12 ms-u-md6">
           <h3>Values</h3>
           <ul>
-            {index.get("values").map(value => (
-              <li key={`value-${value}`}>{value}</li>)
-            )}
+            {index.get("values").map(this.renderField("value"))}
           </ul>
         </div>
       </div>

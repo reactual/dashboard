@@ -78,6 +78,11 @@ export const selectedIndex = createSelector([schema, database, resource], (schem
     Map()
   )
 
+  const parseField = field => Map.of(
+    "field", field.get("field").join("."),
+    "transform", field.get("transform", null)
+  )
+
   return Map.of(
     "ref", index.get("ref", null),
     "name", index.get("name", ""),
@@ -85,8 +90,8 @@ export const selectedIndex = createSelector([schema, database, resource], (schem
     "unique", index.get("unique", false),
     "partitions", index.get("partitions", null),
     "source", linkForRef(database.get("url"), index.get("source")),
-    "terms", index.get("terms", List()).map(term => term.get("field").join(".")),
-    "values", index.get("values", List()).map(term => term.get("field").join("."))
+    "terms", index.get("terms", List()).map(parseField),
+    "values", index.get("values", List()).map(parseField)
   )
 })
 
