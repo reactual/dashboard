@@ -74,7 +74,6 @@ class ClassInfo extends Component {
               <ReplEditor
                 mode={ReplEditor.Mode.TEXT_AREA}
                 name="class-data-editor"
-                focus={true}
                 value={this.state.data}
                 onChange={this.onChange.bind(this)} />
 

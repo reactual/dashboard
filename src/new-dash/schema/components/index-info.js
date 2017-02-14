@@ -132,7 +132,6 @@ class IndexInfo extends Component {
             <ReplEditor
               mode={ReplEditor.Mode.TEXT_FIELD}
               name="index-lookup-editor"
-              focus={true}
               value={terms}
               onChange={this.onChange.bind(this)}
               shortcuts={[{
