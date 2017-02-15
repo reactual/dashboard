@@ -36,7 +36,7 @@ export default class ReplEditor extends Component {
     const {
       name,
       value,
-      focus = false,
+      focus = true,
       shortcuts = [],
       mode = ReplEditor.Mode.CODE_EDITOR
     } = this.props
