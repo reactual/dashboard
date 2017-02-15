@@ -3,6 +3,7 @@ import { connect } from "react-redux"
 import { TextField, Dropdown, Checkbox } from "office-ui-fabric-react"
 
 import SchemaForm from "./schema-form"
+import FieldsForm from "./fields-form"
 import { selectedDatabase, createIndex } from "../"
 import { notify } from "../../notifications"
 import { faunaClient } from "../../authentication"
@@ -16,10 +17,11 @@ class IndexForm extends Component {
   initialState() {
     return {
       name: "",
-      source: { key: "", ref: null },
       unique: false,
-      terms: "",
-      values: ""
+      source: { key: "", ref: null },
+      terms: [{ field: [], transform: null }],
+      values: [{ field: [], transform: null }],
+      nonce: 0
     }
   }
 
@@ -28,7 +30,10 @@ class IndexForm extends Component {
   }
 
   reset() {
-    this.setState(this.initialState())
+    this.setState({
+      ...this.initialState(),
+      nonce: this.state.nonce + 1
+    })
   }
 
   onChange(field) {
@@ -54,31 +59,52 @@ class IndexForm extends Component {
     })
   }
 
+  addField(name) {
+    return () => {
+      this.setState({
+        [name]: [
+          ...this.state[name],
+          { field: [], transform: null }
+        ]
+      })
+    }
+  }
+
+  updateField(name) {
+    return (index, field, transform) => {
+      const fields = [...this.state[name]]
+      fields[index] = { field, transform }
+
+      this.setState({
+        [name]: fields
+      })
+    }
+  }
+
   onSubmit() {
     return notify(
       "Index created successfully",
-      dispatch => dispatch(createIndex(
+      createIndex(
         this.props.client,
         this.props.path,
         this.indexConfig()
-      ))
+      )
     )
   }
 
   indexConfig() {
-    let config = {
+    return {
       name: this.state.name,
       source: this.state.source.ref,
       unique: this.state.unique,
+      terms: this.state.terms.filter(term => term.field.length !== 0),
+      values: this.state.values.filter(value => value.field.length !== 0)
     }
-
-    if(this.state.terms.trim()) config.terms = JSON.parse(this.state.terms)
-    if(this.state.values.trim()) config.values = JSON.parse(this.state.values)
-
-    return config
   }
 
   render() {
+    const allFields = this.state.terms.concat(this.state.values)
+
     return <SchemaForm
       title="Create a new Index"
       buttonText="Create Index"
@@ -107,19 +133,21 @@ class IndexForm extends Component {
         checked={this.state.unique}
         onChange={this.onToggle("unique")} />
 
-      <TextField
-        label="Terms"
-        description="JSON list of terms to be indexed."
-        placeholder='[{"field": ["data", "name"], "transform": "casefold"}, {"field": ["data", "age"]}]'
-        value={this.state.terms}
-        onBeforeChange={this.onChange("terms")} />
+      <FieldsForm
+        title="Terms"
+        knownFields={allFields}
+        nonce={this.state.nonce}
+        fields={this.state.terms}
+        addField={this.addField("terms")}
+        updateField={this.updateField("terms")} />
 
-      <TextField
-        label="Values"
-        description="JSON list of values to be included."
-        placeholder='[{"field": ["data", "name"], "transform": "casefold"}, {"field": ["data", "age"]}]'
-        value={this.state.values}
-        onBeforeChange={this.onChange("values")} />
+      <FieldsForm
+        title="Values"
+        knownFields={allFields}
+        nonce={this.state.nonce}
+        fields={this.state.values}
+        addField={this.addField("values")}
+        updateField={this.updateField("values")} />
     </SchemaForm>
   }
 }
