@@ -1,4 +1,5 @@
 import React, { Component } from "react"
+import { values as v } from "faunadb"
 
 import {
   Pivot,
@@ -107,9 +108,22 @@ export default class QueryResult extends Component {
     const value = item[column.key || index]
     if (!value) return null
 
-    const specialItem = renderSpecialType(item)
-    const specialValue = renderSpecialType(value)
-    const result = specialItem || specialValue || value
+    const result =
+      renderSpecialType(item) ||
+      renderSpecialType(value) ||
+      value
+
+    if (this.props.onSelectRef && (item instanceof v.Ref || value instanceof v.Ref)) {
+      const ref = item instanceof v.Ref ? item : value
+
+      return <a href="#"
+        onClick={(e) => {
+          e.preventDefault()
+          this.props.onSelectRef(ref)
+        }}>
+        {result}
+      </a>
+    }
 
     if (typeof result === "object") {
       return stringify(result)

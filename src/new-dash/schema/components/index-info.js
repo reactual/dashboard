@@ -6,9 +6,10 @@ import { Button, ButtonType } from "office-ui-fabric-react"
 
 import { selectedIndex, selectedDatabase } from "../"
 import { faunaClient } from "../../authentication"
-import { isBusy } from "../../activity-monitor"
+import { watchForError } from "../../notifications"
+import { monitorActivity, isBusy } from "../../activity-monitor"
 import { KeyType } from "../../persistence/faunadb-wrapper"
-import { Pagination } from "../../dataset"
+import { Pagination, InstanceInfo } from "../../dataset"
 import { ReplEditor, evalQuery } from "../../repl"
 
 class IndexInfo extends Component {
@@ -20,7 +21,8 @@ class IndexInfo extends Component {
   initialState(props) {
     return {
       terms: '""',
-      queryFn: this.buildQuery(props)
+      queryFn: this.buildQuery(props),
+      selectedInstance: null
     }
   }
 
@@ -73,6 +75,21 @@ class IndexInfo extends Component {
     })
   }
 
+  onSelectRef(ref) {
+    const { client, path } = this.props
+
+    this.props.dispatch(
+      monitorActivity(
+        watchForError(
+          "Can't fetch selected instance",
+          () => client.query(path, KeyType.SERVER, q.Get(ref))
+        )
+      )
+    ).then(
+      selectedInstance => this.setState({ selectedInstance })
+    )
+  }
+
   renderField(prefix) {
     return field => {
       return <li key={`prefix-${field.get("field")}`}>
@@ -84,7 +101,7 @@ class IndexInfo extends Component {
 
   render() {
     const { index, isBusy } = this.props
-    const { terms, queryFn } = this.state
+    const { terms, queryFn, selectedInstance } = this.state
 
     return <div>
       <h3>Index Details</h3>
@@ -156,7 +173,13 @@ class IndexInfo extends Component {
 
       <div className="ms-Grid-row">
         <div className="ms-Grid-col ms-u-sm12">
-          <Pagination query={queryFn} />
+          <Pagination query={queryFn} onSelectRef={this.onSelectRef.bind(this)} />
+        </div>
+      </div>
+
+      <div className="ms-Grid-row">
+        <div className="ms-Grid-col ms-u-sm12">
+          <InstanceInfo instance={selectedInstance} />
         </div>
       </div>
     </div>
