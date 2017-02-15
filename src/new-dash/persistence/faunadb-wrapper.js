@@ -3,8 +3,8 @@ import { parse as parseURL } from "url"
 
 export default class FaunaClient {
   static KeyType = {
-    ADMIN: "admin",
-    SERVER: "server"
+    SERVER: "server",
+    ADMIN: "admin"
   }
 
   // this is bad tech debt, will fix when
