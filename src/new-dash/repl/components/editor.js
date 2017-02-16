@@ -36,7 +36,6 @@ export default class ReplEditor extends Component {
     const {
       name,
       value,
-      focus = false,
       shortcuts = [],
       mode = ReplEditor.Mode.CODE_EDITOR
     } = this.props
@@ -65,9 +64,7 @@ export default class ReplEditor extends Component {
       this.editor.commands.addCommand(shortcut)
     })
 
-    if (focus) {
-      this.editor.focus()
-    }
+    this.editor.focus()
   }
 
   componentWillReceiveProps(nextProps) {

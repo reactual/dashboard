@@ -82,7 +82,7 @@ class Pagination extends Component {
   }
 
   render() {
-    const { isBusy } = this.props
+    const { isBusy, onSelectRef } = this.props
     const { result } = this.state
     if (!result) return null
 
@@ -119,7 +119,7 @@ class Pagination extends Component {
 
       <div className="ms-Grid-row">
         <div className="ms-Grid-col ms-u-sm12">
-          <QueryResult result={result} />
+          <QueryResult result={result} onSelectRef={onSelectRef} />
         </div>
       </div>
     </div>

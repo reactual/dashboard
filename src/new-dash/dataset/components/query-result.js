@@ -1,4 +1,5 @@
 import React, { Component } from "react"
+import { values as v } from "faunadb"
 
 import {
   Pivot,
@@ -9,6 +10,7 @@ import {
 } from "office-ui-fabric-react"
 
 import { renderSpecialType } from "../special-types"
+import { stringify } from "../stringify"
 
 export default class QueryResult extends Component {
 
@@ -24,7 +26,7 @@ export default class QueryResult extends Component {
     if (error.requestResult && error.requestResult.responseContent) { // Query Error
       return <div>
           <p>{error.toString()}</p>
-          <pre>{this.stringify(error.requestResult.responseContent)}</pre>
+          <pre>{stringify(error.requestResult.responseContent)}</pre>
         </div>
     }
 
@@ -50,7 +52,7 @@ export default class QueryResult extends Component {
             </span>}
         </PivotItem>
         <PivotItem linkText="JS">
-          <pre>{this.stringify(this.props.result)}</pre>
+          <pre>{stringify(this.props.result)}</pre>
         </PivotItem>
       </Pivot>
   }
@@ -106,37 +108,28 @@ export default class QueryResult extends Component {
     const value = item[column.key || index]
     if (!value) return null
 
-    const specialItem = renderSpecialType(item)
-    const specialValue = renderSpecialType(value)
-    const result = specialItem || specialValue || value
+    const result =
+      renderSpecialType(item) ||
+      renderSpecialType(value) ||
+      value
+
+    if (this.props.onSelectRef && (item instanceof v.Ref || value instanceof v.Ref)) {
+      const ref = item instanceof v.Ref ? item : value
+
+      return <a href="#"
+        onClick={(e) => {
+          e.preventDefault()
+          this.props.onSelectRef(ref)
+        }}>
+        {result}
+      </a>
+    }
 
     if (typeof result === "object") {
-      return this.stringify(result)
+      return stringify(result)
     }
 
     return result
-  }
-
-  stringify(obj) {
-    const replacements = []
-
-    let string = JSON.stringify(obj, (key, value) => {
-      const parsed = renderSpecialType(value)
-
-      if (parsed) {
-        const placeHolder = "$$dash_replacement_$" + replacements.length + "$$"
-        replacements.push(parsed)
-        return placeHolder
-      }
-
-      return value
-    }, 2)
-
-    replacements.forEach((replace, index) => {
-      string = string.replace('"$$dash_replacement_$' + index + '$$"', replace)
-    })
-
-    return string
   }
 
 }

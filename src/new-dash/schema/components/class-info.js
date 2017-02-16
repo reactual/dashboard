@@ -9,6 +9,7 @@ import { notify } from "../../notifications"
 import { faunaClient } from "../../authentication"
 import { KeyType } from "../../persistence/faunadb-wrapper"
 import { ReplEditor, evalQuery } from "../../repl"
+import { InstanceInfo } from "../../dataset"
 
 class ClassInfo extends Component {
 
@@ -19,7 +20,8 @@ class ClassInfo extends Component {
 
   initialState() {
     return {
-      data: "{}"
+      data: "{}",
+      instance: null
     }
   }
 
@@ -34,14 +36,18 @@ class ClassInfo extends Component {
   onSubmit() {
     const { faunaClient, path, clazz } = this.props
 
-    return notify("Instance created successfully", () =>
-      evalQuery(data =>
-        faunaClient.query(
-          path,
-          KeyType.SERVER,
-          q.Create(clazz.get("ref"), { data })
-        )
-      )(this.state.data)
+    return dispatch => dispatch(
+      notify("Instance created successfully", () =>
+        evalQuery(data =>
+          faunaClient.query(
+            path,
+            KeyType.SERVER,
+            q.Create(clazz.get("ref"), { data })
+          )
+        )(this.state.data)
+      )
+    ).then(
+      instance => this.setState({ instance })
     )
   }
 
@@ -74,7 +80,6 @@ class ClassInfo extends Component {
               <ReplEditor
                 mode={ReplEditor.Mode.TEXT_AREA}
                 name="class-data-editor"
-                focus={true}
                 value={this.state.data}
                 onChange={this.onChange.bind(this)} />
 
@@ -84,6 +89,8 @@ class ClassInfo extends Component {
               </p>
           </SchemaForm>
         </dl>
+
+        <InstanceInfo instance={this.state.instance} />
       </div>
   }
 }

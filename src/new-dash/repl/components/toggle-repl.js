@@ -24,7 +24,6 @@ class ToggleRepl extends Component {
       selectedCode: "",
       isOpen: false,
       fullscreen: false,
-      focus: false,
       expandedSize: 300,
       privilege: null,
       result: null,
@@ -45,13 +44,6 @@ class ToggleRepl extends Component {
         privilege: next.faunaClient.availablePrivileges[0]
       })
     }
-  }
-
-  toggleRepl() {
-    this.setState({
-      isOpen: !this.state.isOpen,
-      focus: !this.state.focus
-    })
   }
 
   onChange(field) {
@@ -140,7 +132,6 @@ class ToggleRepl extends Component {
               <ReplEditor
                 name="toggle-repl-editor"
                 value={this.state.code}
-                focus={this.state.focus}
                 onChange={this.onChange("code")}
                 onSelect={this.onChange("selectedCode")}
                 shortcuts={[{
@@ -185,7 +176,7 @@ class ToggleRepl extends Component {
             <Button
               icon={this.state.isOpen ? "ChevronDown" : "ChevronUp"}
               buttonType={ButtonType.command}
-              onClick={this.toggleRepl.bind(this)}>
+              onClick={this.onToggle("isOpen")}>
                 Toggle Query Console
             </Button>
           </div>
