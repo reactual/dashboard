@@ -99,16 +99,7 @@ const remove = (nodeToUpdate, keyType, refConstructor) => (client, path, name) =
   )
 }
 
-export const deleteDatabase = (client, path) => {
-  const dbPath = List(path)
-
-  return remove("databases", KeyType.ADMIN, q.Database)(
-    client,
-    dbPath.butLast(),
-    dbPath.last()
-  )
-}
-
+export const deleteDatabase = remove("databases", KeyType.ADMIN, q.Database)
 export const deleteClass = remove("classes", KeyType.SERVER, q.Class)
 export const deleteIndex = remove("indexes", KeyType.SERVER, q.Index)
 

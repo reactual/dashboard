@@ -249,7 +249,7 @@ describe("Given a schema tree store", () => {
     it("should be able to delete a database", () => {
       faunaClient.query.mockReturnValue(Promise.resolve())
 
-      return store.dispatch(deleteDatabase(faunaClient, ["my-app"])).then(() => {
+      return store.dispatch(deleteDatabase(faunaClient, [], "my-app")).then(() => {
         expect(schema).toEqual(
           rootDatabase.schemaTree
             .removeIn(["databases", "byName", "my-app"])
