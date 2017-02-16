@@ -32,18 +32,23 @@ const schemaTree = Immutable.fromJS({
                     history_days: 10,
                     ttl_days: 1
                   },
-                  "users": { name: "users" }
+                  "users": {
+                    name: "users",
+                    ref: q.Ref("classes/users")
+                  }
                 }
               },
               indexes: {
                 byName: {
                   "all_people": {
                     name: "all_people",
-                    source: q.Ref("classes/people")
+                    source: q.Ref("classes/people"),
+                    ref: q.Ref("indexes/all_people")
                   },
                   "all_users": {
                     name: "all_users",
-                    source: q.Ref("classes/users")
+                    source: q.Ref("classes/users"),
+                    ref: q.Ref("indexes/all_users")
                   },
                   "people_by_name": {
                     ref: q.Ref("indexes/people_by_name"),
@@ -87,16 +92,16 @@ describe("selectedDatabase", () => {
 
     it("contains database classes", () => {
       expect(database.classes).toEqual([
-        { name: "people", url: "/my-app/my-blog/classes/people" },
-        { name: "users", url: "/my-app/my-blog/classes/users" }
+        { name: "people", ref: q.Ref("classes/people"), url: "/my-app/my-blog/classes/people" },
+        { name: "users", ref: q.Ref("classes/users"), url: "/my-app/my-blog/classes/users" }
       ])
     })
 
     it("contains database indexes", () => {
       expect(database.indexes).toEqual([
-        { name: "all_people", url: "/my-app/my-blog/indexes/all_people" },
-        { name: "all_users", url: "/my-app/my-blog/indexes/all_users" },
-        { name: "people_by_name", url: "/my-app/my-blog/indexes/people_by_name" }
+        { name: "all_people", ref: q.Ref("indexes/all_people"), url: "/my-app/my-blog/indexes/all_people" },
+        { name: "all_users", ref: q.Ref("indexes/all_users"), url: "/my-app/my-blog/indexes/all_users" },
+        { name: "people_by_name", ref: q.Ref("indexes/people_by_name"), url: "/my-app/my-blog/indexes/people_by_name" }
       ])
     })
   })

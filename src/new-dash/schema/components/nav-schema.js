@@ -33,6 +33,11 @@ const NavSchema = ({ selectedDatabase }) => {
           name: "Create Class",
           key: "create-class",
           url: buildUrl(url, "classes")
+        },
+        {
+          name: "Create Index",
+          key: "create-Index",
+          url: buildUrl(url, "indexes")
         }
       ],
       isExpanded: true

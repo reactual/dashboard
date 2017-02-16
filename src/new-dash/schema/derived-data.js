@@ -13,6 +13,7 @@ const extract = (node, db, url) => {
     const name = instance.get("name")
     return Map.of(
       "name", name,
+      "ref", instance.get("ref"),
       "url", buildUrl(url, node, name)
     )
   })

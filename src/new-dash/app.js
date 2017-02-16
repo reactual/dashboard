@@ -10,8 +10,17 @@ import { updateSelectedResource } from "./router"
 import { ActivityMonitor, monitorActivity } from "./activity-monitor"
 import { NotificationBar, watchForError } from "./notifications"
 import { LoginForm, UserAccount, faunaClient } from "./authentication"
-import { NavTree, DatabaseForm, ClassForm, ClassInfo, IndexInfo, loadSchemaTree } from "./schema"
 import { IntercomWidget } from "./external/intercom"
+
+import {
+  NavTree,
+  DatabaseForm,
+  ClassForm,
+  ClassInfo,
+  IndexForm,
+  IndexInfo,
+  loadSchemaTree
+} from "./schema"
 
 class Container extends Component {
 
@@ -99,9 +108,11 @@ export default class App extends Component {
           <Route path="/" component={App.Container}>
             <IndexRoute component={DatabaseForm} />
             <Route path="indexes/:indexName" component={IndexInfo} />
+            <Route path="indexes" component={IndexForm} />
             <Route path="classes/:className" component={ClassInfo} />
             <Route path="classes" component={ClassForm} />
             <Route path="**/indexes/:indexName" component={IndexInfo} />
+            <Route path="**/indexes" component={IndexForm} />
             <Route path="**/classes/:className" component={ClassInfo} />
             <Route path="**/classes" component={ClassForm} />
             <Route path="**" component={DatabaseForm} />
