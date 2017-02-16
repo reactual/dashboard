@@ -21,6 +21,7 @@ class ToggleRepl extends Component {
   initialState() {
     return {
       code: "q.Paginate(q.Ref(\"indexes\"))",
+      selectedCode: "",
       isOpen: false,
       fullscreen: false,
       focus: false,
@@ -92,11 +93,13 @@ class ToggleRepl extends Component {
 
   executeQuery() {
     const { faunaClient, selectedPath } = this.props
-    const { privilege, code } = this.state
+    const { privilege, code, selectedCode } = this.state
 
     this.props.dispatch(
       monitorActivity(() =>
-        evalQuery(q => faunaClient.query(selectedPath, privilege, q))(code)
+        evalQuery(q =>
+          faunaClient.query(selectedPath, privilege, q)
+        )(selectedCode || code)
       )
     ).then(
       (result) => this.setState({ result, error: null }),
@@ -139,6 +142,7 @@ class ToggleRepl extends Component {
                 value={this.state.code}
                 focus={this.state.focus}
                 onChange={this.onChange("code")}
+                onSelect={this.onChange("selectedCode")}
                 shortcuts={[{
                   name: "execute",
                   bindKey: { win: "Ctrl-Enter", mac: "Command-Enter" },

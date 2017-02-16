@@ -53,6 +53,7 @@ export default class ReplEditor extends Component {
     this.editor.getSession().setTabSize(2)
     this.editor.getSession().setUseWorker(false)
     this.editor.on("change", this.onChange.bind(this))
+    this.editor.on("changeSelection", this.onSelect.bind(this))
     this.editor.renderer.setShowGutter(mode === ReplEditor.Mode.CODE_EDITOR)
 
     this.editor.completers = [
@@ -78,6 +79,12 @@ export default class ReplEditor extends Component {
   onChange() {
     if (this.props.onChange) {
       this.props.onChange(this.editor.getValue())
+    }
+  }
+
+  onSelect() {
+    if (this.props.onSelect) {
+      this.props.onSelect(this.editor.getSelectedText())
     }
   }
 
