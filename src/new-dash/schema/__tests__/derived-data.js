@@ -84,6 +84,9 @@ describe("selectedDatabase", () => {
     it("contains database path", () => expect(database.path).toEqual(["my-app", "my-blog"]))
     it("contains database url", () => expect(database.url).toEqual("/my-app/my-blog"))
     it("contains database name", () => expect(database.name).toEqual("my-blog"))
+    it("contains database parent path", () => expect(database.parent.path).toEqual(["my-app"]))
+    it("contains database parent url", () => expect(database.parent.url).toEqual("/my-app"))
+    it("should idefity root database", () => expect(database.isRoot).toBeFalsy())
 
     it("contains database classes", () => {
       expect(database.classes).toEqual([

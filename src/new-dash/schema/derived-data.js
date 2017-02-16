@@ -26,6 +26,8 @@ export const selectedDatabase = createSelector([schema, database], (schema, data
   return Map.of(
     "path", path,
     "url", url,
+    "isRoot", path.size === 0,
+    "parent", database.get("parent"),
     "name", db.getIn(["info", "name"]),
     "classes", extract("classes", db, url),
     "indexes", extract("indexes", db, url)
