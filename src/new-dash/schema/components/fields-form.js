@@ -39,7 +39,7 @@ export default class FieldsForm extends Component {
           </p>
           <Button
             type="button"
-            buttonType={ButtonType.incon}
+            buttonType={ButtonType.command}
             onClick={this.addField.bind(this)}
             icon="Add">
             Add field
