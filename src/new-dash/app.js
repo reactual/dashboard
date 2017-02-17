@@ -1,7 +1,7 @@
 import Immutable from "immutable"
 import React, { Component } from "react"
 import { Provider, connect } from "react-redux"
-import { Router, Route, IndexRoute, Link, browserHistory } from "react-router"
+import { Router, Route, Redirect, Link, browserHistory } from "react-router"
 
 import "./app.css"
 import logo from "./logo.svg"
@@ -102,11 +102,12 @@ export default class App extends Component {
     })
   )(Container)
 
+  static NotFound = () => <h1>404.. This page is not found!</h1>
+
   render() {
     return <Provider store={this.props.store}>
         <Router history={browserHistory}>
-          <Route path="/" component={App.Container}>
-            <IndexRoute component={DatabaseForm} />
+          <Route path="/db" component={App.Container}>
             <Route path="indexes/:indexName" component={IndexInfo} />
             <Route path="indexes" component={IndexForm} />
             <Route path="classes/:className" component={ClassInfo} />
@@ -115,8 +116,12 @@ export default class App extends Component {
             <Route path="**/indexes" component={IndexForm} />
             <Route path="**/classes/:className" component={ClassInfo} />
             <Route path="**/classes" component={ClassForm} />
-            <Route path="**" component={DatabaseForm} />
+            <Route path="**/databases" component={DatabaseForm} />
+            <Route path="databases" component={DatabaseForm} />
+            <Redirect from="/" to="databases" />
           </Route>
+          <Redirect from="/" to="/db" />
+          <Route path="*" component={App.NotFound} />
         </Router>
       </Provider>
   }

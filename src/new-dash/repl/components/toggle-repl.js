@@ -10,7 +10,7 @@ import { ReplEditor, evalQuery } from "../"
 import { monitorActivity, isBusy } from "../../activity-monitor"
 import { QueryResult } from "../../dataset"
 import { faunaClient } from "../../authentication"
-import { selectedResource, buildUrl } from "../../router"
+import { selectedResource, buildResourceUrl } from "../../router"
 
 class ToggleRepl extends Component {
   constructor(props) {
@@ -66,7 +66,7 @@ class ToggleRepl extends Component {
 
   buildBreadCrumbItem(path) {
     if (path.isEmpty()) return []
-    const url = buildUrl("/", path.join("/"))
+    const url = buildResourceUrl(null, path, "databases")
 
     return [{
       key: url,

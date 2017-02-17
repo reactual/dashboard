@@ -1,11 +1,16 @@
-import { Map } from "immutable"
+import { Map, List } from "immutable"
 
-export const buildUrl = (parentUrl, ...parts) => {
-  const url = parts.join("/")
-  if (url === "/") return parentUrl
-  if (parentUrl === "/") return `/${url}`
+const ROOT_URL = "/db"
+const ROOT_RESOURCE_URL = `${ROOT_URL}/databases`
 
-  return `${parentUrl}/${url}`
+export const buildResourceUrl = (parentUrl, path, resource) => {
+  const parent = parentUrl || ROOT_RESOURCE_URL
+  const parentPath = parent.split("/").slice(2).slice(0, -1)
+  const url = List(parentPath).concat(path).concat(resource).join("/")
+
+  return `${ROOT_URL}/${url}`
+    .replace(/\/\/+/, "/")
+    .replace(/\/$/, "")
 }
 
 const supportedRefTypes = [
@@ -23,6 +28,6 @@ export const linkForRef = (parentUrl, ref) => {
 
   return Map.of(
     "name", path,
-    "url", buildUrl(parentUrl, path)
+    "url", buildResourceUrl(parentUrl, path)
   )
 }

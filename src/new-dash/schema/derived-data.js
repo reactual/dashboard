@@ -2,7 +2,7 @@ import { Map, List } from "immutable"
 import { createSelector } from "reselect"
 
 import { nestedDatabaseNodeIn } from "./path"
-import { selectedResource, buildUrl, linkForRef } from "../router"
+import { selectedResource, buildResourceUrl, linkForRef } from "../router"
 
 const schema = (state) => state.get("schema")
 const database = createSelector([selectedResource], resource => resource.get("database"))
@@ -14,7 +14,7 @@ const extract = (node, db, url) => {
     return Map.of(
       "name", name,
       "ref", instance.get("ref"),
-      "url", buildUrl(url, node, name)
+      "url", buildResourceUrl(url, node, name)
     )
   })
 }
@@ -59,7 +59,7 @@ export const selectedClass = createSelector([schema, database, resource], (schem
     .map(
       index => Map.of(
         "name", index.get("name"),
-        "url", buildUrl(database.get("url"), "indexes", index.get("name"))
+        "url", buildResourceUrl(database.get("url"), "indexes", index.get("name"))
       )
     )
 
@@ -98,9 +98,9 @@ export const selectedIndex = createSelector([schema, database, resource], (schem
   )
 })
 
-const buildTree = (node, parentUrl = "/") => {
+const buildTree = (node, parentUrl = null) => {
   const name = node.getIn(["info", "name"])
-  const url = buildUrl(parentUrl, name)
+  const url = buildResourceUrl(parentUrl, name, "databases")
 
   return Map.of(
     "url", url,
