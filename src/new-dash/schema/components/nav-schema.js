@@ -1,10 +1,10 @@
 import React from "react"
 import { connect } from "react-redux"
 import { browserHistory } from "react-router"
-import { Nav } from "office-ui-fabric-react"
 
+import CustomNav from "./custom-nav"
 import { selectedDatabase } from "../"
-import { buildUrl } from "../../router"
+import { selectedResource, buildUrl } from "../../router"
 
 const onClick = (e, link) => {
   e.preventDefault()
@@ -17,7 +17,7 @@ const asLinks = (items) => items.map(item => ({
   url: item.get("url")
 })).toJS()
 
-const NavSchema = ({ selectedDatabase }) => {
+const NavSchema = ({ selectedDatabase, resourceUrl }) => {
   const url = selectedDatabase.get("url")
 
   const links = [
@@ -54,11 +54,15 @@ const NavSchema = ({ selectedDatabase }) => {
     }
   ]
 
-  return <Nav groups={links} onLinkClick={onClick} />
+  return <CustomNav
+    groups={links}
+    selectedKey={resourceUrl}
+    onLinkClick={onClick} />
 }
 
 export default connect(
   state => ({
-    selectedDatabase: selectedDatabase(state)
+    selectedDatabase: selectedDatabase(state),
+    resourceUrl: selectedResource(state).getIn(["resource", "url"])
   })
 )(NavSchema)
