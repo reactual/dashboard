@@ -6,7 +6,8 @@ import { nestedDatabaseNodeIn } from "./path"
 
 const Actions = {
   LOAD_DATABASE: "@@schema/LOAD_DATABASE",
-  UPDATE: "@@schema/UPDATE"
+  UPDATE: "@@schema/UPDATE",
+  DELETE: "@@schema/DELETE"
 }
 
 const toPage = (result, mapper = x => Immutable.fromJS(x)) => {
@@ -89,6 +90,19 @@ export const createDatabase = create("databases", KeyType.ADMIN, q.CreateDatabas
 export const createClass = create("classes", KeyType.SERVER, q.CreateClass)
 export const createIndex = create("indexes", KeyType.SERVER, q.CreateIndex)
 
+const remove = (nodeToUpdate, keyType, refConstructor) => (client, path, name) => (dispatch) => {
+  return client.query(path, keyType, q.Delete(refConstructor(name))).then(
+    () => dispatch({
+      type: Actions.DELETE,
+      nodePath: nestedDatabaseNodeIn(path, [nodeToUpdate, "byName", name])
+    })
+  )
+}
+
+export const deleteDatabase = remove("databases", KeyType.ADMIN, q.Database)
+export const deleteClass = remove("classes", KeyType.SERVER, q.Class)
+export const deleteIndex = remove("indexes", KeyType.SERVER, q.Index)
+
 const ensureTreeInfo = (tree, path) => {
   if (path.isEmpty()) return tree
   const infoPath = nestedDatabaseNodeIn(path, "info")
@@ -113,6 +127,9 @@ export const reduceSchemaTree = (state = initialSchemaTree, action) => {
 
     case Actions.UPDATE:
       return state.mergeDeepIn(action.path, action.data)
+
+    case Actions.DELETE:
+      return state.deleteIn(action.nodePath)
 
     default:
       return state

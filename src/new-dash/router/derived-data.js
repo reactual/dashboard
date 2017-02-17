@@ -8,11 +8,16 @@ const resource = state => state.getIn(["router", "resource"])
 
 export const selectedResource = createSelector([databasePath, resource], (path, resource) => {
   const url = `/${path.join("/")}`
+  const parentPath = path.butLast()
 
   return Map.of(
     "database", Map.of(
       "path", path,
-      "url", url
+      "url", url,
+      "parent", Map.of(
+        "path", parentPath,
+        "url", `/${parentPath.join("/")}`
+      )
     ),
     "resource", resource && Map.of(
       "url", buildUrl(url, resource.get("type"), resource.get("name")),

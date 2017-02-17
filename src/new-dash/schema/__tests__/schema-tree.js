@@ -4,8 +4,11 @@ import { query as q } from "faunadb"
 import {
   loadSchemaTree,
   createDatabase,
+  deleteDatabase,
   createClass,
+  deleteClass,
   createIndex,
+  deleteIndex,
   reduceSchemaTree
 } from "../"
 
@@ -88,13 +91,18 @@ const subDatabase = {
   serverKeyResponse: {
     classes: {
       data: [{
-        name: "people",
-        ref: q.Ref("classes/people"),
+        name: "users",
+        ref: q.Ref("classes/users"),
         ts: 11
       }]
     },
     indexes: {
-      data: []
+      data: [{
+        name: "all_users",
+        ref: q.Ref("indexes/all_users"),
+        source: q.Ref("classes/users"),
+        ts: 12
+      }]
     }
   },
   schemaTree: Immutable.fromJS({
@@ -107,15 +115,25 @@ const subDatabase = {
     databases: {},
     classes: {
       byName: {
-        "people": {
-          name: "people",
-          ref: q.Ref("classes/people"),
+        "users": {
+          name: "users",
+          ref: q.Ref("classes/users"),
           ts: 11
         },
       },
       cursor: null
     },
-    indexes: {}
+    indexes: {
+      byName: {
+        "all_users": {
+          name: "all_users",
+          source: q.Ref("classes/users"),
+          ref: q.Ref("indexes/all_users"),
+          ts: 12
+        },
+      },
+      cursor: null
+    }
   })
 }
 
@@ -184,7 +202,7 @@ describe("Given a schema tree store", () => {
     })
   })
 
-  describe("when schema tree is already loaded", () => {
+  describe("when the root database is already loaded", () => {
     beforeEach(() => {
       store = store.withInitialState({
         schema: rootDatabase.schemaTree
@@ -228,6 +246,18 @@ describe("Given a schema tree store", () => {
       })
     })
 
+    it("should be able to delete a database", () => {
+      faunaClient.query.mockReturnValue(Promise.resolve())
+
+      return store.dispatch(deleteDatabase(faunaClient, [], "my-app")).then(() => {
+        expect(schema).toEqual(
+          rootDatabase.schemaTree
+            .removeIn(["databases", "byName", "my-app"])
+            .toJS()
+        )
+      })
+    })
+
     it("should be able to create a new class", () => {
       faunaClient.query.mockReturnValue(Promise.resolve({
         name: "new-class"
@@ -245,6 +275,18 @@ describe("Given a schema tree store", () => {
       })
     })
 
+    it("should be able to delete a class", () => {
+      faunaClient.query.mockReturnValue(Promise.resolve())
+
+      return store.dispatch(deleteClass(faunaClient, [], "people")).then(() => {
+        expect(schema).toEqual(
+          rootDatabase.schemaTree
+            .removeIn(["classes", "byName", "people"])
+            .toJS()
+        )
+      })
+    })
+
     it("should be able to create a new index", () => {
       faunaClient.query.mockReturnValue(Promise.resolve({
         name: "new-index"
@@ -258,6 +300,18 @@ describe("Given a schema tree store", () => {
               name: "new-index"
             })
           ).toJS()
+        )
+      })
+    })
+
+    it("should be able to delete an index", () => {
+      faunaClient.query.mockReturnValue(Promise.resolve())
+
+      return store.dispatch(deleteIndex(faunaClient, [], "all_people")).then(() => {
+        expect(schema).toEqual(
+          rootDatabase.schemaTree
+            .removeIn(["indexes", "byName", "all_people"])
+            .toJS()
         )
       })
     })

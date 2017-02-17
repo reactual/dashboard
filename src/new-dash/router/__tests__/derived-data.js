@@ -14,6 +14,8 @@ describe("selectedResource", () => {
 
     it("contains database path", () => expect(selected.database.path).toEqual(["a", "b"]))
     it("contains database url", () => expect(selected.database.url).toEqual("/a/b"))
+    it("contains database partent path", () => expect(selected.database.parent.path).toEqual(["a"]))
+    it("contains database parent url", () => expect(selected.database.parent.url).toEqual("/a"))
   })
 
   describe("when there is NO database selected", () => {

@@ -1,12 +1,14 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
-import { Link } from "react-router"
+import { Link, browserHistory } from "react-router"
 import { query as q } from "faunadb"
 
 import SchemaForm from "./schema-form"
-import { selectedDatabase, selectedClass } from "../"
+import DeleteForm from "./delete-form"
+import { deleteClass, selectedDatabase, selectedClass } from "../"
 import { notify } from "../../notifications"
 import { faunaClient } from "../../authentication"
+import { buildUrl } from "../../router"
 import { KeyType } from "../../persistence/faunadb-wrapper"
 import { ReplEditor, evalQuery } from "../../repl"
 import { InstanceInfo } from "../../dataset"
@@ -34,20 +36,28 @@ class ClassInfo extends Component {
   }
 
   onSubmit() {
-    const { faunaClient, path, clazz } = this.props
+    const { client, path, clazz } = this.props
 
-    return dispatch => dispatch(
-      notify("Instance created successfully", () =>
-        evalQuery(data =>
-          faunaClient.query(
-            path,
-            KeyType.SERVER,
-            q.Create(clazz.get("ref"), { data })
-          )
-        )(this.state.data)
+    return notify("Instance created successfully", () =>
+      evalQuery(data =>
+        client.query(
+          path,
+          KeyType.SERVER,
+          q.Create(clazz.get("ref"), { data })
+        )
+      )(this.state.data).then(
+        instance => this.setState({ instance })
       )
-    ).then(
-      instance => this.setState({ instance })
+    )
+  }
+
+  onDelete() {
+    const { client, path, currentUrl, clazz } = this.props
+
+    return notify("Class deleted successfully", dispatch =>
+      dispatch(deleteClass(client, path, clazz.get("name"))).then(() =>
+        browserHistory.push(buildUrl(currentUrl, "classes"))
+      )
     )
   }
 
@@ -73,6 +83,12 @@ class ClassInfo extends Component {
             </dd>
           ))}
 
+          <DeleteForm
+            buttonText="Delete Class"
+            title={`Delete ${clazz.get("name")}`}
+            validateName={clazz.get("name")}
+            onDelete={this.onDelete.bind(this)} />
+
           <SchemaForm
             title={`Create an instance of ${clazz.get("name")}`}
             buttonText="Create Instance"
@@ -97,8 +113,9 @@ class ClassInfo extends Component {
 
 export default connect(
   state => ({
+    currentUrl: selectedDatabase(state).get("url"),
     path: selectedDatabase(state).get("path"),
     clazz: selectedClass(state),
-    faunaClient: faunaClient(state)
+    client: faunaClient(state)
   })
 )(ClassInfo)
