@@ -4,7 +4,7 @@ import { browserHistory } from "react-router"
 
 import CustomNav from "./custom-nav"
 import { selectedDatabase } from "../"
-import { selectedResource, buildUrl } from "../../router"
+import { selectedResource, buildResourceUrl } from "../../router"
 
 const onClick = (e, link) => {
   e.preventDefault()
@@ -32,12 +32,12 @@ const NavSchema = ({ selectedDatabase, resourceUrl }) => {
         {
           name: "Create Class",
           key: "create-class",
-          url: buildUrl(url, "classes")
+          url: buildResourceUrl(url, "classes")
         },
         {
           name: "Create Index",
           key: "create-Index",
-          url: buildUrl(url, "indexes")
+          url: buildResourceUrl(url, "indexes")
         }
       ],
       isExpanded: true
