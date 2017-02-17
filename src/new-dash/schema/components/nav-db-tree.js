@@ -1,9 +1,10 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
 import { browserHistory } from "react-router"
-import { Nav, css } from "office-ui-fabric-react"
 
+import CustomNav from "./custom-nav"
 import { databaseTree } from "../"
+import { selectedResource } from "../../router"
 
 class NavDBTree extends Component {
   constructor(props) {
@@ -59,33 +60,16 @@ class NavDBTree extends Component {
       links: this.state.links
     }]
 
-    return <Flav groups={links} onLinkClick={this.onClick.bind(this)} />
-  }
-}
-
-// Custom Nav to add chevron icon to all sub levels
-class Flav extends Nav {
-  _renderCompositeLink(link, linkIndex, nestingLevel) {
-    const key = link.key || linkIndex
-    const isLinkSelected = key === this.state.selectedKey
-
-    return <div key={key}
-        className={css("ms-Nav-compositeLink", {"is-expanded": link.isExpanded, "is-selected": isLinkSelected })}>
-          {(link.links && link.links.length > 0 ?
-            <button
-              className="ms-Nav-chevronButton ms-Nav-chevronButton--link"
-              onClick={this._onLinkExpandClicked.bind(this, link)}
-              title={(link.isExpanded ? this.props.expandedStateText : this.props.collapsedStateText)}>
-              <i className="ms-Nav-chevron ms-Icon ms-Icon--ChevronDown"></i>
-            </button> : null
-          )}
-        {!!link.onClick ? this._renderButtonLink(link, linkIndex) : this._renderAnchorLink(link, linkIndex, nestingLevel)}
-      </div>
+    return <CustomNav
+      groups={links}
+      selectedKey={this.props.databaseUrl}
+      onLinkClick={this.onClick.bind(this)} />
   }
 }
 
 export default connect(
   state => ({
-    databaseTree: databaseTree(state)
+    databaseTree: databaseTree(state),
+    databaseUrl: selectedResource(state).getIn(["database", "url"])
   })
 )(NavDBTree)
