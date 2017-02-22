@@ -8,21 +8,21 @@ const schema = (state) => state.get("schema")
 const database = createSelector([selectedResource], resource => resource.get("database"))
 const resource = createSelector([selectedResource], resource => resource.get("resource") || Map())
 
-const extract = (node, db, url) => {
-  return db.getIn([node, "byName"], Map()).toList().map(instance => {
-    const name = instance.get("name")
-    return Map.of(
-      "name", name,
-      "ref", instance.get("ref"),
-      "url", buildResourceUrl(url, node, name)
-    )
-  })
-}
-
 export const selectedDatabase = createSelector([schema, database], (schema, database) => {
   const path = database.get("path")
   const url = database.get("url")
   const db = schema.getIn(nestedDatabaseNodeIn(path), Map())
+
+  const extract = (node, db, url) => {
+    return db.getIn([node, "byName"], Map()).toList().map(instance => {
+      const name = instance.get("name")
+      return Map.of(
+        "name", name,
+        "ref", instance.get("ref"),
+        "url", buildResourceUrl(url, node, name)
+      )
+    })
+  }
 
   return Map.of(
     "path", path,
@@ -98,19 +98,24 @@ export const selectedIndex = createSelector([schema, database, resource], (schem
   )
 })
 
-const buildTree = (node, parentUrl = null) => {
-  const name = node.getIn(["info", "name"])
-  const url = buildResourceUrl(parentUrl, name, "databases")
-
-  return Map.of(
-    "url", url,
-    "name", name,
-    "databases", node.getIn(["databases", "byName"], Map()).toList().map(
-      db => buildTree(db, url)
-    )
-  )
-}
-
 export const databaseTree = createSelector([schema], schema => {
+  const buildTree = (node, path = null, parentUrl = null) => {
+    const name = node.getIn(["info", "name"])
+    const url = buildResourceUrl(parentUrl, name, "databases")
+    const cursor = node.getIn(["databases", "cursor"], null)
+    const dbPath = path ? path.push(name) : List()
+
+    return Map.of(
+      "name", name,
+      "url", url,
+      "path", dbPath,
+      "hasMore", !!cursor,
+      "cursor", cursor,
+      "databases", node.getIn(["databases", "byName"], Map()).toList().map(
+        db => buildTree(db, dbPath, url)
+      )
+    )
+  }
+
   return buildTree(schema)
 })

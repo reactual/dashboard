@@ -13,6 +13,7 @@ const schemaTree = Immutable.fromJS({
     name: "/"
   },
   databases: {
+    cursor: "fake cursor",
     byName: {
       "my-app": {
         info: {
@@ -199,14 +200,23 @@ describe("databaseTree", () => {
     expect(databaseTree(state).toJS()).toEqual({
       url: "/db/databases",
       name: "/",
+      path: [],
+      hasMore: true,
+      cursor: "fake cursor",
       databases: [
         {
           url: "/db/my-app/databases",
           name: "my-app",
+          path: ["my-app"],
+          hasMore: false,
+          cursor: null,
           databases: [
             {
               url: "/db/my-app/my-blog/databases",
               name: "my-blog",
+              path: ["my-app", "my-blog"],
+              hasMore: false,
+              cursor: null,
               databases: []
             }
           ]
