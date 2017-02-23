@@ -1,4 +1,5 @@
 import Immutable from "immutable"
+import ReactGA from "react-ga"
 import React, { Component } from "react"
 import { Provider, connect } from "react-redux"
 import { Router, Route, Redirect, Link, browserHistory } from "react-router"
@@ -103,10 +104,25 @@ export default class App extends Component {
   )(Container)
 
   static NotFound = () => <h1>404.. This page is not found!</h1>
+  static isProduction = process.env.NODE_ENV === "production"
+
+  // FIXME: GA should be extract as a plugin for could users only
+  componentDidMount() {
+    if (App.isProduction) {
+      ReactGA.initialize("UA-51914115-3")
+    }
+  }
+
+  trackPage() {
+    if (App.isProduction) {
+      ReactGA.set({ page: window.location.pathname })
+      ReactGA.pageview(window.location.pathname)
+    }
+  }
 
   render() {
     return <Provider store={this.props.store}>
-        <Router history={browserHistory}>
+        <Router onUpdate={this.trackPage.bind(this)} history={browserHistory}>
           <Route path="/db" component={App.Container}>
             <Route path="indexes/:indexName" component={IndexInfo} />
             <Route path="indexes" component={IndexForm} />
