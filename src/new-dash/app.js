@@ -25,13 +25,6 @@ import {
 
 class Container extends Component {
 
-  componentDidMount() {
-    this.updateSelectedResource(
-      this.props.faunaClient,
-      this.props.params.splat
-    )
-  }
-
   componentWillReceiveProps(next) {
     const oldParams = Immutable.Map(this.props.params)
     const newParams = Immutable.Map(next.params)
