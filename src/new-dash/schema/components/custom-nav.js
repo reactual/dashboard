@@ -1,15 +1,19 @@
 import React from "react"
 import { Nav, css } from "office-ui-fabric-react"
 
+const _indentationSize = 14
+
 // Custom Nav to add chevron icon to all sub levels and control selected items
 export default class CustomNav extends Nav {
   _renderCompositeLink(link, linkIndex, nestingLevel) {
     const isLinkSelected = _isLinkSelected(link, this.props.selectedKey)
+    const paddingBefore = (_indentationSize * nestingLevel).toString(10) + 'px'
 
     return <div key={link.key || linkIndex}
         className={css("ms-Nav-compositeLink", {"is-expanded": link.isExpanded, "is-selected": isLinkSelected })}>
           {(link.links && link.links.length > 0 ?
             <button
+              style={{paddingLeft: paddingBefore}}
               className="ms-Nav-chevronButton ms-Nav-chevronButton--link"
               onClick={this._onLinkExpandClicked.bind(this, link)}
               title={(link.isExpanded ? this.props.expandedStateText : this.props.collapsedStateText)}>
