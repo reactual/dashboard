@@ -3,8 +3,8 @@ import { connect } from "react-redux"
 import { browserHistory } from "react-router"
 
 import CustomNav from "./custom-nav"
-import { databaseTree, loadMoreDatabases } from "../"
-import { selectedResource } from "../../router"
+import { databaseTree, loadSchemaTree, loadMoreDatabases } from "../"
+import { selectedResource, buildResourceUrl } from "../../router"
 import { faunaClient } from "../../authentication"
 import { watchForError } from "../../notifications"
 import { monitorActivity } from "../../activity-monitor"
@@ -40,8 +40,9 @@ class NavDBTree extends Component {
         key,
         url: key,
         name: db.get("name"),
+        path: db.get("path"),
         links: this.databaseLinks(db, link.links || []),
-        isExpanded: (typeof link.isExpanded === "undefined" ? true : link.isExpanded)
+        isExpanded: link.isExpanded === undefined ? false : link.isExpanded
       }
     }
 
@@ -56,6 +57,20 @@ class NavDBTree extends Component {
           databaseTree.get("path"),
           databaseTree.get("cursor")
         )
+      })
+    }
+
+    if (res.length === 0)  {
+      res.push({
+        key: `${databaseTree.get("url")}-add-database`,
+        name: "Add a new database",
+        icon: "CalculatorAddition",
+        onClick: () => {
+          browserHistory.push(buildResourceUrl(
+            databaseTree.get("url"),
+            "databases"
+          ))
+        }
       })
     }
 
@@ -78,6 +93,17 @@ class NavDBTree extends Component {
     browserHistory.push(link.url)
   }
 
+  onExpand(link) {
+    this.props.dispatch(
+      monitorActivity(
+        watchForError(
+          "Unexpected error while fetching schema information",
+          loadSchemaTree(this.props.client, link.path)
+        )
+      )
+    )
+  }
+
   render() {
     const links = [{
       name: "Databases",
@@ -86,7 +112,9 @@ class NavDBTree extends Component {
 
     return <CustomNav
       groups={links}
+      alwaysShowExpandButton={true}
       selectedKey={this.props.databaseUrl}
+      onExpand={this.onExpand.bind(this)}
       onLinkClick={this.onClick.bind(this)} />
   }
 }
