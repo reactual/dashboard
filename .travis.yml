@@ -1,0 +1,17 @@
+language: node_js
+node_js:
+  - 6
+cache:
+  directories:
+    - node_modules
+script:
+  - npm test -- --coverage
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+notifications:
+  email: false
+  slack:
+    secure: CXg7ipc+qOwmVjPPWuBOkeShxM0auyxjwqOieH75QmqXRPBlO/ni9cE6lZQPgXSePZ3zKj+WuUiY2LQbiNMUwZfxNJSq2xvwYzgCn9YWliTMjxBRX+UR+mwiqKKsZua4uBE8kxQr4G5U5tQ4dLylCUmjYNtuS/tE0EDZxnhes16TprcSc0ZSqzzM54OlWm+UVPclxN+706R4GD4ZfzwthvWtYnB0uesRiipv31NKGqTGYFWyUNdvLQ5jhls6coLmpBOidtO0Ge3feq577E8lAZ8z+kBokpiqX/zApRtpiaItaOP3wvG1qhOnhLtT8KsOoL+UmUDDZETmEk5/oheMLgVoXelNWaQKjrrHpeN7JJDL2Z7jDE0QWgcQ66+qpqpxXkiZLVSfSeuwJlUqHw6O2DzkJ3a0tYVlsY5Mvsa8GL2BdrYUorbHY37PM599PLbJ04YSGEz6Pgh4hm9vVZhnsIkOp4GVzzYL9Q5VKibK4+oMhDKwB/Vxnqpj0j3X/ZLwWE3jWmuaW7pPPyiRIu29pRFTwzZ83e0AjUicIvi8XVYphDNzNvZcgeenBrRSKzH4mR32VTvDw+E59MnmBM6Moi0ub4+4GKuNYoiztUjBcbY/29ZyKY+ecYU9V00bO7E1Z7cf0TQ5FHTBmDfOU6HE2xnp80Ak8AdZPigIxXg0gi0=
+branches:
+  only:
+  - master
