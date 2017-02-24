@@ -3,8 +3,11 @@ import { connect } from "react-redux"
 import { browserHistory } from "react-router"
 
 import CustomNav from "./custom-nav"
-import { databaseTree } from "../"
+import { databaseTree, loadMoreDatabases } from "../"
 import { selectedResource } from "../../router"
+import { faunaClient } from "../../authentication"
+import { watchForError } from "../../notifications"
+import { monitorActivity } from "../../activity-monitor"
 
 class NavDBTree extends Component {
   constructor(props) {
@@ -30,23 +33,44 @@ class NavDBTree extends Component {
 
   databaseLinks(databaseTree, links) {
     const toLink = (db) => {
-      const name = db.get("name")
       const key = db.get("url")
       const link = links.find(l => l.key === key) || {}
 
       return {
-        name,
         key,
         url: key,
+        name: db.get("name"),
         links: this.databaseLinks(db, link.links || []),
         isExpanded: (typeof link.isExpanded === "undefined" ? true : link.isExpanded)
       }
     }
 
-    return databaseTree
-      .get("databases")
-      .map(toLink)
-      .toJS()
+    const res = databaseTree.get("databases").map(toLink).toJS()
+
+    if (databaseTree.get("hasMore"))  {
+      res.push({
+        key: `${databaseTree.get("url")}-load-more`,
+        name: "Load more",
+        icon: "CirclePlus",
+        onClick: this.loadMoreDatabases.bind(this,
+          databaseTree.get("path"),
+          databaseTree.get("cursor")
+        )
+      })
+    }
+
+    return res
+  }
+
+  loadMoreDatabases(dbPath, cursor) {
+    this.props.dispatch(
+      monitorActivity(
+        watchForError(
+          "Unexpected error while fetching databases",
+          loadMoreDatabases(this.props.client, dbPath, cursor)
+        )
+      )
+    )
   }
 
   onClick(e, link) {
@@ -70,6 +94,7 @@ class NavDBTree extends Component {
 export default connect(
   state => ({
     databaseTree: databaseTree(state),
-    databaseUrl: selectedResource(state).getIn(["database", "url"])
+    databaseUrl: selectedResource(state).getIn(["database", "url"]),
+    client: faunaClient(state)
   })
 )(NavDBTree)

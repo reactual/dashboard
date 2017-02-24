@@ -3,6 +3,7 @@ import { query as q } from "faunadb"
 
 import {
   loadSchemaTree,
+  loadMoreDatabases,
   createDatabase,
   deleteDatabase,
   createClass,
@@ -219,6 +220,33 @@ describe("Given a schema tree store", () => {
           rootDatabase.schemaTree
           .setIn(["databases", "byName", "my-app"], subDatabase.schemaTree)
           .toJS()
+        )
+      })
+    })
+
+    it("should be able to load a more databases", () => {
+      faunaClient.queryWithPrivilegesOrElse.mockReturnValue(
+        Promise.resolve({
+          databases: {
+            data: [{
+              name: "another-db"
+            }]
+          }
+        })
+      )
+
+      return store.dispatch(loadMoreDatabases(faunaClient, [], "database-cursor")).then(() => {
+        expect(schema).toEqual(
+          rootDatabase.schemaTree
+            .setIn(["databases", "byName", "another-db"], {
+              info: { name: "another-db" },
+              loaded: false,
+              databases: {},
+              classes: {},
+              indexes: {}
+            })
+            .setIn(["databases", "cursor"], null)
+            .toJS()
         )
       })
     })

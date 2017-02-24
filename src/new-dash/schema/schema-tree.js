@@ -5,7 +5,7 @@ import { KeyType } from "../persistence/faunadb-wrapper"
 import { nestedDatabaseNodeIn } from "./path"
 
 const Actions = {
-  LOAD_DATABASE: "@@schema/LOAD_DATABASE",
+  LOAD: "@@schema/LOAD",
   UPDATE: "@@schema/UPDATE",
   DELETE: "@@schema/DELETE"
 }
@@ -33,20 +33,61 @@ const toDatabase = (info, loaded = false, result = {}) => {
   })
 }
 
-const getInstancesOf = (resource) => q.Map(
-  q.Paginate(q.Ref(resource)),
+const getInstancesOf = (resource, cursor) => q.Map(
+  // If cursor is null, remove it from the query
+  q.Paginate(q.Ref(resource), { after: cursor || undefined }),
   ref => q.Get(ref)
 )
 
+const queryForSubDatabases = (client, dbPath, dbCursor = null) => {
+  return client.queryWithPrivilegesOrElse(dbPath, KeyType.ADMIN, {}, {
+    databases: getInstancesOf("databases", dbCursor)
+  })
+}
+
+const queryForDatabaseResources = (client, dbPath) => {
+  const buildQueryForCursors = cursors => {
+    const query = {}
+
+    for (let key in cursors)
+      if (cursors[key] !== undefined)
+        query[key] = getInstancesOf(key, cursors[key])
+
+    return query
+  }
+
+  const queryWithCursors = (cursors, callback) => {
+    const query = buildQueryForCursors(cursors)
+    if (Object.keys(query).length === 0) return null
+
+    return client
+      .queryWithPrivilegesOrElse(dbPath, KeyType.SERVER, {}, query)
+      .then(callback)
+  }
+
+  const paginateResponse = (results = {}) => response => {
+    const cursors = {}
+
+    for (let key in response) {
+      if (!response.hasOwnProperty(key)) continue
+      const data = (results[key] && results[key].data) || []
+      results[key] = { data: data.concat(response[key].data) }
+      cursors[key] = response[key].after
+    }
+
+    return queryWithCursors(cursors, paginateResponse(results)) || results
+  }
+
+  return queryWithCursors({
+    classes: null,
+    indexes: null
+  }, paginateResponse())
+}
+
 const queryForSchema = (client, dbPath) => {
   return Promise.all([
-    client.queryWithPrivilegesOrElse(dbPath, KeyType.ADMIN, {}, {
-      databases: getInstancesOf("databases")
-    }),
-    client.queryWithPrivilegesOrElse(dbPath, KeyType.SERVER, {}, {
-      classes: getInstancesOf("classes"),
-      indexes: getInstancesOf("indexes")
-    })
+    queryForSubDatabases(client, dbPath),
+    queryForDatabaseResources(client, dbPath)
   ]).then(
     results => ({
       ...results[0],
@@ -65,8 +106,22 @@ export const loadSchemaTree = (client, dbPath = []) => (dispatch, getState) => {
 
   return queryForSchema(client, dbPath).then(
     result => dispatch({
-      type: Actions.LOAD_DATABASE,
+      type: Actions.LOAD,
       database: toDatabase(info, true, result),
+      dbPath: List(dbPath),
+      nodePath
+    })
+  )
+}
+
+export const loadMoreDatabases = (client, dbPath, cursor) => (dispatch, getState) => {
+  const nodePath = nestedDatabaseNodeIn(dbPath)
+  const dbNode = getState().get("schema").getIn(nodePath)
+
+  return queryForSubDatabases(client, dbPath, cursor).then(
+    result => dispatch({
+      type: Actions.LOAD,
+      database: toDatabase(dbNode.get("info"), dbNode.get("loaded"), result),
       dbPath: List(dbPath),
       nodePath
     })
@@ -117,11 +172,9 @@ const ensureTreeInfo = (tree, path) => {
   return ensureTreeInfo(tree, path.butLast())
 }
 
-const initialSchemaTree = Map.of("info", Map.of("name", "/"))
-
-export const reduceSchemaTree = (state = initialSchemaTree, action) => {
+export const reduceSchemaTree = (state = Map.of("info", Map.of("name", "/")), action) => {
   switch (action.type) {
-    case Actions.LOAD_DATABASE:
+    case Actions.LOAD:
       return ensureTreeInfo(state, action.dbPath)
         .mergeDeepIn(action.nodePath, action.database)
 
