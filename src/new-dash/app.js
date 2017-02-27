@@ -35,10 +35,6 @@ class Container extends Component {
         next.params
       )
     }
-
-    if (this.props.faunaClient !== next.faunaClient) {
-      this.loadRootDatabase(next.faunaClient)
-    }
   }
 
   updateSelectedResource(client, params) {
@@ -53,17 +49,6 @@ class Container extends Component {
             return dispatch(loadSchemaTree(client, selected.get("database")))
           }
         )
-      )
-    )
-  }
-
-  loadRootDatabase(client) {
-    if (!client) return
-
-    this.props.dispatch(
-      watchForError(
-        "Unexpected error while loading root database",
-        loadSchemaTree(client)
       )
     )
   }

@@ -25,7 +25,16 @@ export default class CustomNav extends Nav {
   }
 
   _onLinkExpandClicked(link, ev) {
-    this.props.onExpand && this.props.onExpand(link)
+    if (this.props.onExpand) {
+      const res = this.props.onExpand(link) || Promise.resolve()
+      res.then(() => this.setState({ isLinkExpandStateChanged: true }))
+
+      link.isExpanded = !link.isExpanded
+      ev.preventDefault()
+      ev.stopPropagation()
+      return
+    }
+
     super._onLinkExpandClicked(link, ev)
   }
 }

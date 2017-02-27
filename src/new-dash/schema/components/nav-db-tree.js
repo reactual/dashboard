@@ -3,7 +3,7 @@ import { connect } from "react-redux"
 import { browserHistory } from "react-router"
 
 import CustomNav from "./custom-nav"
-import { databaseTree, loadSchemaTree, loadMoreDatabases } from "../"
+import { databaseTree, loadDatabases } from "../"
 import { selectedResource, buildResourceUrl } from "../../router"
 import { faunaClient } from "../../authentication"
 import { watchForError } from "../../notifications"
@@ -42,7 +42,7 @@ class NavDBTree extends Component {
         name: db.get("name"),
         path: db.get("path"),
         links: this.databaseLinks(db, link.links || []),
-        isExpanded: link.isExpanded === undefined ? false : link.isExpanded
+        isExpanded: link.isExpanded === undefined ? !db.get("databases").isEmpty() : link.isExpanded
       }
     }
 
@@ -82,7 +82,7 @@ class NavDBTree extends Component {
       monitorActivity(
         watchForError(
           "Unexpected error while fetching databases",
-          loadMoreDatabases(this.props.client, dbPath, cursor)
+          loadDatabases(this.props.client, dbPath, cursor)
         )
       )
     )
@@ -94,11 +94,13 @@ class NavDBTree extends Component {
   }
 
   onExpand(link) {
-    this.props.dispatch(
+    if (link.isExpanded) return
+
+    return this.props.dispatch(
       monitorActivity(
         watchForError(
           "Unexpected error while fetching schema information",
-          loadSchemaTree(this.props.client, link.path)
+          loadDatabases(this.props.client, link.path)
         )
       )
     )

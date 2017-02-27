@@ -3,7 +3,7 @@ import { query as q } from "faunadb"
 
 import {
   loadSchemaTree,
-  loadMoreDatabases,
+  loadDatabases,
   createDatabase,
   deleteDatabase,
   createClass,
@@ -46,9 +46,10 @@ const rootDatabase = {
   },
   schemaTree: Immutable.fromJS({
     info: {
-      name: "/"
+      name: "/",
+      schemaLoaded: true,
+      databasesLoaded: true
     },
-    loaded: true,
     databases: {
       byName: {
         "my-app": {
@@ -57,7 +58,6 @@ const rootDatabase = {
             ref: q.Ref("databases/my-app"),
             ts: 123
           },
-          loaded: false,
           databases: {},
           classes: {},
           indexes: {}
@@ -110,9 +110,10 @@ const subDatabase = {
     info: {
       name: "my-app",
       ref: q.Ref("databases/my-app"),
-      ts: 123
+      ts: 123,
+      schemaLoaded: true,
+      databasesLoaded: true
     },
-    loaded: true,
     databases: {},
     classes: {
       byName: {
@@ -181,25 +182,14 @@ describe("Given a schema tree store", () => {
         )
         .setIn(
           ["databases", "byName", "my-app", "databases", "byName", "my-blog"],
-          subDatabase.schemaTree.set("info", Map.of("name", "my-blog"))
+          subDatabase.schemaTree.set("info", Map.of(
+            "name", "my-blog",
+            "databasesLoaded", true,
+            "schemaLoaded", true
+          ))
         )
         .toJS()
       )
-    })
-  })
-
-  it("should not load a database twice", () => {
-    faunaClient.queryWithPrivilegesOrElse.mockReturnValue(
-      Promise.resolve(subDatabase.serverKeyResponse)
-    )
-
-    const loadMyApp = () => store.dispatch(loadSchemaTree(faunaClient, ["my-app"]))
-
-    return loadMyApp().then(() => {
-      return loadMyApp().then(() => {
-        // One with admin and one with server key
-        expect(faunaClient.queryWithPrivilegesOrElse).toHaveBeenCalledTimes(2)
-      })
     })
   })
 
@@ -207,6 +197,12 @@ describe("Given a schema tree store", () => {
     beforeEach(() => {
       store = store.withInitialState({
         schema: rootDatabase.schemaTree
+      })
+    })
+
+    it("should not load the same database again", () => {
+      return store.dispatch(loadSchemaTree(faunaClient, [])).then(() => {
+        expect(faunaClient.queryWithPrivilegesOrElse).not.toHaveBeenCalled()
       })
     })
 
@@ -235,12 +231,11 @@ describe("Given a schema tree store", () => {
         })
       )
 
-      return store.dispatch(loadMoreDatabases(faunaClient, [], "database-cursor")).then(() => {
+      return store.dispatch(loadDatabases(faunaClient, [], "database-cursor")).then(() => {
         expect(schema).toEqual(
           rootDatabase.schemaTree
             .setIn(["databases", "byName", "another-db"], {
               info: { name: "another-db" },
-              loaded: false,
               databases: {},
               classes: {},
               indexes: {}
@@ -248,6 +243,12 @@ describe("Given a schema tree store", () => {
             .setIn(["databases", "cursor"], null)
             .toJS()
         )
+      })
+    })
+
+    it("should not load databases if cursor is new and databases are already loaded", () => {
+      return store.dispatch(loadDatabases(faunaClient, [], null)).then(() => {
+        expect(faunaClient.queryWithPrivilegesOrElse).not.toHaveBeenCalled()
       })
     })
 
@@ -264,7 +265,6 @@ describe("Given a schema tree store", () => {
               info: {
                 name: "new-db"
               },
-              loaded: false,
               databases: {},
               classes: {},
               indexes: {}

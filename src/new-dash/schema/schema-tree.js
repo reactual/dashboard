@@ -23,13 +23,12 @@ const toPage = (result, mapper = x => Immutable.fromJS(x)) => {
   })
 }
 
-const toDatabase = (info, loaded = false, result = {}) => {
+const toDatabase = (info, result = {}) => {
   return Map({
     info: Map(info),
     databases: toPage(result.databases, toDatabase),
     classes: toPage(result.classes),
-    indexes: toPage(result.indexes),
-    loaded
+    indexes: toPage(result.indexes)
   })
 }
 
@@ -96,36 +95,93 @@ const queryForSchema = (client, dbPath) => {
   )
 }
 
-export const loadSchemaTree = (client, dbPath = []) => (dispatch, getState) => {
+export const loadDatabases = (client, dbPath, cursor = null) => (dispatch, getState) => {
   const nodePath = nestedDatabaseNodeIn(dbPath)
-  const dbNode = getState().get("schema").getIn(nodePath, Map())
-  const info = dbNode.get("info", Map.of("name", nodePath.last() || "/"))
+  const dbNode = getState().get("schema").getIn(nodePath)
 
-  if (dbNode.get("loaded", false))
+  if (cursor === null && dbNode.getIn(["info", "databasesLoaded"], false)) {
     return Promise.resolve()
+  }
 
-  return queryForSchema(client, dbPath).then(
+  const info = dbNode
+    .get("info")
+    .set("databasesLoaded", true)
+
+  return queryForSubDatabases(client, dbPath, cursor).then(
     result => dispatch({
       type: Actions.LOAD,
-      database: toDatabase(info, true, result),
+      database: toDatabase(info, result),
       dbPath: List(dbPath),
       nodePath
     })
   )
 }
 
-export const loadMoreDatabases = (client, dbPath, cursor) => (dispatch, getState) => {
-  const nodePath = nestedDatabaseNodeIn(dbPath)
-  const dbNode = getState().get("schema").getIn(nodePath)
+const fetchParentDatabases = (client, path) => (dispatch, getState) => {
+  const schema = getState().get("schema")
+  let promises = List()
+  let dbPath = List(path)
+  if (dbPath.isEmpty()) return
 
-  return queryForSubDatabases(client, dbPath, cursor).then(
-    result => dispatch({
+  const toDB = (name = "/") => res =>
+    toDatabase(Map.of(
+      "name", name,
+      "databasesLoaded", true
+    ), res)
+
+  do {
+    dbPath = dbPath.butLast()
+    const node = schema.getIn(nestedDatabaseNodeIn(dbPath))
+
+    if (node && node.getIn(["info", "databasesLoaded"], false)) {
+      promises = promises.push(Promise.resolve(node))
+      continue
+    }
+
+    promises = promises.push(
+      queryForSubDatabases(client, dbPath)
+        .then(toDB(dbPath.last()))
+    )
+  } while (!dbPath.isEmpty())
+
+  promises.reduce((last, prev) =>
+    last.then(a =>
+      prev.then(b =>
+        b.setIn(["databases", "byName", a.getIn(["info", "name"])], a)
+      )
+    )
+  ).then(database =>
+    dispatch({
       type: Actions.LOAD,
-      database: toDatabase(dbNode.get("info"), dbNode.get("loaded"), result),
-      dbPath: List(dbPath),
-      nodePath
+      dbPath: List(),
+      nodePath: List(),
+      database
     })
   )
+}
+
+export const loadSchemaTree = (client, path = []) => (dispatch, getState) => {
+  const nodePath = nestedDatabaseNodeIn(path)
+  const dbNode = getState().get("schema").getIn(nodePath, Map())
+
+  if (dbNode.getIn(["info", "schemaLoaded"], false)) {
+    return Promise.resolve()
+  }
+
+  let info = dbNode.get("info", Map.of("name", nodePath.last() || "/"))
+  info = info.set("schemaLoaded", true)
+  info = info.set("databasesLoaded", true)
+
+  return queryForSchema(client, path).then(result => {
+    dispatch(fetchParentDatabases(client, path))
+
+    return dispatch({
+      type: Actions.LOAD,
+      database: toDatabase(info, result),
+      dbPath: List(path),
+      nodePath
+    })
+  })
 }
 
 const create = (nodeToUpdate, keyType, createQuery, mapper = x => x) => (client, dbPath, config) => (dispatch) => {
