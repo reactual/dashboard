@@ -2,7 +2,7 @@ import Immutable, { Map, List } from "immutable"
 import { query as q } from "faunadb"
 
 import { KeyType } from "../persistence/faunadb-wrapper"
-import { nestedDatabaseNodeIn } from "./path"
+import { nestedDatabaseNodeIn, allDatabasesPaths } from "./path"
 
 const Actions = {
   LOAD: "@@schema/LOAD",
@@ -214,19 +214,14 @@ export const deleteDatabase = remove("databases", KeyType.ADMIN, q.Database)
 export const deleteClass = remove("classes", KeyType.SERVER, q.Class)
 export const deleteIndex = remove("indexes", KeyType.SERVER, q.Index)
 
-const ensureTreeInfo = (tree, path) => {
-  if (path.isEmpty()) return tree
-  const infoPath = nestedDatabaseNodeIn(path, "info")
-
-  if (!tree.hasIn(infoPath)) {
-    return ensureTreeInfo(
-      tree.setIn(infoPath, Map.of("name", path.last())),
-      path.butLast()
-    )
-  }
-
-  return ensureTreeInfo(tree, path.butLast())
-}
+const ensureTreeInfo = (schema, path) => allDatabasesPaths(path).reduce(
+  (tree, path) => {
+    const infoPath = nestedDatabaseNodeIn(path, "info")
+    if (tree.hasIn(infoPath)) return tree
+    return tree.setIn(infoPath, Map.of("name", path.last()))
+  },
+  schema
+)
 
 export const reduceSchemaTree = (state = Map.of("info", Map.of("name", "/")), action) => {
   switch (action.type) {
