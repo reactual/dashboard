@@ -42,7 +42,8 @@ class NavDBTree extends Component {
         name: db.get("name"),
         path: db.get("path"),
         links: this.databaseLinks(db, link.links || []),
-        isExpanded: link.isExpanded === undefined ? !db.get("databases").isEmpty() : link.isExpanded
+        isExpanded: link.isExpanded !== undefined ? link.isExpanded :
+          !db.get("databases").isEmpty() && key !== this.props.databaseUrl
       }
     }
 
