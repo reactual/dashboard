@@ -91,6 +91,7 @@ class Container extends Component {
               <ul className="menu">
                 <li><a href="http://fauna.com/tutorials" target="_blank">Tutorials</a></li>
                 <li><a href="http://fauna.com/documentation" target="_blank">Documentation</a></li>
+                <li><a href="https://fauna.com/resources#drivers" targe="_blank">Drivers</a></li>
                 <li><Button className="logout" onClick={this.logout}>Log out</Button></li>
               </ul>
               <SecretForm />

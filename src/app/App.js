@@ -8,6 +8,7 @@ import IndexForm from '../indexes/IndexForm'
 import ClassInfo from '../classes/ClassInfo'
 import ClassForm from '../classes/ClassForm'
 import { DatabaseInfo } from '../databases/Databases'
+import GetStarted from "../new-dash/get-started"
 
 import { resetState } from '../app'
 import { updateClients } from '../app/clients'
@@ -33,20 +34,7 @@ const trackPage = () => {
   }
 }
 
-const Home = () =>(
-  <p>
-    Welcome to FaunaDB. Browse and create databases, inspect and define schemas
-     and instances, and explore your data with the interactive query console.
-  </p>
-);
-
 const NotFound = () => (<h1>404.. This page is not found!</h1>);
-
-const promptCreateDatabase = () => {
-  if (browserHistory.getCurrentLocation().pathname.length < 4) {
-    browserHistory.push("/db/databases");
-  }
-}
 
 const onChangeSelection = (dispatch, action) => (nextState, replace, callback) => {
   if(action && nextState.params.name) {
@@ -98,7 +86,7 @@ export default function App({store}) {
     <Provider store={store}>
       <Router onUpdate={trackPage} history={browserHistory}>
         <Route path='/db' component={Container} onEnter={onChangeDatabase(dispatch, getState)}>
-          <IndexRoute component={Home} onEnter={promptCreateDatabase()}/>
+          <IndexRoute component={GetStarted} />
           <Route path='/databases' component={DatabaseInfo} />
           <Route path='/**/databases' component={DatabaseInfo} onEnter={onChangeDatabase(dispatch, getState)} />
 

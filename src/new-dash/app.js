@@ -2,7 +2,7 @@ import Immutable from "immutable"
 import ReactGA from "react-ga"
 import React, { Component } from "react"
 import { Provider, connect } from "react-redux"
-import { Router, Route, Redirect, Link, browserHistory } from "react-router"
+import { Router, IndexRoute, Route, Redirect, Link, browserHistory } from "react-router"
 
 import "./app.css"
 import logo from "./logo.svg"
@@ -22,6 +22,8 @@ import {
   IndexInfo,
   loadSchemaTree
 } from "./schema"
+
+import GetStarted from "./get-started"
 
 class Container extends Component {
 
@@ -73,6 +75,7 @@ class Container extends Component {
                   <li><ActivityMonitor /></li>
                   <li><a href="http://fauna.com/tutorials" target="_blank">Tutorials</a></li>
                   <li><a href="http://fauna.com/documentation" target="_blank">Documentation</a></li>
+                  <li><a href="https://fauna.com/resources#drivers" targe="_blank">Drivers</a></li>
                   <li><UserAccount /></li>
                 </ul>
               </div>
@@ -123,6 +126,7 @@ export default class App extends Component {
   render() {
     return <Provider store={this.props.store}>
         <Router onUpdate={this.trackPage.bind(this)} history={browserHistory}>
+          <Redirect from="/" to="/db/" />
           <Route path="/db" component={App.Container}>
             <Route path="indexes/:indexName" component={IndexInfo} />
             <Route path="indexes" component={IndexForm} />
@@ -134,9 +138,8 @@ export default class App extends Component {
             <Route path="**/classes" component={ClassForm} />
             <Route path="**/databases" component={DatabaseForm} />
             <Route path="databases" component={DatabaseForm} />
-            <Redirect from="/" to="databases" />
+            <IndexRoute component={GetStarted} />
           </Route>
-          <Redirect from="/" to="/db" />
           <Route path="*" component={App.NotFound} />
         </Router>
       </Provider>
