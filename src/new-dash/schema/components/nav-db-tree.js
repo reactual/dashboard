@@ -4,7 +4,7 @@ import { browserHistory } from "react-router"
 
 import CustomNav from "./custom-nav"
 import { databaseTree, loadDatabases } from "../"
-import { selectedResource, buildResourceUrl } from "../../router"
+import { selectedResource } from "../../router"
 import { faunaClient } from "../../authentication"
 import { watchForError } from "../../notifications"
 import { monitorActivity } from "../../activity-monitor"
@@ -35,6 +35,8 @@ class NavDBTree extends Component {
     const toLink = (db) => {
       const key = db.get("url")
       const link = links.find(l => l.key === key) || {}
+      const isAtSelectedPath = db.get("path").every((seg, index) =>
+        this.props.selectedDatabasePath.get(index) === seg)
 
       return {
         key,
@@ -42,8 +44,9 @@ class NavDBTree extends Component {
         name: db.get("name"),
         path: db.get("path"),
         links: this.databaseLinks(db, link.links || []),
-        isExpanded: link.isExpanded !== undefined ? link.isExpanded :
-          !db.get("databases").isEmpty() && key !== this.props.databaseUrl
+        isExpanded: link.isExpanded !== undefined ?
+          link.isExpanded :
+          key !== this.props.selectedDatabaseUrl && isAtSelectedPath
       }
     }
 
@@ -58,20 +61,6 @@ class NavDBTree extends Component {
           databaseTree.get("path"),
           databaseTree.get("cursor")
         )
-      })
-    }
-
-    if (res.length === 0)  {
-      res.push({
-        key: `${databaseTree.get("url")}-add-database`,
-        name: "Add a new database",
-        icon: "CalculatorAddition",
-        onClick: () => {
-          browserHistory.push(buildResourceUrl(
-            databaseTree.get("url"),
-            "databases"
-          ))
-        }
       })
     }
 
@@ -115,8 +104,7 @@ class NavDBTree extends Component {
 
     return <CustomNav
       groups={links}
-      alwaysShowExpandButton={true}
-      selectedKey={this.props.databaseUrl}
+      selectedKey={this.props.selectedDatabaseUrl}
       onExpand={this.onExpand.bind(this)}
       onLinkClick={this.onClick.bind(this)} />
   }
@@ -125,7 +113,8 @@ class NavDBTree extends Component {
 export default connect(
   state => ({
     databaseTree: databaseTree(state),
-    databaseUrl: selectedResource(state).getIn(["database", "url"]),
+    selectedDatabaseUrl: selectedResource(state).getIn(["database", "url"]),
+    selectedDatabasePath: selectedResource(state).getIn(["database", "path"]),
     client: faunaClient(state)
   })
 )(NavDBTree)

@@ -5,7 +5,9 @@ import { KeyType } from "../persistence/faunadb-wrapper"
 import { nestedDatabaseNodeIn, allDatabasesPaths } from "./path"
 
 const Actions = {
-  LOAD: "@@schema/LOAD",
+  LOAD_SCHEMA: "@@schema/LOAD_SCHEMA",
+  LOAD_DATABASE_TREE: "@@schema/LOAD_DATABASE_TREE",
+  LOAD_NESTED_DATABASES: "@@schema/LOAD_NESTED_DATABASES",
   UPDATE: "@@schema/UPDATE",
   DELETE: "@@schema/DELETE"
 }
@@ -32,6 +34,9 @@ const toDatabase = (info, result = {}) => {
   })
 }
 
+const toDatabaseWith = (...info) => res =>
+  toDatabase(Map.of.apply(null, info), res)
+
 const getInstancesOf = (resource, cursor) => q.Map(
   // If cursor is null, remove it from the query
   q.Paginate(q.Ref(resource), { after: cursor || undefined }),
@@ -39,49 +44,53 @@ const getInstancesOf = (resource, cursor) => q.Map(
 )
 
 const queryForSubDatabases = (client, dbPath, dbCursor = null) => {
-  return client.queryWithPrivilegesOrElse(dbPath, KeyType.ADMIN, {}, {
-    databases: getInstancesOf("databases", dbCursor)
-  })
+  return client.queryWithPrivilegesOrElse(dbPath, KeyType.ADMIN,
+    { databases: { data: [] } },
+    { databases: getInstancesOf("databases", dbCursor) }
+  )
 }
 
-const queryForDatabaseResources = (client, dbPath) => {
-  const buildQueryForCursors = cursors => {
-    const query = {}
+const nonEmptyCursors = cursors => {
+  const query = {}
 
-    for (let key in cursors)
-      if (cursors[key] !== undefined)
-        query[key] = getInstancesOf(key, cursors[key])
+  for (let key in cursors)
+    if (cursors[key] !== undefined)
+      query[key] = getInstancesOf(key, cursors[key])
 
-    return query
-  }
+  return query
+}
 
-  const queryWithCursors = (cursors, callback) => {
-    const query = buildQueryForCursors(cursors)
-    if (Object.keys(query).length === 0) return null
+const paginateAll = (client, dbPath, keyType, cursors, results = {}) => {
+  const query = nonEmptyCursors(cursors)
 
-    return client
-      .queryWithPrivilegesOrElse(dbPath, KeyType.SERVER, {}, query)
-      .then(callback)
-  }
+  if (Object.keys(query).length === 0)
+    return null
 
-  const paginateResponse = (results = {}) => response => {
-    const cursors = {}
+  return client
+    .queryWithPrivilegesOrElse(dbPath, keyType, {}, query)
+    .then(response => {
+      const nextCursors = {}
 
-    for (let key in response) {
-      if (!response.hasOwnProperty(key)) continue
-      const data = (results[key] && results[key].data) || []
-      results[key] = { data: data.concat(response[key].data) }
-      cursors[key] = response[key].after
-    }
+      for (let key in response) {
+        if (!response.hasOwnProperty(key))
+          continue
 
-    return queryWithCursors(cursors, paginateResponse(results)) || results
-  }
+        const data = (results[key] && results[key].data) || []
+        results[key] = { data: data.concat(response[key].data) }
+        nextCursors[key] = response[key].after
+      }
 
-  return queryWithCursors({
+      return paginateAll(
+        client, dbPath, keyType, nextCursors, results) || results
+    })
+}
+
+const queryForDatabaseResources = (client, dbPath) =>
+  paginateAll(client, dbPath, KeyType.SERVER, {
     classes: null,
     indexes: null
-  }, paginateResponse())
-}
+  })
+
 
 const queryForSchema = (client, dbPath) => {
   return Promise.all([
@@ -95,94 +104,129 @@ const queryForSchema = (client, dbPath) => {
   )
 }
 
-export const loadDatabases = (client, dbPath, cursor = null) => (dispatch, getState) => {
-  const nodePath = nestedDatabaseNodeIn(dbPath)
-  const dbNode = getState().get("schema").getIn(nodePath)
+const schema = state => state.get("schema")
 
-  if (cursor === null && dbNode.getIn(["info", "databasesLoaded"], false)) {
-    return Promise.resolve()
-  }
+const databaseFlaggedOrElse = (schema, path, flag, elseFn) => {
+  const nodePath = nestedDatabaseNodeIn(path)
+  const node = schema.getIn(nodePath, Map())
 
-  const info = dbNode
-    .get("info")
-    .set("databasesLoaded", true)
+  if (node.getIn(["info", flag], false))
+    return Promise.resolve(node)
 
-  return queryForSubDatabases(client, dbPath, cursor).then(
-    result => dispatch({
-      type: Actions.LOAD,
-      database: toDatabase(info, result),
-      dbPath: List(dbPath),
-      nodePath
+  return elseFn(node, nodePath)
+}
+
+const groupDatabasesByName = databases =>
+  List(databases)
+    .groupBy(db => db.getIn(["info", "name"]))
+    .map(each => each.first())
+
+const fetchNestedDatabases = (client, path, databases = []) => (dispatch, getState) => {
+  const dbPath = List(path)
+
+  Promise.all(
+    databases.map(db => {
+      const nestedPath = dbPath.push(db.name)
+      return databaseFlaggedOrElse(schema(getState()), nestedPath, "databasesLoaded", () =>
+        queryForSubDatabases(client, nestedPath).then(
+          toDatabaseWith("name", db.name, "databasesLoaded", true))
+      )
+    })
+  ).then(nodes =>
+    dispatch({
+      type: Actions.LOAD_NESTED_DATABASES,
+      dbPath: dbPath,
+      nodePath: nestedDatabaseNodeIn(path, ["databases", "byName"]),
+      node: groupDatabasesByName(nodes)
     })
   )
 }
 
-const fetchParentDatabases = (client, path) => (dispatch, getState) => {
-  const schema = getState().get("schema")
-  let promises = List()
-  let dbPath = List(path)
-  if (dbPath.isEmpty()) return
-
-  const toDB = (name = "/") => res =>
-    toDatabase(Map.of(
-      "name", name,
-      "databasesLoaded", true
-    ), res)
-
-  do {
-    dbPath = dbPath.butLast()
-    const node = schema.getIn(nestedDatabaseNodeIn(dbPath))
-
-    if (node && node.getIn(["info", "databasesLoaded"], false)) {
-      promises = promises.push(Promise.resolve(node))
-      continue
-    }
-
-    promises = promises.push(
-      queryForSubDatabases(client, dbPath)
-        .then(toDB(dbPath.last()))
-    )
-  } while (!dbPath.isEmpty())
-
-  promises.reduce((last, prev) =>
-    last.then(a =>
-      prev.then(b =>
-        b.setIn(["databases", "byName", a.getIn(["info", "name"])], a)
+const fetchDatabaseTree = (client, path) => (dispatch, getState) => {
+  const parentTree = allDatabasesPaths(path).butLast().reverse()
+    .map(path =>
+      databaseFlaggedOrElse(schema(getState()), path, "databasesLoaded", () =>
+        queryForSubDatabases(client, path).then(result =>
+          Promise.all(
+            result.databases.data.map(db =>
+              queryForSubDatabases(client, path.push(db.name)).then(
+                toDatabaseWith("name", db.name)
+              )
+            )
+          ).then(subDatabases =>
+            toDatabase(Map.of("name", path.last() || "/"), result)
+              .setIn(["databases", "byName"], groupDatabasesByName(subDatabases))
+          )
+        )
       )
     )
-  ).then(database =>
-    dispatch({
-      type: Actions.LOAD,
-      dbPath: List(),
-      nodePath: List(),
-      database
-    })
-  )
+    .reduce((last, prev) =>
+      last.then(lst =>
+        prev.then(prv =>
+          prv.setIn(
+            ["databases", "byName", lst.getIn(["info", "name"])],
+            lst.setIn(["info", "databasesLoaded"], true)
+          )
+        )
+      )
+    )
+
+  if (parentTree) {
+    parentTree.then(database =>
+      dispatch({
+        type: Actions.LOAD_DATABASE_TREE,
+        nodePath: List(),
+        dbPath: List(),
+        node: database,
+      })
+    )
+  }
 }
 
-export const loadSchemaTree = (client, path = []) => (dispatch, getState) => {
-  const nodePath = nestedDatabaseNodeIn(path)
-  const dbNode = getState().get("schema").getIn(nodePath, Map())
+const databasesNotLoaded = database =>
+  database
+    .getIn(["databases", "byName"], Map()).toList()
+    .filterNot(db => db.getIn(["info", "databasesLoaded"]))
+    .map(db => ({ name: db.getIn(["info", "name"]) }))
 
-  if (dbNode.getIn(["info", "schemaLoaded"], false)) {
+export const loadDatabases = (client, dbPath, cursor = null) => (dispatch, getState) => {
+  const nodePath = nestedDatabaseNodeIn(dbPath)
+  const dbNode = schema(getState()).getIn(nodePath)
+
+  if (cursor === null) {
+    dispatch(fetchNestedDatabases(client, dbPath, databasesNotLoaded(dbNode)))
     return Promise.resolve()
   }
 
-  let info = dbNode.get("info", Map.of("name", nodePath.last() || "/"))
-  info = info.set("schemaLoaded", true)
-  info = info.set("databasesLoaded", true)
-
-  return queryForSchema(client, path).then(result => {
-    dispatch(fetchParentDatabases(client, path))
-
-    return dispatch({
-      type: Actions.LOAD,
-      database: toDatabase(info, result),
-      dbPath: List(path),
+  return queryForSubDatabases(client, dbPath, cursor).then(result => {
+    dispatch(fetchNestedDatabases(client, dbPath, result.databases.data))
+    dispatch({
+      type: Actions.LOAD_NESTED_DATABASES,
+      dbPath: List(dbPath),
+      node: toDatabase(dbNode.get("info").set("databasesLoaded", true), result),
       nodePath
     })
   })
 }
+
+export const loadSchemaTree = (client, path = []) => (dispatch, getState) =>
+  databaseFlaggedOrElse(schema(getState()), path, "schemaLoaded", (dbNode, nodePath) => {
+    const info = dbNode
+      .get("info", Map.of("name", nodePath.last() || "/"))
+      .set("schemaLoaded", true)
+      .set("databasesLoaded", true)
+
+    return queryForSchema(client, path).then(result => {
+      dispatch(fetchDatabaseTree(client, path))
+      dispatch(fetchNestedDatabases(client, path, result.databases.data))
+      dispatch({
+        type: Actions.LOAD_SCHEMA,
+        node: toDatabase(info, result),
+        dbPath: List(path),
+        nodePath
+      })
+    })
+  })
 
 const create = (nodeToUpdate, keyType, createQuery, mapper = x => x) => (client, dbPath, config) => (dispatch) => {
   return client.query(dbPath, keyType, createQuery(config)).then(
@@ -225,9 +269,11 @@ const ensureTreeInfo = (schema, path) => allDatabasesPaths(path).reduce(
 
 export const reduceSchemaTree = (state = Map.of("info", Map.of("name", "/")), action) => {
   switch (action.type) {
-    case Actions.LOAD:
+    case Actions.LOAD_SCHEMA:
+    case Actions.LOAD_DATABASE_TREE:
+    case Actions.LOAD_NESTED_DATABASES:
       return ensureTreeInfo(state, action.dbPath)
-        .mergeDeepIn(action.nodePath, action.database)
+        .mergeDeepIn(action.nodePath, action.node)
 
     case Actions.UPDATE:
       return state.mergeDeepIn(action.path, action.data)

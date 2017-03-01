@@ -11,7 +11,7 @@ export default class CustomNav extends Nav {
 
     return <div key={link.key || linkIndex}
         className={css("ms-Nav-compositeLink", {"is-expanded": link.isExpanded, "is-selected": isLinkSelected })}>
-          {((link.links && link.links.length > 0) || (this.props.alwaysShowExpandButton && !link.onClick) ?
+          {((link.links && link.links.length > 0) ?
             <button
               style={{paddingLeft: paddingBefore}}
               className="ms-Nav-chevronButton ms-Nav-chevronButton--link"
