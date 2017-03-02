@@ -65,17 +65,19 @@ class ToggleRepl extends Component {
   }
 
   buildBreadCrumbItem(path) {
-    if (path.isEmpty()) return []
-    const url = buildResourceUrl(null, path, "databases")
+    const buildForPath = (path) => {
+      if (path.isEmpty()) return []
+      const url = buildResourceUrl(null, path, "databases")
 
-    return [{
-      key: url,
-      href: url,
-      text: path.last(),
-      onClick: this.onBreadCrumbClick.bind(this)
-    }]
-      .concat(this.buildBreadCrumbItem(path.butLast()))
-      .reverse()
+      return [{
+        key: url,
+        href: url,
+        text: path.last(),
+        onClick: this.onBreadCrumbClick.bind(this)
+      }].concat(buildForPath(path.butLast()))
+    }
+
+    return buildForPath(path).reverse()
   }
 
   onBreadCrumbClick(e, link) {
