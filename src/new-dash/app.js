@@ -75,12 +75,12 @@ class Container extends Component {
                   <li><ActivityMonitor /></li>
                   <li><a href="http://fauna.com/tutorials" target="_blank">Tutorials</a></li>
                   <li><a href="http://fauna.com/documentation" target="_blank">Documentation</a></li>
-                  <li><a href="https://fauna.com/resources#drivers" targe="_blank">Drivers</a></li>
+                  <li><a href="https://fauna.com/resources#drivers" target="_blank">Drivers</a></li>
                   <li><UserAccount /></li>
                 </ul>
               </div>
             </div>
-            {this.props.faunaClient ?
+            {(this.props.faunaClient || this.props.route.noClient) ?
               <div className="ms-Grid-row">
                 <div className="ms-Grid-col ms-u-sm12 ms-u-md6 ms-u-lg4">
                   <NavTree />
@@ -138,7 +138,7 @@ export default class App extends Component {
             <Route path="**/classes" component={ClassForm} />
             <Route path="**/databases" component={DatabaseForm} />
             <Route path="databases" component={DatabaseForm} />
-            <IndexRoute component={GetStarted} />
+            <IndexRoute noClient={true} component={GetStarted} />
           </Route>
           <Route path="*" component={App.NotFound} />
         </Router>
