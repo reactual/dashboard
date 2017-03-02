@@ -11,3 +11,9 @@ export const nestedDatabaseNodeIn = (path, node) => {
 
   return nodePath
 }
+
+export const allDatabasesPaths = path => List(path).reduce(
+  (paths, name) => paths.push(paths.last().push(name)),
+  List.of(List())
+)
+

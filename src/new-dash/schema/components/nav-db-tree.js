@@ -3,7 +3,7 @@ import { connect } from "react-redux"
 import { browserHistory } from "react-router"
 
 import CustomNav from "./custom-nav"
-import { databaseTree, loadMoreDatabases } from "../"
+import { databaseTree, loadDatabases } from "../"
 import { selectedResource } from "../../router"
 import { faunaClient } from "../../authentication"
 import { watchForError } from "../../notifications"
@@ -35,13 +35,18 @@ class NavDBTree extends Component {
     const toLink = (db) => {
       const key = db.get("url")
       const link = links.find(l => l.key === key) || {}
+      const isAtSelectedPath = db.get("path").every((seg, index) =>
+        this.props.selectedDatabasePath.get(index) === seg)
 
       return {
         key,
         url: key,
         name: db.get("name"),
+        path: db.get("path"),
         links: this.databaseLinks(db, link.links || []),
-        isExpanded: (typeof link.isExpanded === "undefined" ? true : link.isExpanded)
+        isExpanded: link.isExpanded !== undefined ?
+          link.isExpanded :
+          key !== this.props.selectedDatabaseUrl && isAtSelectedPath
       }
     }
 
@@ -67,7 +72,7 @@ class NavDBTree extends Component {
       monitorActivity(
         watchForError(
           "Unexpected error while fetching databases",
-          loadMoreDatabases(this.props.client, dbPath, cursor)
+          loadDatabases(this.props.client, dbPath, cursor)
         )
       )
     )
@@ -78,6 +83,19 @@ class NavDBTree extends Component {
     browserHistory.push(link.url)
   }
 
+  onExpand(link) {
+    if (link.isExpanded) return
+
+    return this.props.dispatch(
+      monitorActivity(
+        watchForError(
+          "Unexpected error while fetching schema information",
+          loadDatabases(this.props.client, link.path)
+        )
+      )
+    )
+  }
+
   render() {
     const links = [{
       name: "Databases",
@@ -86,7 +104,8 @@ class NavDBTree extends Component {
 
     return <CustomNav
       groups={links}
-      selectedKey={this.props.databaseUrl}
+      selectedKey={this.props.selectedDatabaseUrl}
+      onExpand={this.onExpand.bind(this)}
       onLinkClick={this.onClick.bind(this)} />
   }
 }
@@ -94,7 +113,8 @@ class NavDBTree extends Component {
 export default connect(
   state => ({
     databaseTree: databaseTree(state),
-    databaseUrl: selectedResource(state).getIn(["database", "url"]),
+    selectedDatabaseUrl: selectedResource(state).getIn(["database", "url"]),
+    selectedDatabasePath: selectedResource(state).getIn(["database", "path"]),
     client: faunaClient(state)
   })
 )(NavDBTree)

@@ -3,7 +3,7 @@ import { query as q } from "faunadb"
 
 import {
   loadSchemaTree,
-  loadMoreDatabases,
+  loadDatabases,
   createDatabase,
   deleteDatabase,
   createClass,
@@ -13,334 +13,361 @@ import {
   reduceSchemaTree
 } from "../"
 
-import { KeyType } from "../../persistence/faunadb-wrapper"
+const serverResponseByDatabasePathAndKeyType = Immutable.fromJS({
+  "": {
+    "admin": { databases: { data: [{ name: "production", ref: q.Ref("databases/production") }] } },
+    "server": { classes: { data: [] }, indexes: { data: [] } }
+  },
+  "production": {
+    "admin": {
+      databases: {
+        data: [
+          { name: "site", ref: q.Ref("databases/site") },
+          { name: "blog", ref: q.Ref("databases/blog") }
+        ]
+      }
+    },
+    "server": { classes: { data: [] }, indexes: { data: [] } }
+  },
+  "production/site": {
+    "admin": { databases: { data: [ { name: "tenants", ref: q.Ref("databases/tenants") } ] } },
+    "server": {
+      classes: { data: [{ name: "users", ref: q.Ref("classes/users") }] },
+      indexes: { data: [{ name: "all_users", ref: q.Ref("indexes/all_users") }] }
+    }
+  },
+  "production/site/tenants": {
+    "admin": { databases: { data: [{ name: "user123", ref: q.Ref("databases/user123") }] } },
+    "server": { classes: { data: [] }, indexes: { data: [] } }
+  },
+  "production/site/tenants/user123": {
+    "admin": { databases: { data: [] } },
+    "server": { classes: { data: [] }, indexes: { data: [] } }
+  },
+  "production/blog": {
+    "admin": { databases: { data: [] } },
+    "server": {
+      classes: { data: [{ name: "posts", ref: q.Ref("classes/posts") }] },
+      indexes: { data: [{ name: "all_posts", ref: q.Ref("indexes/all_posts") }] }
+    }
+  }
+})
 
-const rootDatabase = {
-  adminKeyResponse: {
-    databases: {
-      data: [{
-        name: "my-app",
-        ref: q.Ref("databases/my-app"),
-        ts: 123
-      }],
-      after: "database-cursor"
-    }
-  },
-  serverKeyResponse: {
-    classes: {
-      data: [{
-        name: "people",
-        ref: q.Ref("classes/people"),
-        ts: 11
-      }],
-      cursor: "class-cursor"
-    },
-    indexes: {
-      data: [{
-        name: "all_people",
-        ref: q.Ref("indexes/all_people"),
-        ts: 22
-      }],
-      cursor: "index-cursor"
-    }
-  },
-  schemaTree: Immutable.fromJS({
-    info: {
-      name: "/"
-    },
-    loaded: true,
-    databases: {
-      byName: {
-        "my-app": {
-          info: {
-            name: "my-app",
-            ref: q.Ref("databases/my-app"),
-            ts: 123
-          },
-          loaded: false,
-          databases: {},
-          classes: {},
-          indexes: {}
-        }
-      },
-      cursor: "database-cursor"
-    },
-    classes: {
-      byName: {
-        "people": {
-          name: "people",
-          ref: q.Ref("classes/people"),
-          ts: 11
-        }
-      },
-      cursor: null
-    },
-    indexes: {
-      byName: {
-        "all_people": {
-          name: "all_people",
-          ref: q.Ref("indexes/all_people"),
-          ts: 22
-        }
-      },
-      cursor: null
-    }
-  })
-}
+const mockFaunaClient = () => {
+  const client = {
+    query: jest.fn(),
+    queryWithPrivilegesOrElse: jest.fn()
+  }
 
-const subDatabase = {
-  serverKeyResponse: {
-    classes: {
-      data: [{
-        name: "users",
-        ref: q.Ref("classes/users"),
-        ts: 11
-      }]
-    },
-    indexes: {
-      data: [{
-        name: "all_users",
-        ref: q.Ref("indexes/all_users"),
-        source: q.Ref("classes/users"),
-        ts: 12
-      }]
-    }
-  },
-  schemaTree: Immutable.fromJS({
-    info: {
-      name: "my-app",
-      ref: q.Ref("databases/my-app"),
-      ts: 123
-    },
-    loaded: true,
-    databases: {},
-    classes: {
-      byName: {
-        "users": {
-          name: "users",
-          ref: q.Ref("classes/users"),
-          ts: 11
-        },
-      },
-      cursor: null
-    },
-    indexes: {
-      byName: {
-        "all_users": {
-          name: "all_users",
-          source: q.Ref("classes/users"),
-          ref: q.Ref("indexes/all_users"),
-          ts: 12
-        },
-      },
-      cursor: null
-    }
-  })
+  client.queryWithPrivilegesOrElse.mockImplementation((path, keyType, query) => Promise.resolve(
+    serverResponseByDatabasePathAndKeyType.getIn([path.join("/"), keyType]).toJS()
+  ))
+
+  return client
 }
 
 describe("Given a schema tree store", () => {
-  let store, schema, faunaClient
+  let store, schema, client
 
   beforeEach(() => {
-    store = createImmutableTestStore({
-      schema: reduceSchemaTree
-    })(state => schema = state.get("schema").toJS())
-
-    faunaClient = {
-      query: jest.fn(),
-      queryWithPrivilegesOrElse: jest.fn(),
-      hasPrivileges: jest.fn(() => true)
-    }
-  })
-
-  it("should load schema tree at root", () => {
-    faunaClient.queryWithPrivilegesOrElse.mockImplementation((path, keyType, query) => {
-      if (keyType === KeyType.ADMIN) return Promise.resolve(rootDatabase.adminKeyResponse)
-      if (keyType === KeyType.SERVER) return Promise.resolve(rootDatabase.serverKeyResponse)
-      return Promise.reject()
-    })
-
-    return store.dispatch(loadSchemaTree(faunaClient)).then(() => {
-      expect(schema).toEqual(rootDatabase.schemaTree.toJS())
-    })
-  })
-
-  it("should load deep nested databases", () => {
-    faunaClient.queryWithPrivilegesOrElse.mockReturnValue(
-      Promise.resolve(subDatabase.serverKeyResponse)
+    store = createImmutableTestStore({ schema: reduceSchemaTree })(
+      state => schema = state.get("schema").toJS()
     )
 
-    return store.dispatch(loadSchemaTree(faunaClient, ["my-app", "my-blog"])).then(() => {
-      expect(schema).toEqual(
-        Immutable.fromJS({
-          info: { name: "/" }
-        })
-        .setIn(
-          ["databases", "byName", "my-app", "info"],
-          Map.of("name", "my-app")
-        )
-        .setIn(
-          ["databases", "byName", "my-app", "databases", "byName", "my-blog"],
-          subDatabase.schemaTree.set("info", Map.of("name", "my-blog"))
-        )
-        .toJS()
-      )
-    })
+    client = mockFaunaClient()
   })
 
-  it("should not load a database twice", () => {
-    faunaClient.queryWithPrivilegesOrElse.mockReturnValue(
-      Promise.resolve(subDatabase.serverKeyResponse)
-    )
-
-    const loadMyApp = () => store.dispatch(loadSchemaTree(faunaClient, ["my-app"]))
-
-    return loadMyApp().then(() => {
-      return loadMyApp().then(() => {
-        // One with admin and one with server key
-        expect(faunaClient.queryWithPrivilegesOrElse).toHaveBeenCalledTimes(2)
+  it("should load schema tree at root database", () => {
+    return store.dispatch(loadSchemaTree(client)).then(() => {
+      expect(schema).toEqual({
+        info: { name: "/", databasesLoaded: true, schemaLoaded: true },
+        databases: {
+          byName: {
+            production: {
+              info: { name: "production", ref: q.Ref("databases/production") },
+              databases: {},
+              classes: {},
+              indexes: {}
+            },
+          },
+          cursor: null
+        },
+        classes: {},
+        indexes: {}
       })
     })
   })
 
+  it("should load nested databases", () => {
+    return store.dispatch(loadSchemaTree(client, ["production", "site", "tenants"])).then(() => {
+      expect(schema).toEqual({
+        info: { name: "/" },
+        databases: {
+          byName: {
+            production: {
+              info: { name: "production" },
+              databases: {
+                byName: {
+                  site: {
+                    info: { name: "site" },
+                    databases: {
+                      byName: {
+                        tenants: {
+                          info: { name: "tenants", databasesLoaded: true, schemaLoaded: true },
+                          databases: {
+                            byName: {
+                              user123: {
+                                info: { name: "user123", ref: q.Ref("databases/user123") },
+                                databases: {}, classes: {}, indexes: {}
+                              }
+                            },
+                            cursor: null
+                          },
+                          classes: {}, indexes: {}
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      })
+    })
+  })
+
+  it("should load the rest of the database tree in background", (done) => {
+    store.dispatch(loadSchemaTree(client, ["production", "site", "tenants"], () => {
+      expect(schema).toEqual({
+        info: { name: "/", databasesLoaded: true },
+        databases: {
+          byName: {
+            production: {
+              info: { name: "production", databasesLoaded: true },
+              databases: {
+                byName: {
+                  site: {
+                    info: { name: "site", databasesLoaded: true },
+                    databases: {
+                      byName: {
+                        tenants: {
+                          info: { name: "tenants", databasesLoaded: true, schemaLoaded: true },
+                          databases: {
+                            byName: {
+                              user123: {
+                                info: { name: "user123", ref: q.Ref("databases/user123"), databasesLoaded: true },
+                                databases: {}, classes: {}, indexes: {}
+                              }
+                            },
+                            cursor: null
+                          },
+                          classes: {}, indexes: {}
+                        }
+                      },
+                      cursor: null
+                    },
+                    classes: {}, indexes: {}
+                  },
+                  blog: {
+                    info: { name: "blog", databasesLoaded: true },
+                    databases: {}, classes: {}, indexes: {}
+                  }
+                },
+                cursor: null
+              },
+              classes: {}, indexes: {}
+            }
+          },
+          cursor: null
+        },
+        classes: {}, indexes: {}
+      })
+      done()
+    }))
+  })
+
   describe("when the root database is already loaded", () => {
-    beforeEach(() => {
-      store = store.withInitialState({
-        schema: rootDatabase.schemaTree
+    beforeEach((done) => store.dispatch(loadSchemaTree(client, [], () => {
+      client = mockFaunaClient()
+      done()
+    })))
+
+    it("should not load the same database again", () => {
+      return store.dispatch(loadSchemaTree(client, [])).then(() => {
+        expect(client.queryWithPrivilegesOrElse).not.toHaveBeenCalled()
       })
     })
 
     it("should be able to load a sub-database", () => {
-      faunaClient.queryWithPrivilegesOrElse.mockReturnValue(
-        Promise.resolve(subDatabase.serverKeyResponse)
-      )
-
-      return store.dispatch(loadSchemaTree(faunaClient, ["my-app"])).then(() => {
-        expect(schema).toEqual(
-          rootDatabase.schemaTree
-          .setIn(["databases", "byName", "my-app"], subDatabase.schemaTree)
-          .toJS()
-        )
+      return store.dispatch(loadSchemaTree(client, ["production", "site"])).then(() => {
+        expect(schema.databases.byName.production.databases.byName.site).toEqual({
+          info: {
+            name: "site",
+            ref: q.Ref("databases/site"),
+            databasesLoaded: true,
+            schemaLoaded: true,
+          },
+          databases: {
+            byName: {
+              tenants: {
+                info: {
+                  name: "tenants",
+                  ref: q.Ref("databases/tenants")
+                },
+                databases: {},
+                classes: {},
+                indexes: {}
+              }
+            },
+            cursor: null
+          },
+          classes: {
+            byName: {
+              users: {
+                name: "users",
+                ref: q.Ref("classes/users")
+              }
+            },
+            cursor: null
+          },
+          indexes: {
+            byName: {
+              all_users: {
+                name: "all_users",
+                ref: q.Ref("indexes/all_users")
+              }
+            },
+            cursor: null
+          }
+        })
       })
     })
 
-    it("should be able to load a more databases", () => {
-      faunaClient.queryWithPrivilegesOrElse.mockReturnValue(
+
+    it("should be able to load more databases based on a cursor", () => {
+      client.queryWithPrivilegesOrElse.mockReturnValue(
         Promise.resolve({
           databases: {
             data: [{
-              name: "another-db"
+              name: "nested"
             }]
           }
         })
       )
 
-      return store.dispatch(loadMoreDatabases(faunaClient, [], "database-cursor")).then(() => {
-        expect(schema).toEqual(
-          rootDatabase.schemaTree
-            .setIn(["databases", "byName", "another-db"], {
-              info: { name: "another-db" },
-              loaded: false,
-              databases: {},
-              classes: {},
-              indexes: {}
-            })
-            .setIn(["databases", "cursor"], null)
-            .toJS()
-        )
+      return store.dispatch(loadDatabases(client, ["production"], "cursor")).then(() => {
+        expect(schema.databases.byName.production.databases.byName.nested).toEqual({
+          info: { name: "nested" },
+          databases: {},
+          classes: {},
+          indexes: {}
+        })
       })
     })
 
-    it("should be able to create a new database", () => {
-      faunaClient.query.mockReturnValue(Promise.resolve({
-        name: "new-db"
-      }))
+    it("should not load databases if already loaded", () => {
+      return store.dispatch(loadDatabases(client, [], null)).then(() => {
+        expect(client.queryWithPrivilegesOrElse).not.toHaveBeenCalled()
+      })
+    })
 
-      return store.dispatch(createDatabase(faunaClient, [], { name: "new-db" })).then(() => {
-        expect(schema).toEqual(
-          rootDatabase.schemaTree.setIn(
-            ["databases", "byName", "new-db"],
-            Immutable.fromJS({
-              info: {
-                name: "new-db"
-              },
-              loaded: false,
-              databases: {},
-              classes: {},
-              indexes: {}
-            })
-          ).toJS()
-        )
+    it("should load nested databases in background", (done) => {
+      client.queryWithPrivilegesOrElse.mockReturnValue(
+        Promise.resolve({
+          databases: {
+            data: [{
+              name: "nested"
+            }]
+          }
+        })
+      )
+
+      store.dispatch(loadDatabases(client, ["production"], "cursor", () => {
+        expect(schema.databases.byName.production.databases.byName.nested).toEqual({
+          info: { name: "nested", databasesLoaded: true },
+          databases: {
+            byName: {
+              nested: {
+                info: { name: "nested" },
+                databases: {}, classes: {}, indexes: {}
+              }
+            },
+            cursor: null,
+          },
+          classes: {}, indexes: {}
+        })
+        done()
+      }))
+    })
+
+    it("should load nested databases in background when no cursor", (done) => {
+      store.dispatch(loadDatabases(client, ["production"], null, () => {
+        expect(schema.databases.byName.production.databases.byName.site).toEqual({
+          info: { name: "site", ref: q.Ref("databases/site"), databasesLoaded: true },
+          databases: {
+            byName: {
+              tenants: {
+                info: { name: "tenants", ref: q.Ref("databases/tenants") },
+                databases: {}, classes: {}, indexes: {}
+              }
+            },
+            cursor: null,
+          },
+          classes: {}, indexes: {}
+        })
+        done()
+      }))
+    })
+
+    it("should be able to create a new database", () => {
+      client.query.mockReturnValue(Promise.resolve({ name: "newdb" }))
+      return store.dispatch(createDatabase(client, [], { name: "newdb" })).then(() => {
+        expect(schema.databases.byName.newdb).toEqual({
+          info: { name: "newdb" },
+          databases: {},
+          classes: {},
+          indexes: {}
+        })
       })
     })
 
     it("should be able to delete a database", () => {
-      faunaClient.query.mockReturnValue(Promise.resolve())
-
-      return store.dispatch(deleteDatabase(faunaClient, [], "my-app")).then(() => {
-        expect(schema).toEqual(
-          rootDatabase.schemaTree
-            .removeIn(["databases", "byName", "my-app"])
-            .toJS()
-        )
+      client.query.mockReturnValue(Promise.resolve())
+      return store.dispatch(deleteDatabase(client, [], "production")).then(() => {
+        expect(schema.databases.byName).toEqual({})
       })
     })
 
     it("should be able to create a new class", () => {
-      faunaClient.query.mockReturnValue(Promise.resolve({
-        name: "new-class"
-      }))
-
-      return store.dispatch(createClass(faunaClient, ["my-app"], { name: "new-class" })).then(() => {
-        expect(schema).toEqual(
-          rootDatabase.schemaTree.setIn(
-            ["databases", "byName", "my-app", "classes", "byName", "new-class"],
-            Immutable.fromJS({
-              name: "new-class"
-            })
-          ).toJS()
-        )
+      client.query.mockReturnValue(Promise.resolve({ name: "newclass" }))
+      return store.dispatch(createClass(client, ["production"], { name: "newclass" })).then(() => {
+        expect(schema.databases.byName.production.classes.byName.newclass).toEqual({
+          name: "newclass"
+        })
       })
     })
 
     it("should be able to delete a class", () => {
-      faunaClient.query.mockReturnValue(Promise.resolve())
-
-      return store.dispatch(deleteClass(faunaClient, [], "people")).then(() => {
-        expect(schema).toEqual(
-          rootDatabase.schemaTree
-            .removeIn(["classes", "byName", "people"])
-            .toJS()
-        )
+      client.query.mockReturnValue(Promise.resolve())
+      return store.dispatch(deleteClass(client, ["production", "site"], "users")).then(() => {
+        expect(schema.databases.byName.production.databases.byName.site.classes).toEqual({})
       })
     })
 
     it("should be able to create a new index", () => {
-      faunaClient.query.mockReturnValue(Promise.resolve({
-        name: "new-index"
-      }))
-
-      return store.dispatch(createIndex(faunaClient, ["my-app"], { name: "new-index" })).then(() => {
-        expect(schema).toEqual(
-          rootDatabase.schemaTree.setIn(
-            ["databases", "byName", "my-app", "indexes", "byName", "new-index"],
-            Immutable.fromJS({
-              name: "new-index"
-            })
-          ).toJS()
-        )
+      client.query.mockReturnValue(Promise.resolve({ name: "newindex" }))
+      return store.dispatch(createIndex(client, ["production"], { name: "newindex" })).then(() => {
+        expect(schema.databases.byName.production.indexes.byName.newindex).toEqual({
+          name: "newindex"
+        })
       })
     })
 
     it("should be able to delete an index", () => {
-      faunaClient.query.mockReturnValue(Promise.resolve())
-
-      return store.dispatch(deleteIndex(faunaClient, [], "all_people")).then(() => {
-        expect(schema).toEqual(
-          rootDatabase.schemaTree
-            .removeIn(["indexes", "byName", "all_people"])
-            .toJS()
-        )
+      client.query.mockReturnValue(Promise.resolve())
+      return store.dispatch(deleteIndex(client, ["production", "site"], "all_users")).then(() => {
+        expect(schema.databases.byName.production.databases.byName.site.indexes).toEqual({})
       })
     })
   })
