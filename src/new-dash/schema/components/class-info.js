@@ -8,7 +8,7 @@ import DeleteForm from "./delete-form"
 import { deleteClass, selectedDatabase, selectedClass } from "../"
 import { notify } from "../../notifications"
 import { faunaClient } from "../../authentication"
-import { buildUrl } from "../../router"
+import { buildResourceUrl } from "../../router"
 import { KeyType } from "../../persistence/faunadb-wrapper"
 import { ReplEditor, evalQuery } from "../../repl"
 import { InstanceInfo } from "../../dataset"
@@ -56,7 +56,7 @@ class ClassInfo extends Component {
 
     return notify("Class deleted successfully", dispatch =>
       dispatch(deleteClass(client, path, clazz.get("name"))).then(() =>
-        browserHistory.push(buildUrl(currentUrl, "classes"))
+        browserHistory.push(buildResourceUrl(currentUrl, "classes"))
       )
     )
   }
