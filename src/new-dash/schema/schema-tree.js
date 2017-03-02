@@ -104,6 +104,7 @@ const queryForSchema = (client, dbPath) => {
   )
 }
 
+const nop = () => {}
 const schema = state => state.get("schema")
 
 const databaseFlaggedOrElse = (schema, path, flag, elseFn) => {
@@ -124,7 +125,7 @@ const groupDatabasesByName = databases =>
 const fetchNestedDatabases = (client, path, databases = []) => (dispatch, getState) => {
   const dbPath = List(path)
 
-  Promise.all(
+  return Promise.all(
     databases.map(db => {
       const nestedPath = dbPath.push(db.name)
       return databaseFlaggedOrElse(schema(getState()), nestedPath, "databasesLoaded", () =>
@@ -150,11 +151,11 @@ const fetchDatabaseTree = (client, path) => (dispatch, getState) => {
           Promise.all(
             result.databases.data.map(db =>
               queryForSubDatabases(client, path.push(db.name)).then(
-                toDatabaseWith("name", db.name)
+                toDatabaseWith("name", db.name, "databasesLoaded", true)
               )
             )
           ).then(subDatabases =>
-            toDatabase(Map.of("name", path.last() || "/"), result)
+            toDatabase(Map.of("name", path.last() || "/", "databasesLoaded", true), result)
               .setIn(["databases", "byName"], groupDatabasesByName(subDatabases))
           )
         )
@@ -163,24 +164,22 @@ const fetchDatabaseTree = (client, path) => (dispatch, getState) => {
     .reduce((last, prev) =>
       last.then(lst =>
         prev.then(prv =>
-          prv.setIn(
-            ["databases", "byName", lst.getIn(["info", "name"])],
-            lst.setIn(["info", "databasesLoaded"], true)
-          )
+          prv.setIn(["databases", "byName", lst.getIn(["info", "name"])], lst)
         )
       )
     )
 
-  if (parentTree) {
-    parentTree.then(database =>
-      dispatch({
-        type: Actions.LOAD_DATABASE_TREE,
-        nodePath: List(),
-        dbPath: List(),
-        node: database,
-      })
-    )
-  }
+  if (!parentTree)
+    return Promise.resolve()
+
+  return parentTree.then(database => {
+    dispatch({
+      type: Actions.LOAD_DATABASE_TREE,
+      nodePath: List(),
+      dbPath: List(),
+      node: database,
+    })
+  })
 }
 
 const databasesNotLoaded = database =>
@@ -189,17 +188,21 @@ const databasesNotLoaded = database =>
     .filterNot(db => db.getIn(["info", "databasesLoaded"]))
     .map(db => ({ name: db.getIn(["info", "name"]) }))
 
-export const loadDatabases = (client, dbPath, cursor = null) => (dispatch, getState) => {
+export const loadDatabases = (client, dbPath, cursor = null, onCompleteAsyncOperations = nop) => (dispatch, getState) => {
   const nodePath = nestedDatabaseNodeIn(dbPath)
   const dbNode = schema(getState()).getIn(nodePath)
 
   if (cursor === null) {
     dispatch(fetchNestedDatabases(client, dbPath, databasesNotLoaded(dbNode)))
+      .then(onCompleteAsyncOperations)
+
     return Promise.resolve()
   }
 
   return queryForSubDatabases(client, dbPath, cursor).then(result => {
     dispatch(fetchNestedDatabases(client, dbPath, result.databases.data))
+      .then(onCompleteAsyncOperations)
+
     dispatch({
       type: Actions.LOAD_NESTED_DATABASES,
       dbPath: List(dbPath),
@@ -209,7 +212,7 @@ export const loadDatabases = (client, dbPath, cursor = null) => (dispatch, getSt
   })
 }
 
-export const loadSchemaTree = (client, path = []) => (dispatch, getState) =>
+export const loadSchemaTree = (client, path = [], onCompleteAsyncOperations = nop) => (dispatch, getState) =>
   databaseFlaggedOrElse(schema(getState()), path, "schemaLoaded", (dbNode, nodePath) => {
     const info = dbNode
       .get("info", Map.of("name", nodePath.last() || "/"))
@@ -217,8 +220,13 @@ export const loadSchemaTree = (client, path = []) => (dispatch, getState) =>
       .set("databasesLoaded", true)
 
     return queryForSchema(client, path).then(result => {
-      dispatch(fetchDatabaseTree(client, path))
-      dispatch(fetchNestedDatabases(client, path, result.databases.data))
+      Promise.all([
+        dispatch(fetchDatabaseTree(client, path)),
+        dispatch(fetchNestedDatabases(client, path, result.databases.data))
+      ]).then(
+        onCompleteAsyncOperations
+      )
+
       dispatch({
         type: Actions.LOAD_SCHEMA,
         node: toDatabase(info, result),
