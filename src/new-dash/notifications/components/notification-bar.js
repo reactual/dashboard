@@ -20,7 +20,9 @@ const NotificationBar = ({ notifications }) => {
         <li key={index} className="ms-u-fadeIn100">
           <MessageBar
             messageBarType={messageBarTypeFor(notification.type)}>
-            {notification.message}
+            {notification.message.split("\n").map((text, key) =>
+              <span key={key}>{text}<br/></span>
+            )}
           </MessageBar>
         </li>
       ))

@@ -29,6 +29,25 @@ const push = (dispatch, type, message) => {
   )
 }
 
+const buildErrorMessage = (message, error) => {
+  let result = `${message ? message + ". " : ""}${error}`
+
+  if (error.errors) {
+    error.errors().forEach(err => {
+      result += `\n\n> ${err.description}`
+
+      if (err.failures) {
+        err.failures.forEach(failure => {
+          result += `\n  - (${failure.field.join(".")}): ${failure.description}`
+        })
+      }
+    })
+  }
+
+  return result
+}
+
+
 export const watchForError = (message, action) => (dispatch) => {
   let res
 
@@ -39,7 +58,7 @@ export const watchForError = (message, action) => (dispatch) => {
   }
 
   return res.catch(error => {
-    push(dispatch, NotificationType.ERROR, `${message ? message + ". " : ""}${error}`)
+    push(dispatch, NotificationType.ERROR, buildErrorMessage(message, error))
     throw error
   })
 }
