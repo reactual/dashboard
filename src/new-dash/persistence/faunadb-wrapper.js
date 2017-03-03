@@ -1,4 +1,4 @@
-import faunadb, { query as q } from "faunadb"
+import faunadb, { query as q, errors } from "faunadb"
 import { parse as parseURL } from "url"
 
 export default class FaunaClient {
@@ -26,7 +26,7 @@ export default class FaunaClient {
             .then(() => client)
         },
         error => {
-          if (error.name === "PermissionDenied") {
+          if (error instanceof errors.PermissionDenied) {
             return client
               .query([], FaunaClient.KeyType.SERVER, q.CreateClass({ name: className }))
               .then(
@@ -39,14 +39,20 @@ export default class FaunaClient {
                 error => {
                   return client
                     .query([], FaunaClient.KeyType.SERVER, q.Delete(q.Ref(`classes/${className}`)))
-                    .then(() => { throw error })
+                    .then(
+                      () => { throw error },
+                      () => { throw error }
+                    )
                 }
               )
           } else {
             // delete the test db in case we are out of sync
             return client
               .query([], FaunaClient.KeyType.ADMIN, q.Delete(q.Ref(`databases/${dbName}`)))
-              .then(() => { throw error })
+              .then(
+                () => { throw error },
+                () => { throw error }
+              )
           }
         })
   }
