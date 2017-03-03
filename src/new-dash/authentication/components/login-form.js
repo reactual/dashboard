@@ -35,7 +35,7 @@ class LoginForm extends Component {
   }
 
   componentWillReceiveProps(next) {
-    if (this.currentUser !== null && next.currentUser === null) {
+    if (this.props.currentUser !== null && next.currentUser === null) {
       this.setState({ message: "Logging out..." })
     }
   }
