@@ -1,4 +1,6 @@
 export default [
+  // List of query language function names for the repl.
+  // The list needs to be hard coded to avoid the minification of the function names.
   "Ref",
   "At",
   "Let",
