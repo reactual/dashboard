@@ -9,7 +9,7 @@ import { deleteIndex, selectedIndex, selectedDatabase } from "../"
 import { faunaClient } from "../../authentication"
 import { watchForError, notify } from "../../notifications"
 import { monitorActivity, isBusy } from "../../activity-monitor"
-import { buildUrl } from "../../router"
+import { buildResourceUrl } from "../../router"
 import { KeyType } from "../../persistence/faunadb-wrapper"
 import { Pagination, InstanceInfo } from "../../dataset"
 import { ReplEditor, evalQuery } from "../../repl"
@@ -97,7 +97,7 @@ class IndexInfo extends Component {
 
     return notify("Index deleted successfully", dispatch =>
       dispatch(deleteIndex(client, path, index.get("name"))).then(() =>
-        browserHistory.push(buildUrl(currentUrl, "indexes"))
+        browserHistory.push(buildResourceUrl(currentUrl, "indexes"))
       )
     )
   }
