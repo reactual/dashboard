@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react"
 
 export default () => <div>
   <h2>Welcome to FaunaDB</h2>

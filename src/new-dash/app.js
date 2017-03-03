@@ -6,6 +6,7 @@ import { Router, IndexRoute, Route, Redirect, Link, browserHistory } from "react
 
 import "./app.css"
 import logo from "./logo.svg"
+import GetStarted from "./get-started"
 import { ToggleRepl } from "./repl"
 import { updateSelectedResource } from "./router"
 import { ActivityMonitor, monitorActivity } from "./activity-monitor"
@@ -22,8 +23,6 @@ import {
   IndexInfo,
   loadSchemaTree
 } from "./schema"
-
-import GetStarted from "./get-started"
 
 class Container extends Component {
 
@@ -80,7 +79,7 @@ class Container extends Component {
                 </ul>
               </div>
             </div>
-            {(this.props.faunaClient || this.props.route.noClient) ?
+            {this.props.faunaClient ?
               <div className="ms-Grid-row">
                 <div className="ms-Grid-col ms-u-sm12 ms-u-md6 ms-u-lg4">
                   <NavTree />
@@ -126,7 +125,7 @@ export default class App extends Component {
   render() {
     return <Provider store={this.props.store}>
         <Router onUpdate={this.trackPage.bind(this)} history={browserHistory}>
-          <Redirect from="/" to="/db/" />
+          <Redirect from="/" to="/db" />
           <Route path="/db" component={App.Container}>
             <Route path="indexes/:indexName" component={IndexInfo} />
             <Route path="indexes" component={IndexForm} />
@@ -138,7 +137,7 @@ export default class App extends Component {
             <Route path="**/classes" component={ClassForm} />
             <Route path="**/databases" component={DatabaseForm} />
             <Route path="databases" component={DatabaseForm} />
-            <IndexRoute noClient={true} component={GetStarted} />
+            <IndexRoute component={GetStarted} />
           </Route>
           <Route path="*" component={App.NotFound} />
         </Router>
