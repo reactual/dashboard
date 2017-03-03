@@ -1,4 +1,4 @@
-import faunadb, { query as q } from "faunadb"
+import faunadb, { query as q, errors } from "faunadb"
 import { parse as parseURL } from "url"
 
 export default class FaunaClient {
@@ -26,7 +26,7 @@ export default class FaunaClient {
             .then(() => client)
         },
         error => {
-          if (error.name === "PermissionDenied") {
+          if (error instanceof errors.PermissionDenied) {
             return client
               .query([], FaunaClient.KeyType.SERVER, q.CreateClass({ name: className }))
               .then(
