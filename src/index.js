@@ -9,7 +9,10 @@ import './index.css';
 
 import Cookies from "js-cookie"
 
-if (Cookies.get("USE_NEW_SCHEMA_TREE")) {
+const useNewDash = Cookies.get("USE_NEW_DASH")
+const useOldDash = Cookies.get("USE_OLD_DASH")
+
+if (useNewDash === "true" && (!useOldDash || useOldDash === "false")) {
   require("./new-dash/index.js")
 } else {
   var middlewares = [thunk]
