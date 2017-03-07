@@ -1,3 +1,9 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+}
+
 dl dt {
     margin-top: 1em;
     font-weight: bold;
@@ -9,6 +15,8 @@ dl dd {
 
 .header {
     padding: 0.5em 0 0.5em 0;
+    background-color: black;
+    color: white;
 }
 
 .header ul {
@@ -24,15 +32,15 @@ dl dd {
 
 .header .ms-Button,
 .header a {
-    color: white
+    color: white !important;
+}
+
+.header a:hover,
+.header .ms-Button:hover {
+    color: #0078d7 !important;
 }
 
 .header a {
     font-weight: bold;
     text-decoration: none;
-}
-
-.header a:hover,
-.header .ms-Button:hover {
-    color: #0078d7;
 }

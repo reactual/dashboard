@@ -4,6 +4,9 @@ import Ace from "brace"
 import "./editor.css"
 import queryFunctions from "../query-functions"
 
+require("brace/mode/javascript")
+require("brace/ext/language_tools")
+
 const faunaLangCompleter = {
   getCompletions(editor, session, pos, prefix, callback) {
     const previousToken = session.getTokenAt(pos.row, pos.column - prefix.length - 1) || {}
