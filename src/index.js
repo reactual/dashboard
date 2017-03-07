@@ -8,11 +8,9 @@ import App from './app/App'
 import './index.css';
 
 import Cookies from "js-cookie"
-
 const useNewDash = Cookies.get("USE_NEW_DASH")
-const useOldDash = Cookies.get("USE_OLD_DASH")
 
-if (useNewDash === "true" && (!useOldDash || useOldDash === "false")) {
+if (!useNewDash || useNewDash === "true") {
   require("./new-dash/index.js")
 } else {
   var middlewares = [thunk]
