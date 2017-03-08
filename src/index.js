@@ -13,6 +13,8 @@ import { reduceNotifications } from "./notifications"
 import { reduceActivityMonitor } from "./activity-monitor"
 import { reduceUserSession } from "./authentication"
 
+require("./lang/polyfill.js")
+
 const store = (() => {
   const middlewares = [thunk]
 
