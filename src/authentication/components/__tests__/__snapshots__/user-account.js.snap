@@ -1,0 +1,47 @@
+exports[`UserAccount Component should show and hide context menu on click 1`] = `
+<div>
+  <Button
+    buttonType={5}
+    description="Log out"
+    icon="Contact"
+    onClick={[Function]} />
+</div>
+`;
+
+exports[`UserAccount Component should show and hide context menu on click 2`] = `
+<div>
+  <Button
+    buttonType={5}
+    description="Log out"
+    icon="Contact"
+    onClick={[Function]} />
+  <ContextualMenu
+    beakWidth={16}
+    directionalHint={5}
+    gapSpace={0}
+    isBeakVisible={false}
+    items={
+      Array [
+        Object {
+          "icon": "OutOfOffice",
+          "key": "logout-btn",
+          "name": "Log out",
+          "onClick": [Function],
+        },
+      ]
+    }
+    onDismiss={[Function]}
+    shouldFocusOnMount={true}
+    targetElement="mocked" />
+</div>
+`;
+
+exports[`UserAccount Component should show and hide context menu on click 3`] = `
+<div>
+  <Button
+    buttonType={5}
+    description="Log out"
+    icon="Contact"
+    onClick={[Function]} />
+</div>
+`;
