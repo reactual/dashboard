@@ -1,31 +1,54 @@
-import React from 'react';
-import ReactDOM from 'react-dom'
-import { createStore, applyMiddleware } from 'redux';
+import React from "react"
+import ReactDOM from "react-dom"
 import thunk from 'redux-thunk'
 import createLogger from 'redux-logger'
-import { appReducer } from './app'
-import App from './app/App'
-import './index.css';
+import Immutable from "immutable"
+import { createStore, applyMiddleware, compose } from "redux"
+import { combineReducers } from "redux-immutable"
 
-import Cookies from "js-cookie"
-const useNewDash = Cookies.get("USE_NEW_DASH")
+import App from "./app"
+import { reduceSchemaTree } from "./schema"
+import { reduceRouter } from "./router"
+import { reduceNotifications } from "./notifications"
+import { reduceActivityMonitor } from "./activity-monitor"
+import { reduceUserSession } from "./authentication"
 
-if (!useNewDash || useNewDash === "true") {
-  require("./new-dash/index.js")
-} else {
-  var middlewares = [thunk]
+const store = (() => {
+  const middlewares = [thunk]
 
-  if(process.env.NODE_ENV === 'development') {
-    middlewares = [...middlewares, createLogger({collapsed: true})]
+  if (process.env.NODE_ENV === 'development') {
+    const logAsJS = obj => Immutable.fromJS(obj).toJS()
+
+    middlewares.push(createLogger({
+      stateTransformer: logAsJS,
+      actionTransformer: logAsJS,
+      collapsed: true
+    }))
   }
 
-  const store = createStore(
-    appReducer,
-    applyMiddleware(...middlewares)
-  )
+  // Add support for https://github.com/zalmoxisus/redux-devtools-extension
+  // eslint-disable-next-line
+  const composeEnhancers = process.env.NODE_ENV !== 'production' &&
+    typeof window === 'object' &&
+    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?
+    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ :
+    compose
 
-  ReactDOM.render(
-    <App store={store}/>,
-    document.getElementById('root')
+  return createStore(
+    combineReducers({
+      schema: reduceSchemaTree,
+      router: reduceRouter,
+      notifications: reduceNotifications,
+      activityMonitor: reduceActivityMonitor,
+      currentUser: reduceUserSession
+    }),
+    composeEnhancers(
+      applyMiddleware(...middlewares)
+    )
   )
-}
+})()
+
+ReactDOM.render(
+  <App store={store} />,
+  document.getElementById('root')
+)
