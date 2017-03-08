@@ -1,0 +1,11 @@
+exports[`ActivityMonitor Component should turn spinner on and off when monitoring activity 1`] = `null`;
+
+exports[`ActivityMonitor Component should turn spinner on and off when monitoring activity 2`] = `
+<div
+  className="ms-Spinner activity-monitor">
+  <div
+    className="ms-Spinner-circle ms-Spinner--normal" />
+</div>
+`;
+
+exports[`ActivityMonitor Component should turn spinner on and off when monitoring activity 3`] = `null`;
