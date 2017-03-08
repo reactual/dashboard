@@ -1,5 +1,6 @@
 .editor {
     width: 100%;
+    position: absolute;
 }
 
 .editor.code-editor {
