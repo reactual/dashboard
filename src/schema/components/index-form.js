@@ -1,5 +1,6 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
+import { browserHistory } from "react-router"
 import { TextField, Dropdown, Checkbox } from "office-ui-fabric-react"
 
 import SchemaForm from "./schema-form"
@@ -7,6 +8,7 @@ import FieldsForm from "./fields-form"
 import { selectedDatabase, createIndex } from "../"
 import { notify } from "../../notifications"
 import { faunaClient } from "../../authentication"
+import { buildResourceUrl } from "../../router"
 
 class IndexForm extends Component {
   constructor(props) {
@@ -82,12 +84,13 @@ class IndexForm extends Component {
   }
 
   onSubmit() {
-    return notify(
-      "Index created successfully",
-      createIndex(
-        this.props.client,
-        this.props.path,
-        this.indexConfig()
+    const { client, path, url } = this.props
+
+    return notify("Index created successfully", dispatch =>
+      dispatch(createIndex(client, path, this.indexConfig())).then(index =>
+        browserHistory.push(
+          buildResourceUrl(url, "indexes", index.name)
+        )
       )
     )
   }
@@ -158,6 +161,7 @@ export default connect(
     return {
       client: faunaClient(state),
       path: database.get("path"),
+      url: database.get("url"),
       classes: database.get("classes")
     }
   }
