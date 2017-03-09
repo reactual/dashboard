@@ -1,11 +1,13 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
+import { browserHistory } from "react-router"
 import { TextField, Checkbox } from "office-ui-fabric-react"
 
 import SchemaForm from "./schema-form"
-import { createClass, createIndex, selectedDatabase } from "../"
 import { faunaClient } from "../../authentication"
 import { notify } from "../../notifications"
+import { buildResourceUrl } from "../../router"
+import { createClass, createIndex, selectedDatabase } from "../"
 
 class ClassForm extends Component {
   constructor(props) {
@@ -45,22 +47,21 @@ class ClassForm extends Component {
   }
 
   onSubmit() {
+    const { path, url, client } = this.props
+
     return notify("Class created successfully", dispatch => {
-      let res = dispatch(createClass(
-        this.props.faunaClient,
-        this.props.selectedPath,
-        this.classConfig()
-      ))
+      let res = dispatch(createClass(client, path, this.classConfig()))
 
-      if (this.state.classIndex) {
-        res = res.then(clazz => dispatch(createIndex(
-          this.props.faunaClient,
-          this.props.selectedPath,
-          this.indexConfig(clazz)
-        )))
-      }
+      if (this.state.classIndex)
+        res = res.then(clazz =>
+          dispatch(
+            createIndex(client, path, this.indexConfig(clazz))
+          ).then(() => clazz)
+        )
 
-      return res
+      return res.then(clazz =>
+        browserHistory.push(buildResourceUrl(url, "classes", clazz.name))
+      )
     })
   }
 
@@ -129,8 +130,12 @@ class ClassForm extends Component {
 }
 
 export default connect(
-  state => ({
-    selectedPath: selectedDatabase(state).get("path"),
-    faunaClient: faunaClient(state)
-  })
+  state => {
+    const database = selectedDatabase(state)
+    return {
+      path: database.get("path"),
+      url: database.get("url"),
+      client: faunaClient(state)
+    }
+  }
 )(ClassForm)
