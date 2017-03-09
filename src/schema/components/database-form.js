@@ -5,9 +5,10 @@ import { TextField } from "office-ui-fabric-react"
 
 import SchemaForm from "./schema-form"
 import DeleteForm from "./delete-form"
-import { createDatabase, deleteDatabase, selectedDatabase } from "../"
 import { notify } from "../../notifications"
 import { faunaClient } from "../../authentication"
+import { buildResourceUrl } from "../../router"
+import { createDatabase, deleteDatabase, selectedDatabase } from "../"
 
 class DatabaseForm extends Component {
   constructor(props) {
@@ -36,11 +37,17 @@ class DatabaseForm extends Component {
   }
 
   onSubmit() {
-    return notify("Database created successfully", createDatabase(
-      this.props.client,
-      this.props.path,
-      this.state
-    ))
+    return notify("Database created successfully", dispatch =>
+      dispatch(createDatabase(
+        this.props.client,
+        this.props.path,
+        this.state
+      )).then(db =>
+        browserHistory.push(
+          buildResourceUrl(this.props.database.get("url"), db.name, "classes")
+        )
+      )
+    )
   }
 
   onDelete() {
