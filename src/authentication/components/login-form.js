@@ -120,11 +120,14 @@ class LoginForm extends Component {
         isBlocking={true}
         type={DialogType.largeHeader}
         title="Connect to FaunaDB"
-        subText="Visit https://fauna.com/account/keys talk to your administrator to provision keys."
       >
         {message != null ?
           <Spinner type={SpinnerType.large} label={message} /> :
           <form>
+            <p className="ms-Dialog-subText">
+              Visit <a href="https://fauna.com/dashboard">https://fauna.com/dashboard</a> or talk to your administrator to provision keys.
+            </p>
+
             <TextField
               label="FaunaDB Endpoint URL"
               description="Leave this empty for Fauna Cloud."
