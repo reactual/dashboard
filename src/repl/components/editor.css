@@ -1,6 +1,6 @@
 .editor {
     width: 100%;
-    position: absolute;
+    position: absolute !important;
 }
 
 .editor.code-editor {
@@ -10,6 +10,7 @@
 
 .editor.form-field {
     border: 1px solid #c8c8c8;
+    position: relative !important;
 }
 
 .editor.form-field:hover {
