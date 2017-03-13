@@ -35,7 +35,7 @@ function fixIntercomBubblePosition() {
     const launcher = document.querySelector("#intercom-container .intercom-launcher-frame")
     if (launcher) {
       stopWaitingForIntercomBubble()
-      launcher.style = "bottom: 50px !important"
+      launcher.setAttribute("style", "bottom: 50px !important")
     }
   } catch(err) {
     stopWaitingForIntercomBubble()
