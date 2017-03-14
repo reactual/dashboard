@@ -1,11 +1,21 @@
 import Immutable, { Map } from "immutable"
 import request from "superagent"
 import Cookies from "js-cookie"
+import { parse as parseURL } from "url"
 
 import FaunaClient from "../persistence/faunadb-wrapper"
 import SessionStorage from "../persistence/session-storage"
 
-const WEBSITE = process.env.NODE_ENV === "production" ? "https://fauna.com" : "http://localhost:3000"
+const WEBSITE = (() => {
+  if (process.env.NODE_ENV !== "production") {
+    return "http://localhost:3000"
+  }
+
+  const url = parseURL(window.location.href)
+  const host = url.hostname.replace(/^\w+\./, "") // removes its subdomain
+  return `${url.protocol}//${host}`
+})()
+
 const LOGGED_IN_USER = "loggedInUser"
 const CLOUD_COOKIE = "dashboard"
 const AUTH_API_TIMEOUT = 5000
