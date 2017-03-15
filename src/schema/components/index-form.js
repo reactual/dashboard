@@ -136,7 +136,12 @@ class IndexForm extends Component {
         checked={this.state.unique}
         onChange={this.onToggle("unique")} />
 
-      <FieldsForm
+      <p className="ms-TextField-description">Terms are matched exactly, values
+        can be ranged. A termless index is useful for paginating all members of a
+        class. <a href="https://fauna.com/documentation/objects#indexes">Learn
+        more about indexes in the documentation.</a></p>
+
+    <FieldsForm
         title="Terms"
         knownFields={allFields}
         nonce={this.state.nonce}
