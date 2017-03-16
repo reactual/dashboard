@@ -1,0 +1,304 @@
+exports[`KeysForm Component should be submit the form 1`] = `
+<div>
+  <Connect(SchemaForm)
+    buttonText="Create Key"
+    onFinish={[Function]}
+    onSubmit={[Function]}
+    title="Create a new key">
+    <TextField
+      deferredValidationTime={200}
+      errorMessage=""
+      label="Name"
+      multiline={false}
+      onBeforeChange={[Function]}
+      onChanged={[Function]}
+      onGetErrorMessage={[Function]}
+      onNotifyValidationResult={[Function]}
+      resizable={true}
+      underlined={false}
+      value="server-key" />
+    <Dropdown
+      label="Role"
+      onChanged={[Function]}
+      options={
+        Array [
+          Object {
+            "key": "admin",
+            "text": "admin",
+          },
+          Object {
+            "key": "server",
+            "text": "server",
+          },
+          Object {
+            "key": "server-readonly",
+            "text": "server-readonly",
+          },
+          Object {
+            "key": "client",
+            "text": "client",
+          },
+        ]
+      }
+      selectedKey="admin" />
+    <p
+      className="ms-TextField-description">
+      Check 
+      <a
+        href="https://fauna.com/documentation/#authentication"
+        target="_blank">
+        https://fauna.com/documentation/#authentication
+      </a>
+       for more information about the key\'s role.
+    </p>
+    <Dropdown
+      label="Database"
+      onChanged={[Function]}
+      options={
+        Array [
+          Object {
+            "key": "db1",
+            "text": "db1",
+          },
+          Object {
+            "key": "db2",
+            "text": "db2",
+          },
+        ]
+      }
+      selectedKey="db1" />
+  </Connect(SchemaForm)>
+</div>
+`;
+
+exports[`KeysForm Component should be submit the form 2`] = `
+<div>
+  <Connect(SchemaForm)
+    buttonText="Create Key"
+    onFinish={[Function]}
+    onSubmit={[Function]}
+    title="Create a new key">
+    <TextField
+      deferredValidationTime={200}
+      errorMessage=""
+      label="Name"
+      multiline={false}
+      onBeforeChange={[Function]}
+      onChanged={[Function]}
+      onGetErrorMessage={[Function]}
+      onNotifyValidationResult={[Function]}
+      resizable={true}
+      underlined={false}
+      value="" />
+    <Dropdown
+      label="Role"
+      onChanged={[Function]}
+      options={
+        Array [
+          Object {
+            "key": "admin",
+            "text": "admin",
+          },
+          Object {
+            "key": "server",
+            "text": "server",
+          },
+          Object {
+            "key": "server-readonly",
+            "text": "server-readonly",
+          },
+          Object {
+            "key": "client",
+            "text": "client",
+          },
+        ]
+      }
+      selectedKey={null} />
+    <p
+      className="ms-TextField-description">
+      Check 
+      <a
+        href="https://fauna.com/documentation/#authentication"
+        target="_blank">
+        https://fauna.com/documentation/#authentication
+      </a>
+       for more information about the key\'s role.
+    </p>
+    <Dropdown
+      label="Database"
+      onChanged={[Function]}
+      options={
+        Array [
+          Object {
+            "key": "db1",
+            "text": "db1",
+          },
+          Object {
+            "key": "db2",
+            "text": "db2",
+          },
+        ]
+      }
+      selectedKey={null} />
+  </Connect(SchemaForm)>
+</div>
+`;
+
+exports[`KeysForm Component should create a new key on submit 1`] = `
+<div>
+  <Connect(SchemaForm)
+    buttonText="Create Key"
+    onFinish={[Function]}
+    onSubmit={[Function]}
+    title="Create a new key">
+    <TextField
+      deferredValidationTime={200}
+      errorMessage=""
+      label="Name"
+      multiline={false}
+      onBeforeChange={[Function]}
+      onChanged={[Function]}
+      onGetErrorMessage={[Function]}
+      onNotifyValidationResult={[Function]}
+      resizable={true}
+      underlined={false}
+      value="" />
+    <Dropdown
+      label="Role"
+      onChanged={[Function]}
+      options={
+        Array [
+          Object {
+            "key": "admin",
+            "text": "admin",
+          },
+          Object {
+            "key": "server",
+            "text": "server",
+          },
+          Object {
+            "key": "server-readonly",
+            "text": "server-readonly",
+          },
+          Object {
+            "key": "client",
+            "text": "client",
+          },
+        ]
+      }
+      selectedKey={null} />
+    <p
+      className="ms-TextField-description">
+      Check 
+      <a
+        href="https://fauna.com/documentation/#authentication"
+        target="_blank">
+        https://fauna.com/documentation/#authentication
+      </a>
+       for more information about the key\'s role.
+    </p>
+    <Dropdown
+      label="Database"
+      onChanged={[Function]}
+      options={
+        Array [
+          Object {
+            "key": "db1",
+            "text": "db1",
+          },
+          Object {
+            "key": "db2",
+            "text": "db2",
+          },
+        ]
+      }
+      selectedKey={null} />
+  </Connect(SchemaForm)>
+  <div>
+    <br />
+    <MessageBar
+      isMultiline={true}
+      messageBarType={3}
+      onDismiss={null}>
+      Your key\'s secret is: 
+      <pre>
+        one-time-secret
+      </pre>
+      Be aware that this secret won\'t be displayed again.
+    </MessageBar>
+  </div>
+</div>
+`;
+
+exports[`KeysForm Component should render an empty form 1`] = `
+<div>
+  <Connect(SchemaForm)
+    buttonText="Create Key"
+    onFinish={[Function]}
+    onSubmit={[Function]}
+    title="Create a new key">
+    <TextField
+      deferredValidationTime={200}
+      errorMessage=""
+      label="Name"
+      multiline={false}
+      onBeforeChange={[Function]}
+      onChanged={[Function]}
+      onGetErrorMessage={[Function]}
+      onNotifyValidationResult={[Function]}
+      resizable={true}
+      underlined={false}
+      value="" />
+    <Dropdown
+      label="Role"
+      onChanged={[Function]}
+      options={
+        Array [
+          Object {
+            "key": "admin",
+            "text": "admin",
+          },
+          Object {
+            "key": "server",
+            "text": "server",
+          },
+          Object {
+            "key": "server-readonly",
+            "text": "server-readonly",
+          },
+          Object {
+            "key": "client",
+            "text": "client",
+          },
+        ]
+      }
+      selectedKey={null} />
+    <p
+      className="ms-TextField-description">
+      Check 
+      <a
+        href="https://fauna.com/documentation/#authentication"
+        target="_blank">
+        https://fauna.com/documentation/#authentication
+      </a>
+       for more information about the key\'s role.
+    </p>
+    <Dropdown
+      label="Database"
+      onChanged={[Function]}
+      options={
+        Array [
+          Object {
+            "key": "db1",
+            "text": "db1",
+          },
+          Object {
+            "key": "db2",
+            "text": "db2",
+          },
+        ]
+      }
+      selectedKey={null} />
+  </Connect(SchemaForm)>
+</div>
+`;

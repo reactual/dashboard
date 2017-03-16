@@ -18,6 +18,7 @@ const schemaTree = Immutable.fromJS({
       "my-app": {
         info: {
           name: "my-app",
+          ref: q.Ref("databases/my-app")
         },
         databases: {
           byName: {
@@ -92,6 +93,7 @@ describe("selectedDatabase", () => {
     it("contains database name", () => expect(database.name).toEqual("my-blog"))
     it("contains database parent path", () => expect(database.parent.path).toEqual(["my-app"]))
     it("contains database parent url", () => expect(database.parent.url).toEqual("/db/my-app/databases"))
+    it("contains database sub-databases", () => expect(database.databases).toEqual([]))
     it("should idefity root database", () => expect(database.isRoot).toBeFalsy())
 
     it("contains database classes", () => {
@@ -125,6 +127,13 @@ describe("selectedDatabase", () => {
     it("contains root db name", () => expect(database.name).toEqual("/"))
     it("contains no classes", () => expect(database.classes).toEqual([]))
     it("contains no indexes", () =>  expect(database.indexes).toEqual([]))
+    it("should idefity root database", () => expect(database.isRoot).toBeTruthy())
+
+    it("contains database sub-databases", () => {
+      expect(database.databases).toEqual([
+        { name: "my-app", ref: q.Ref("databases/my-app"), url: "/db/my-app/databases" }
+      ])
+    })
   })
 })
 

@@ -14,14 +14,13 @@ export const selectedDatabase = createSelector([schema, database], (schema, data
   const db = schema.getIn(nestedDatabaseNodeIn(path), Map())
 
   const extract = (node, db, url) => {
-    return db.getIn([node, "byName"], Map()).toList().map(instance => {
-      const name = instance.get("name")
-      return Map.of(
+    return db.getIn([node, "byName"], Map()).map((instance, name) =>
+      Map.of(
         "name", name,
         "ref", instance.get("ref"),
         "url", buildResourceUrl(url, node, name)
       )
-    })
+    ).toList()
   }
 
   return Map.of(
@@ -31,7 +30,14 @@ export const selectedDatabase = createSelector([schema, database], (schema, data
     "parent", database.get("parent"),
     "name", db.getIn(["info", "name"]),
     "classes", extract("classes", db, url),
-    "indexes", extract("indexes", db, url)
+    "indexes", extract("indexes", db, url),
+    "databases", db.getIn(["databases", "byName"], Map()).map((db, name) =>
+      Map.of(
+        "name", name,
+        "ref", db.getIn(["info", "ref"]),
+        "url", buildResourceUrl(url, name, "databases")
+      )
+    ).toList()
   )
 })
 
