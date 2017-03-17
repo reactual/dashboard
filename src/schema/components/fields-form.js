@@ -37,6 +37,7 @@ export default class FieldsForm extends Component {
             Each value will be used as a path segment for the field definition. For example:
             "data" "name" will be become {'{ "field": ["data", "name"] }'}
           </p>
+          {this.props.children}
           <Button
             type="button"
             buttonType={ButtonType.command}
