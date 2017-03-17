@@ -35,7 +35,7 @@ class KeysForm extends Component {
     this.setState(this.initialState())
   }
 
-  cleanFrom() {
+  clearForm() {
     this.setState({ ...this.state, form: this.formState() })
   }
 
@@ -81,7 +81,7 @@ class KeysForm extends Component {
           title="Create a new key"
           buttonText="Create Key"
           onSubmit={this.onSubmit.bind(this)}
-          onFinish={this.cleanFrom.bind(this)}>
+          onFinish={this.clearForm.bind(this)}>
 
             <TextField label="Name"
               value={this.state.form.name}
