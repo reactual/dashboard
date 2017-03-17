@@ -25,6 +25,8 @@ const SchemaForm = (props) => {
     </form>
 }
 
+SchemaForm.displayName = "SchemaForm"
+
 export default connect(
   state => ({
     disabled: isBusy(state),

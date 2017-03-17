@@ -22,6 +22,11 @@ import { ReplEditor, evalQuery } from "../../repl"
 import { KeyType } from "../../persistence/faunadb-wrapper"
 
 class InstanceInfo extends Component {
+
+  static defaultProps = {
+    keyType: KeyType.SERVER
+  }
+
   constructor(props) {
     super(props)
     this.state = this.initialState(props)
@@ -63,10 +68,10 @@ class InstanceInfo extends Component {
   }
 
   buildHistoryQuery() {
-    const { client, path } = this.props
+    const { client, path, keyType } = this.props
     const { instance } = this.state
 
-    return options => client.query(path, KeyType.SERVER,
+    return options => client.query(path, keyType,
       q.Map(
         q.Paginate(instance.ref, { events: true, ...options }),
         event => ({
@@ -84,14 +89,14 @@ class InstanceInfo extends Component {
   updateInstance(e) {
     e.preventDefault()
 
-    const { client, path } = this.props
+    const { client, path, keyType } = this.props
     const { instance, instanceData } = this.state
 
     this.props.dispatch(
       monitorActivity(
         notify("Instance updated successfully", () =>
           evalQuery(data =>
-            client.query(path, KeyType.SERVER,
+            client.query(path, keyType,
               q.Update(instance.ref, { data })
             )
           )(instanceData)
@@ -115,13 +120,13 @@ class InstanceInfo extends Component {
   deleteInstance(e) {
     e.preventDefault()
 
-    const { client, path } = this.props
+    const { client, path, keyType } = this.props
     const { instance } = this.state
 
     this.props.dispatch(
       monitorActivity(
         notify("Instance deleted successfully", () =>
-          client.query(path, KeyType.SERVER, q.Delete(instance.ref))
+          client.query(path, keyType, q.Delete(instance.ref))
         )
       )
     ).then(

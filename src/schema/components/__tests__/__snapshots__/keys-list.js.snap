@@ -1,0 +1,21 @@
+exports[`KeysList Component displays the selected key 1`] = `
+<div>
+  <Connect(Pagination)
+    onSelectRef={[Function]}
+    query={[Function]} />
+  <Connect(InstanceInfo)
+    instance="fake-key"
+    keyType="admin" />
+</div>
+`;
+
+exports[`KeysList Component should render an empty page 1`] = `
+<div>
+  <Connect(Pagination)
+    onSelectRef={[Function]}
+    query={[Function]} />
+  <Connect(InstanceInfo)
+    instance={null}
+    keyType="admin" />
+</div>
+`;

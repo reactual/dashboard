@@ -1,5 +1,4 @@
 import React from "react"
-import util from "util"
 import { shallow } from "enzyme"
 import { shallowToJson } from "enzyme-to-json"
 

@@ -74,7 +74,8 @@ export default class QueryResult extends Component {
                 name: key,
                 fieldName: key,
                 minWidth: 0,
-                maxWidth: 300
+                maxWidth: 300,
+                isResizable: true
               }
             }
           })
@@ -96,7 +97,8 @@ export default class QueryResult extends Component {
           fieldName: "$$dashboard_non_objects_found$$",
           name: "...",
           minWidth: 0,
-          maxWidth: 300
+          maxWidth: 300,
+          isResizable: true
         }
       )
     }

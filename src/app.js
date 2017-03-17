@@ -21,6 +21,7 @@ import {
   ClassInfo,
   IndexForm,
   IndexInfo,
+  KeysManager,
   loadSchemaTree
 } from "./schema"
 
@@ -124,12 +125,14 @@ export default class App extends Component {
             <Route path="indexes" component={IndexForm} />
             <Route path="classes/:className" component={ClassInfo} />
             <Route path="classes" component={ClassForm} />
+            <Route path="databases" component={DatabaseForm} />
+            <Route path="keys" component={KeysManager} />
             <Route path="**/indexes/:indexName" component={IndexInfo} />
             <Route path="**/indexes" component={IndexForm} />
             <Route path="**/classes/:className" component={ClassInfo} />
             <Route path="**/classes" component={ClassForm} />
             <Route path="**/databases" component={DatabaseForm} />
-            <Route path="databases" component={DatabaseForm} />
+            <Route path="**/keys" component={KeysManager} />
             <IndexRoute component={GetStarted} />
           </Route>
           <Route path="*" component={App.NotFound} />

@@ -22,9 +22,8 @@ export const linkForRef = (parentUrl, ref) => {
   const path = (ref && ref.value) || ""
   const [ type ] = path.split("/")
 
-  if (!supportedRefTypes.includes(type)) {
+  if (!supportedRefTypes.includes(type))
     return Map.of("name", path, "url", null)
-  }
 
   return Map.of(
     "name", path,
