@@ -48,7 +48,7 @@ class DeleteForm extends Component {
         <TextField
           required={true}
           label="Name"
-          description="Type the resource name to confirm."
+          description={"Type the "+(this.props.type||"resource")+" name to confirm."}
           value={this.state.name}
           onBeforeChange={this.onChange.bind(this)} />
 

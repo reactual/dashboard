@@ -96,26 +96,26 @@ class ClassForm extends Component {
         onSubmit={this.onSubmit.bind(this)}
         onFinish={this.reset.bind(this)}>
 
-          <TextField label="Name"
+          <TextField label="Class name"
             required={true}
             description="This name is used in queries and API calls."
             value={this.state.name}
             onBeforeChange={this.onChange("name")} />
 
-          <TextField label="History (days)"
+          <TextField label="Days to track instance history"
             placeholder={30}
             description="Instance history for this class will be retained for this many days."
             value={this.state.history}
             onBeforeChange={this.onChange("history")} />
 
-          <TextField label="TTL (days)"
+          <TextField label="Days after which instances are auto-deleted (TTL)"
             description="Instances of the class will be removed if they have not been updated within the configured TTL."
             value={this.state.ttl}
             onBeforeChange={this.onChange("ttl")} />
 
           <h4>Indexing Options</h4>
 
-          <Checkbox label="Create Class Index"
+          <Checkbox label="Create Class Index (recommended in development)"
             checked={this.state.classIndex}
             onChange={this.onToggle("classIndex")} />
 

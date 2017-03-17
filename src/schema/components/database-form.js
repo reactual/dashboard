@@ -77,12 +77,13 @@ class DatabaseForm extends Component {
             required={true}
             value={this.state.name}
             onBeforeChange={this.onChange("name")}
-            description="This name is used in queries and API calls." />
+            description="This name is used in queries and API calls. No spaces or special characters other than `;@+$-_.!` are allowed." />
       </SchemaForm>
 
       {!database.get("isRoot") ?
         <DeleteForm
           buttonText="Delete Database"
+          type="database"
           title={`Delete ${database.get("name")}`}
           validateName={database.get("name")}
           onDelete={this.onDelete.bind(this)}

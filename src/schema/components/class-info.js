@@ -85,6 +85,7 @@ class ClassInfo extends Component {
 
           <DeleteForm
             buttonText="Delete Class"
+            type="class"
             title={`Delete ${clazz.get("name")}`}
             validateName={clazz.get("name")}
             onDelete={this.onDelete.bind(this)} />
