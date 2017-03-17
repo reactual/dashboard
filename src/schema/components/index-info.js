@@ -156,6 +156,7 @@ class IndexInfo extends Component {
 
       <DeleteForm
         buttonText="Delete Index"
+        type="index"
         title={`Delete ${index.get("name")}`}
         validateName={index.get("name")}
         onDelete={this.onDelete.bind(this)} />
