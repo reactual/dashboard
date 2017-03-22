@@ -4,13 +4,17 @@ const ROOT_URL = "/db"
 const ROOT_RESOURCE_URL = `${ROOT_URL}/databases`
 
 export const buildResourceUrl = (parentUrl, path, resource) => {
-  const parent = parentUrl || ROOT_RESOURCE_URL
-  const parentPath = parent.split("/").slice(2).slice(0, -1)
-  const url = List(parentPath).concat(path).concat(resource).join("/")
+  const parent = decodeURI(parentUrl || ROOT_RESOURCE_URL)
+  const url = List(parent.split("/").slice(2).slice(0, -1))
+    .concat(path)
+    .concat(resource)
+    .join("/")
 
-  return `${ROOT_URL}/${url}`
-    .replace(/\/\/+/, "/")
-    .replace(/\/$/, "")
+  return encodeURI(
+    `${ROOT_URL}/${url}`
+       .replace(/\/\/+/, "/")
+       .replace(/\/$/, "")
+  )
 }
 
 const supportedRefTypes = [
