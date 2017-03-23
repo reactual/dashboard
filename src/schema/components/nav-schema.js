@@ -55,9 +55,10 @@ const NavSchema = ({ client, database, resourceUrl }) => {
 }
 
 export default connect(
-  state => ({
+  (state, props) => ({
     client: faunaClient(state),
     database: selectedDatabase(state),
-    resourceUrl: selectedResource(state).getIn(["resource", "url"])
+    resourceUrl: selectedResource(state).getIn(["resource", "url"]),
+    ...props
   })
 )(NavSchema)
