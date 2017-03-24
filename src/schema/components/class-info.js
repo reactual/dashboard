@@ -25,7 +25,8 @@ const ClassInfo = ({ clazz }) => {
 }
 
 export default connect(
-  state => ({
+  (state, props) => ({
     clazz: selectedClass(state),
+    ...props
   })
 )(ClassInfo)
