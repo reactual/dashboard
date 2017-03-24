@@ -24,6 +24,8 @@ const ClassInfo = ({ clazz }) => {
   </div>
 }
 
+ClassInfo.displayName = "ClassInfo"
+
 export default connect(
   (state, props) => ({
     clazz: selectedClass(state),

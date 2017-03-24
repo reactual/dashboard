@@ -25,6 +25,8 @@ const ClassDelete = ({ client, path, dbUrl, clazz }) => {
     onDelete={onDelete} />
 }
 
+ClassDelete.displayName = "ClassDelete"
+
 export default connect(
   (state, props) => ({
     client: faunaClient(state),
