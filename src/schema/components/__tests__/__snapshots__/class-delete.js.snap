@@ -1,0 +1,8 @@
+exports[`ClassDelete Component renders delete form 1`] = `
+<Connect(DeleteForm)
+  buttonText="Delete Class"
+  onDelete={[Function]}
+  title="Delete fake-class"
+  type="class"
+  validateName="fake-class" />
+`;

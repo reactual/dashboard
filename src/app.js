@@ -18,7 +18,7 @@ import {
   NavTree,
   DatabaseForm,
   ClassForm,
-  ClassInfo,
+  ClassManager,
   IndexForm,
   IndexInfo,
   KeysManager,
@@ -123,13 +123,13 @@ export default class App extends Component {
           <Route path="/db" component={App.Container}>
             <Route path="indexes/:indexName" component={IndexInfo} />
             <Route path="indexes" component={IndexForm} />
-            <Route path="classes/:className" component={ClassInfo} />
+            <Route path="classes/:className" component={ClassManager} />
             <Route path="classes" component={ClassForm} />
             <Route path="databases" component={DatabaseForm} />
             <Route path="keys" component={KeysManager} />
             <Route path="**/indexes/:indexName" component={IndexInfo} />
             <Route path="**/indexes" component={IndexForm} />
-            <Route path="**/classes/:className" component={ClassInfo} />
+            <Route path="**/classes/:className" component={ClassManager} />
             <Route path="**/classes" component={ClassForm} />
             <Route path="**/databases" component={DatabaseForm} />
             <Route path="**/keys" component={KeysManager} />
