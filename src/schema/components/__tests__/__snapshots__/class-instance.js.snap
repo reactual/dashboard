@@ -1,0 +1,66 @@
+exports[`ClassInstance Component create a new instance 1`] = `
+<div>
+  <Connect(SchemaForm)
+    buttonText="Create Instance"
+    onSubmit={[Function]}
+    title="Create an instance of fake-class">
+    <ReplEditor
+      mode="editor form-field text-area"
+      name="class-data-editor"
+      onChange={[Function]}
+      value="{ \'name\': \'Bob\' }" />
+    <p
+      className="ms-TextField-description">
+      The contents of this field will be evaluated with the context of a repl and placed in the \"data\" field of the new instance.
+    </p>
+  </Connect(SchemaForm)>
+  <Connect(InstanceInfo)
+    instance={null} />
+</div>
+`;
+
+exports[`ClassInstance Component create a new instance 2`] = `
+<div>
+  <Connect(SchemaForm)
+    buttonText="Create Instance"
+    onSubmit={[Function]}
+    title="Create an instance of fake-class">
+    <ReplEditor
+      mode="editor form-field text-area"
+      name="class-data-editor"
+      onChange={[Function]}
+      value="{ \'name\': \'Bob\' }" />
+    <p
+      className="ms-TextField-description">
+      The contents of this field will be evaluated with the context of a repl and placed in the \"data\" field of the new instance.
+    </p>
+  </Connect(SchemaForm)>
+  <Connect(InstanceInfo)
+    instance={
+      Object {
+        "name": "fake-instance",
+      }
+    } />
+</div>
+`;
+
+exports[`ClassInstance Component renders instance form 1`] = `
+<div>
+  <Connect(SchemaForm)
+    buttonText="Create Instance"
+    onSubmit={[Function]}
+    title="Create an instance of fake-class">
+    <ReplEditor
+      mode="editor form-field text-area"
+      name="class-data-editor"
+      onChange={[Function]}
+      value="{}" />
+    <p
+      className="ms-TextField-description">
+      The contents of this field will be evaluated with the context of a repl and placed in the \"data\" field of the new instance.
+    </p>
+  </Connect(SchemaForm)>
+  <Connect(InstanceInfo)
+    instance={null} />
+</div>
+`;
