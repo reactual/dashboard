@@ -4,7 +4,18 @@ import { browserHistory } from "react-router"
 
 import CustomNav from "./custom-nav"
 import { selectedDatabase } from "../"
+import { faunaClient } from "../../authentication"
 import { selectedResource, buildResourceUrl } from "../../router"
+import { KeyType } from "../../persistence/faunadb-wrapper"
+
+const buildOptions = (isAdmin, isRoot, url) => {
+  return [
+    isAdmin               && { name: "Create Database", key: "create-database", url },
+    (!isAdmin || !isRoot) && { name: "Create Class", key: "create-class", url: buildResourceUrl(url, "classes") },
+    (!isAdmin || !isRoot) && { name: "Create Index", key: "create-index", url: buildResourceUrl(url, "indexes") },
+    isAdmin               && { name: "Manage Keys", key: "manage-keys", url: buildResourceUrl(url, "keys") },
+  ].filter(x => x)
+}
 
 const onClick = (e, link) => {
   e.preventDefault()
@@ -17,57 +28,37 @@ const asLinks = (items) => items.map(item => ({
   url: item.get("url")
 })).toJS()
 
-const NavSchema = ({ selectedDatabase, resourceUrl }) => {
-  const url = selectedDatabase.get("url")
-
+const NavSchema = ({ client, database, resourceUrl }) => {
   const links = [
     {
       name: "Options",
-      links: [
-        {
-          name: "Create Database",
-          key: "create-database",
-          url
-        },
-        {
-          name: "Create Class",
-          key: "create-class",
-          url: buildResourceUrl(url, "classes")
-        },
-        {
-          name: "Create Index",
-          key: "create-index",
-          url: buildResourceUrl(url, "indexes")
-        },
-        {
-          name: "Manage Keys",
-          key: "manage-keys",
-          url: buildResourceUrl(url, "keys")
-        }
-      ],
-      isExpanded: true
+      isExpanded: true,
+      links: buildOptions(
+        client.hasPrivileges(KeyType.ADMIN),
+        database.get("isRoot"),
+        database.get("url")
+      )
     },
     {
       name: "Classes",
-      links: asLinks(selectedDatabase.get("classes")),
-      isExpanded: true
+      isExpanded: true,
+      links: asLinks(database.get("classes"))
     },
     {
       name: "Indexes",
-      links: asLinks(selectedDatabase.get("indexes")),
-      isExpanded: true
+      isExpanded: true,
+      links: asLinks(database.get("indexes"))
     }
   ]
 
-  return <CustomNav
-    groups={links}
-    selectedKey={resourceUrl}
-    onLinkClick={onClick} />
+  return <CustomNav groups={links} selectedKey={resourceUrl} onLinkClick={onClick} />
 }
 
 export default connect(
-  state => ({
-    selectedDatabase: selectedDatabase(state),
-    resourceUrl: selectedResource(state).getIn(["resource", "url"])
+  (state, props) => ({
+    client: faunaClient(state),
+    database: selectedDatabase(state),
+    resourceUrl: selectedResource(state).getIn(["resource", "url"]),
+    ...props
   })
 )(NavSchema)
