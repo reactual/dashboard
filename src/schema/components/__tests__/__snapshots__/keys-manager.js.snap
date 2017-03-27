@@ -1,0 +1,47 @@
+exports[`KeysManager Component should keys containment message when not a root database 1`] = `
+<div>
+  <Pivot>
+    <PivotItem
+      itemKey="keys"
+      linkText="Keys">
+      <p>
+        Keys are located at the container database. If you want to grant access to 
+        <strong>
+          subdb
+        </strong>
+        , go to its 
+        <Link
+          onlyActiveOnIndex={false}
+          style={Object {}}
+          to="/db/parent/keys">
+          parent
+        </Link>
+         container.
+      </p>
+      <Connect(KeysList) />
+    </PivotItem>
+    <PivotItem
+      itemKey="create"
+      linkText="Create a Key">
+      <Connect(KeysForm) />
+    </PivotItem>
+  </Pivot>
+</div>
+`;
+
+exports[`KeysManager Component should render for root db 1`] = `
+<div>
+  <Pivot>
+    <PivotItem
+      itemKey="keys"
+      linkText="Keys">
+      <Connect(KeysList) />
+    </PivotItem>
+    <PivotItem
+      itemKey="create"
+      linkText="Create a Key">
+      <Connect(KeysForm) />
+    </PivotItem>
+  </Pivot>
+</div>
+`;
