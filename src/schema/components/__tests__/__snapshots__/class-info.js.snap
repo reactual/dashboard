@@ -1,0 +1,73 @@
+exports[`ClassInfo Component renders class details 1`] = `
+<div>
+  <h3>
+    Class Details
+  </h3>
+  <dl>
+    <dt>
+      Name
+    </dt>
+    <dd>
+      fake-class
+    </dd>
+    <dt>
+      History
+    </dt>
+    <dd>
+      30 days
+    </dd>
+    <dt>
+      TTL
+    </dt>
+    <dd>
+      10 days
+    </dd>
+    <dt>
+      Covering Indexes
+    </dt>
+    <dd>
+      <Link
+        onlyActiveOnIndex={false}
+        style={Object {}}
+        to="/db/indexes/all_fake-class">
+        all_fake-class
+      </Link>
+    </dd>
+  </dl>
+</div>
+`;
+
+exports[`ClassInfo Component renders class when no history or ttl 1`] = `
+<div>
+  <h3>
+    Class Details
+  </h3>
+  <dl>
+    <dt>
+      Name
+    </dt>
+    <dd>
+      fake-class
+    </dd>
+    <dt>
+      History
+    </dt>
+    <dd />
+    <dt>
+      TTL
+    </dt>
+    <dd />
+    <dt>
+      Covering Indexes
+    </dt>
+    <dd>
+      <Link
+        onlyActiveOnIndex={false}
+        style={Object {}}
+        to="/db/indexes/all_fake-class">
+        all_fake-class
+      </Link>
+    </dd>
+  </dl>
+</div>
+`;
