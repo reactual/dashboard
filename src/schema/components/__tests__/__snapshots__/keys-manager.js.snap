@@ -1,4 +1,4 @@
-exports[`KeysManager Component should keys containment message when not a root database 1`] = `
+exports[`test should keys containment message when not a root database 1`] = `
 <div>
   <Pivot>
     <PivotItem
@@ -29,7 +29,7 @@ exports[`KeysManager Component should keys containment message when not a root d
 </div>
 `;
 
-exports[`KeysManager Component should render for root db 1`] = `
+exports[`test should render for root db 1`] = `
 <div>
   <Pivot>
     <PivotItem

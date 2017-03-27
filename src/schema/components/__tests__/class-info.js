@@ -3,11 +3,10 @@ import { Map, List } from "immutable"
 import { shallow } from "enzyme"
 import { shallowToJson } from "enzyme-to-json"
 
-import ClassInfo from "../class-info"
-import { reduceSchemaTree } from "../../"
+import { ClassInfo } from "../class-info"
 
 describe("ClassInfo Component", () => {
-  let clazz, store
+  let clazz
 
   beforeEach(() => {
     clazz = Map.of(
@@ -21,21 +20,19 @@ describe("ClassInfo Component", () => {
         )
       )
     )
-
-    store = createImmutableTestStore({ schema: reduceSchemaTree })()
   })
 
   it("renders class details", () => {
-    const comp = shallow(<ClassInfo store={store} clazz={clazz} />).dive()
+    const comp = shallow(<ClassInfo clazz={clazz} />)
     expect(shallowToJson(comp)).toMatchSnapshot()
   })
 
   it("renders class when no history or ttl", () => {
-    const c = clazz.set("historyDays", null).set("ttlDays", null)
-    const comp = shallow(<ClassInfo store={store} clazz={c} />).dive()
+    const clazzWithNoHistory = clazz
+      .set("historyDays", null)
+      .set("ttlDays", null)
+
+    const comp = shallow(<ClassInfo clazz={clazzWithNoHistory} />)
     expect(shallowToJson(comp)).toMatchSnapshot()
   })
 })
-
-
-

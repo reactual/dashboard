@@ -4,7 +4,7 @@ import { Link } from "react-router"
 
 import { selectedClass } from "../"
 
-const ClassInfo = ({ clazz }) => {
+export const ClassInfo = ({ clazz }) => {
   const days = (value) => value !== null ? `${value} days` : ""
 
   return <div>
@@ -27,8 +27,7 @@ const ClassInfo = ({ clazz }) => {
 ClassInfo.displayName = "ClassInfo"
 
 export default connect(
-  (state, props) => ({
-    clazz: selectedClass(state),
-    ...props
+  state => ({
+    clazz: selectedClass(state)
   })
 )(ClassInfo)

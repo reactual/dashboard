@@ -3,8 +3,11 @@ import Immutable from "immutable"
 import { shallow } from "enzyme"
 import { shallowToJson } from "enzyme-to-json"
 
-import KeysForm from "../keys-form"
-import { reduceSchemaTree } from "../../"
+import { KeysForm } from "../keys-form"
+
+jest.mock("../../../notifications", () => ({
+  notify: (msg, fn) => fn()
+}))
 
 const fill = (comp) => {
   comp.find("TextField[label='Name']").simulate("beforeChange", "server-key")
@@ -13,11 +16,9 @@ const fill = (comp) => {
 }
 
 describe("KeysForm Component", () => {
-  let comp, client, store
+  let comp, client
 
   beforeEach(() => {
-    store = createImmutableTestStore({ schema: reduceSchemaTree })()
-
     client = {
       query: jest.fn(() => Promise.resolve({
         secret: "one-time-secret"
@@ -26,7 +27,6 @@ describe("KeysForm Component", () => {
 
     comp = shallow(
       <KeysForm
-        store={store}
         client={client}
         database={Immutable.fromJS({
           databases: [
@@ -34,7 +34,7 @@ describe("KeysForm Component", () => {
             { name: "db2" }
           ]
         })} />
-    ).dive()
+    )
   })
 
   it("should render an empty form", () => {
@@ -50,7 +50,7 @@ describe("KeysForm Component", () => {
 
   it("should create a new key on submit", () => {
     fill(comp)
-    return store.dispatch(comp.instance().onSubmit()).then(() => {
+    return comp.find("Connect(SchemaForm)").props().onSubmit().then(() => {
       comp.find("Connect(SchemaForm)").simulate("finish")
       expect(shallowToJson(comp)).toMatchSnapshot() // Form clean + secret being displayed
     })

@@ -11,7 +11,7 @@ import { buildResourceUrl } from "../../router"
 import { Pagination, InstanceInfo } from "../../dataset"
 import { KeyType } from "../../persistence/faunadb-wrapper"
 
-class KeysList extends Component {
+export class KeysList extends Component {
 
   constructor(props) {
     super(props)
@@ -78,10 +78,9 @@ class KeysList extends Component {
 }
 
 export default connect(
-  (state, props) => ({
+  state => ({
     client: faunaClient(state),
     path: selectedDatabase(state).get("path"),
-    url: selectedDatabase(state).get("url"),
-    ...props
+    url: selectedDatabase(state).get("url")
   })
 )(KeysList)

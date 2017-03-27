@@ -9,7 +9,7 @@ import { notify } from "../../notifications"
 import { faunaClient } from "../../authentication"
 import { KeyType } from "../../persistence/faunadb-wrapper"
 
-class KeysForm extends Component {
+export class KeysForm extends Component {
 
   constructor(props) {
     super(props)
@@ -129,9 +129,8 @@ class KeysForm extends Component {
 }
 
 export default connect(
-  (state, props) => ({
+  state => ({
     client: faunaClient(state),
-    database: selectedDatabase(state),
-    ...props
+    database: selectedDatabase(state)
   })
 )(KeysForm)

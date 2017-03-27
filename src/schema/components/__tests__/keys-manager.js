@@ -3,30 +3,28 @@ import { Map } from "immutable"
 import { shallow } from "enzyme"
 import { shallowToJson } from "enzyme-to-json"
 
-import { reduceSchemaTree, KeysManager } from "../../"
+import { KeysManager } from "../keys-manager"
 
-describe("KeysManager Component", () => {
-  let store
+it("should render for root db", () => {
+  const db = Map.of(
+    "isRoot", true,
+    "name", "/",
+    "parent", null
+  )
 
-  beforeEach(() => {
-    store = createImmutableTestStore({ schema: reduceSchemaTree })()
-  })
+  const comp = shallow(<KeysManager database={db} />)
+  expect(shallowToJson(comp)).toMatchSnapshot()
+})
 
-  it("should render for root db", () => {
-    const comp = shallow(<KeysManager store={store} />).dive()
-    expect(shallowToJson(comp)).toMatchSnapshot()
-  })
-
-  it("should keys containment message when not a root database", () => {
-    const db = Map.of(
-      "isRoot", false,
-      "name", "subdb",
-      "parent", Map.of(
-        "url", "/db/parent/databases"
-      )
+it("should keys containment message when not a root database", () => {
+  const db = Map.of(
+    "isRoot", false,
+    "name", "subdb",
+    "parent", Map.of(
+      "url", "/db/parent/databases"
     )
+  )
 
-    const comp = shallow(<KeysManager store={store} database={db} />).dive()
-    expect(shallowToJson(comp)).toMatchSnapshot()
-  })
+  const comp = shallow(<KeysManager database={db} />)
+  expect(shallowToJson(comp)).toMatchSnapshot()
 })

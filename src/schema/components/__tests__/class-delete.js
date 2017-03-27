@@ -3,13 +3,14 @@ import { Map } from "immutable"
 import { shallow } from "enzyme"
 import { shallowToJson } from "enzyme-to-json"
 
-import ClassDelete from "../class-delete"
-import { reduceSchemaTree } from "../../"
+import { ClassDelete } from "../class-delete"
+
+jest.mock("../../../notifications", () => ({
+  notify: (msg, fn) => fn(() => Promise.resolve())
+}))
 
 jest.mock("react-router", () => ({
-  browserHistory: {
-    push: jest.fn()
-  }
+  browserHistory: { push: jest.fn() }
 }))
 
 const { browserHistory } = require("react-router")
@@ -18,17 +19,13 @@ describe("ClassDelete Component", () => {
   let comp, store, client
 
   beforeEach(() => {
-    client = { query: jest.fn(() => Promise.resolve()) }
-    store = createImmutableTestStore({ schema: reduceSchemaTree })()
-
     comp = shallow(
       <ClassDelete
-        store={store}
         client={client}
         path={["a-db"]}
         clazz={Map.of("name", "fake-class")}
         dbUrl="/db/a-db/databases" />
-    ).dive()
+    )
   })
 
   it("renders delete form", () => {
@@ -36,7 +33,7 @@ describe("ClassDelete Component", () => {
   })
 
   it("delete class", () => {
-    return store.dispatch(comp.props().onDelete()).then(() => {
+    return comp.props().onDelete().then(() => {
       expect(browserHistory.push).toHaveBeenCalledWith("/db/a-db/classes")
     })
   })

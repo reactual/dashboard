@@ -5,7 +5,7 @@ import { Spinner } from "office-ui-fabric-react"
 import "./activity-monitor.css"
 import { isBusy } from "../"
 
-const ActivityMonitor = (props) => {
+export const ActivityMonitor = (props) => {
   if (!props.isBusy) return null
   return <Spinner className="activity-monitor" />
 }

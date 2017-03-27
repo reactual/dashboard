@@ -9,7 +9,8 @@ import {
 
 import { logout } from "../"
 
-class UserAccount extends Component {
+export class UserAccount extends Component {
+
   constructor(props) {
     super(props)
     this.state = { showMenu: false }

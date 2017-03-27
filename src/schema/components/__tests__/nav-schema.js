@@ -3,8 +3,7 @@ import { Map, List } from "immutable"
 import { shallow } from "enzyme"
 import { shallowToJson } from "enzyme-to-json"
 
-import NavSchema from "../nav-schema"
-import { reduceSchemaTree } from "../../"
+import { NavSchema } from "../nav-schema"
 
 jest.mock("react-router", () => ({
   browserHistory: {
@@ -15,14 +14,8 @@ jest.mock("react-router", () => ({
 const { browserHistory } = require("react-router")
 
 describe("NavSchema Component", () => {
-  let rootDb, subDb, store, client
-
-  const render = (db) => shallow(
-    <NavSchema
-      store={store}
-      client={client}
-      database={db} />
-  ).dive()
+  let rootDb, subDb, client
+  const render = (db) => shallow(<NavSchema client={client} database={db} />)
 
   beforeEach(() => {
     rootDb = Map.of(
@@ -40,7 +33,6 @@ describe("NavSchema Component", () => {
     )
 
     client = { hasPrivileges: jest.fn(() => true) }
-    store = createImmutableTestStore({ schema: reduceSchemaTree })()
   })
 
   it("should render classes and indexes for root db", () => {
