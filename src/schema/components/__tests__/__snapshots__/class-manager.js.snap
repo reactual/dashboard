@@ -1,21 +1,19 @@
 exports[`ClassManager Component renders class components 1`] = `
-<div>
-  <Pivot>
-    <PivotItem
-      itemKey="class-info"
-      linkText="Class Details">
-      <Connect(ClassInfo) />
-    </PivotItem>
-    <PivotItem
-      itemKey="class-instance"
-      linkText="Create Instance">
-      <Connect(ClassInstance) />
-    </PivotItem>
-    <PivotItem
-      itemKey="class-delete"
-      linkText="Delete">
-      <Connect(ClassDelete) />
-    </PivotItem>
-  </Pivot>
-</div>
+<Pivot>
+  <PivotItem
+    itemKey="class-info"
+    linkText="Class Details">
+    <Connect(ClassInfo) />
+  </PivotItem>
+  <PivotItem
+    itemKey="class-instance"
+    linkText="Create Instance">
+    <Connect(ClassInstance) />
+  </PivotItem>
+  <PivotItem
+    itemKey="class-delete"
+    linkText="Delete">
+    <Connect(ClassDelete) />
+  </PivotItem>
+</Pivot>
 `;
