@@ -25,10 +25,6 @@ class ClassForm extends Component {
   }
 
   componentDidMount() {
-    this.reset()
-  }
-
-  reset() {
     this.setState(this.initialState())
   }
 
@@ -93,8 +89,7 @@ class ClassForm extends Component {
     return <SchemaForm
         title="Create a new class"
         buttonText="Create Class"
-        onSubmit={this.onSubmit.bind(this)}
-        onFinish={this.reset.bind(this)}>
+        onSubmit={this.onSubmit.bind(this)}>
 
           <TextField label="Class name"
             required={true}

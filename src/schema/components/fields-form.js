@@ -54,10 +54,8 @@ export default class FieldsForm extends Component {
     return this.props.fields.map((each, fieldIndex) => {
       // Must be a unique per by TagPicker
       const tagsKey = `${fieldIndex}-${each.field.join(".")}`
-      // Must be unique per row but, upon reset, must re-render all rows
-      const rowKey = `${fieldIndex}-${this.props.nonce}`
 
-      return <div className="ms-Grid-row" key={rowKey}>
+      return <div className="ms-Grid-row" key={fieldIndex}>
         <div className="ms-Grid-col ms-u-sm9">
           <TagPicker
             getTextFromItem={tag => tag.name}
