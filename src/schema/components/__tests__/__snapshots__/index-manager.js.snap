@@ -1,0 +1,9 @@
+exports[`test display index components 1`] = `
+<Pivot>
+  <PivotItem
+    itemKey="index-info"
+    linkText="Index Details">
+    <Connect(IndexInfo) />
+  </PivotItem>
+</Pivot>
+`;

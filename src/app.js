@@ -20,7 +20,7 @@ import {
   ClassForm,
   ClassManager,
   IndexForm,
-  IndexInfo,
+  IndexManager,
   KeysManager,
   loadSchemaTree
 } from "./schema"
@@ -121,13 +121,13 @@ export default class App extends Component {
         <Router onUpdate={this.trackPage.bind(this)} history={browserHistory}>
           <Redirect from="/" to="/db" />
           <Route path="/db" component={App.Container}>
-            <Route path="indexes/:indexName" component={IndexInfo} />
+            <Route path="indexes/:indexName" component={IndexManager} />
             <Route path="indexes" component={IndexForm} />
             <Route path="classes/:className" component={ClassManager} />
             <Route path="classes" component={ClassForm} />
             <Route path="databases" component={DatabaseForm} />
             <Route path="keys" component={KeysManager} />
-            <Route path="**/indexes/:indexName" component={IndexInfo} />
+            <Route path="**/indexes/:indexName" component={IndexManager} />
             <Route path="**/indexes" component={IndexForm} />
             <Route path="**/classes/:className" component={ClassManager} />
             <Route path="**/classes" component={ClassForm} />
