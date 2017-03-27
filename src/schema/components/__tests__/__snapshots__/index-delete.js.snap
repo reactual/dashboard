@@ -1,0 +1,8 @@
+exports[`IndexDelete Component display delete form 1`] = `
+<Connect(DeleteForm)
+  buttonText="Delete Index"
+  onDelete={[Function]}
+  title="Delete a-index"
+  type="index"
+  validateName="a-index" />
+`;

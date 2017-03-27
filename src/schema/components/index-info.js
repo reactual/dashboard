@@ -1,15 +1,13 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
 import { query as q } from "faunadb"
-import { Link, browserHistory } from "react-router"
+import { Link } from "react-router"
 import { Button, ButtonType } from "office-ui-fabric-react"
 
-import DeleteForm from "./delete-form"
-import { deleteIndex, selectedIndex, selectedDatabase } from "../"
+import { selectedIndex, selectedDatabase } from "../"
 import { faunaClient } from "../../authentication"
-import { watchForError, notify } from "../../notifications"
+import { watchForError } from "../../notifications"
 import { monitorActivity, isBusy } from "../../activity-monitor"
-import { buildResourceUrl } from "../../router"
 import { KeyType } from "../../persistence/faunadb-wrapper"
 import { Pagination, InstanceInfo } from "../../dataset"
 import { ReplEditor, evalQuery } from "../../repl"
@@ -92,16 +90,6 @@ class IndexInfo extends Component {
     )
   }
 
-  onDelete() {
-    const { client, path, currentUrl, index } = this.props
-
-    return notify("Index deleted successfully", dispatch =>
-      dispatch(deleteIndex(client, path, index.get("name"))).then(() =>
-        browserHistory.push(buildResourceUrl(currentUrl, "indexes"))
-      )
-    )
-  }
-
   renderField(prefix) {
     return field => {
       return <li key={`prefix-${field.get("field")}`}>
@@ -154,13 +142,6 @@ class IndexInfo extends Component {
         </div>
       </div>
 
-      <DeleteForm
-        buttonText="Delete Index"
-        type="index"
-        title={`Delete ${index.get("name")}`}
-        validateName={index.get("name")}
-        onDelete={this.onDelete.bind(this)} />
-
       {index.get("terms").size !== 0 ?
         <div className="ms-Grid-row">
           <div className="ms-Grid-col ms-u-sm12">
@@ -210,7 +191,6 @@ export default connect(
     client: faunaClient(state),
     index: selectedIndex(state),
     path: selectedDatabase(state).get("path"),
-    currentUrl: selectedDatabase(state).get("url"),
     isBusy: isBusy(state)
   })
 )(IndexInfo)
