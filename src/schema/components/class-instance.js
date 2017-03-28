@@ -30,6 +30,12 @@ export class ClassInstance extends Component {
     this.setState(this.initialState())
   }
 
+  componentWillReceiveProps(next) {
+    if (this.props.clazz !== next.clazz) {
+      this.setState(this.initialState())
+    }
+  }
+
   onChange(data) {
     this.setState({ data })
   }
