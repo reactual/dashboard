@@ -8,14 +8,12 @@ import { notify } from "../../notifications"
 import { faunaClient } from "../../authentication"
 import { buildResourceUrl } from "../../router"
 
-const ClassDelete = ({ client, path, dbUrl, clazz }) => {
-  const onDelete = () => {
-    return notify("Class deleted successfully", dispatch =>
-      dispatch(deleteClass(client, path, clazz.get("name"))).then(() =>
-        browserHistory.push(buildResourceUrl(dbUrl, "classes"))
-      )
+export const ClassDelete = ({ client, path, dbUrl, clazz }) => {
+  const onDelete = () => notify("Class deleted successfully", dispatch =>
+    dispatch(deleteClass(client, path, clazz.get("name"))).then(() =>
+      browserHistory.push(buildResourceUrl(dbUrl, "classes"))
     )
-  }
+  )
 
   return <DeleteForm
     buttonText="Delete Class"
@@ -28,11 +26,10 @@ const ClassDelete = ({ client, path, dbUrl, clazz }) => {
 ClassDelete.displayName = "ClassDelete"
 
 export default connect(
-  (state, props) => ({
+  state => ({
     client: faunaClient(state),
     path: selectedDatabase(state).get("path"),
     dbUrl: selectedDatabase(state).get("url"),
-    clazz: selectedClass(state),
-    ...props
+    clazz: selectedClass(state)
   })
 )(ClassDelete)

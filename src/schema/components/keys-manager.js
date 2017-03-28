@@ -8,7 +8,7 @@ import KeysList from "./keys-list"
 import { selectedDatabase } from "../"
 import { buildResourceUrl } from "../../router"
 
-const KeysManager = ({ database }) => {
+export const KeysManager = ({ database }) => {
   return <div>
       <Pivot>
         <PivotItem linkText="Keys" itemKey="keys">
@@ -29,8 +29,7 @@ const KeysManager = ({ database }) => {
 }
 
 export default connect(
-  (state, props) => ({
-    database: selectedDatabase(state),
-    ...props
+  state => ({
+    database: selectedDatabase(state)
   })
 )(KeysManager)

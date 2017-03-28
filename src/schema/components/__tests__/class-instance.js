@@ -3,23 +3,19 @@ import { Map } from "immutable"
 import { shallow } from "enzyme"
 import { shallowToJson } from "enzyme-to-json"
 
-import ClassInstance from "../class-instance"
-import { reduceSchemaTree } from "../../"
+import { ClassInstance } from "../class-instance"
+
+jest.mock("../../../notifications", () => ({
+  notify: (msg, fn) => fn()
+}))
 
 describe("ClassInstance Component", () => {
-  let comp, store, client
+  let comp, client
 
   beforeEach(() => {
+    const clazz = Map.of("name", "fake-class")
     client = { query: jest.fn(() => Promise.resolve({ name: "fake-instance" })) }
-    store = createImmutableTestStore({ schema: reduceSchemaTree })()
-
-    comp = shallow(
-      <ClassInstance
-        store={store}
-        client={client}
-        path={["a-db"]}
-        clazz={Map.of("name", "fake-class")} />
-    ).dive()
+    comp = shallow(<ClassInstance client={client} path={["a-db"]} clazz={clazz} />)
   })
 
   it("renders instance form", () => {
@@ -30,11 +26,9 @@ describe("ClassInstance Component", () => {
     comp.find("ReplEditor").simulate("change", "{ 'name': 'Bob' }")
     expect(shallowToJson(comp)).toMatchSnapshot()
 
-    return store.dispatch(comp.find("Connect(SchemaForm)").props().onSubmit()).then(() => {
+    return comp.find("Connect(SchemaForm)").props().onSubmit().then(() => {
       comp.update()
       expect(shallowToJson(comp)).toMatchSnapshot()
     })
   })
 })
-
-

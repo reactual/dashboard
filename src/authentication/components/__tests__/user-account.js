@@ -2,27 +2,14 @@ import React from "react"
 import { shallow } from "enzyme"
 import { shallowToJson } from "enzyme-to-json"
 
-import { reduceUserSession, UserAccount } from "../../"
-
-// We can't use enzyme#mount to render components that are
-// dependent on Fabric's Callout component because it changes
-// the DOM adding elemenents at the body, outside of the this
-// component's scope.
-//
-// The elements added by Fabric have cicular dependencies to the
-// elements on this component, breaking attempts to take JSON
-// snapshots from them.
+import { UserAccount } from "../user-account"
 
 describe("UserAccount Component", () => {
-  let comp, store, currentUser
+  let comp, dispatch
 
   beforeEach(() => {
-    currentUser = { name: "mocked user" }
-    store = createImmutableTestStore({ currentUser: reduceUserSession }, { currentUser })(
-      state => currentUser = state.get("currentUser")
-    )
-
-    comp = shallow(<UserAccount store={store} />).dive()
+    dispatch = jest.fn()
+    comp = shallow(<UserAccount dispatch={dispatch} />)
   })
 
   it("should show and hide context menu on click", () => {
@@ -31,15 +18,19 @@ describe("UserAccount Component", () => {
     comp.find("Button").simulate("click", { target: "mocked" })
     expect(shallowToJson(comp)).toMatchSnapshot()
 
-    // Can't simulate using the DOM. Read above.
-    comp.instance().hideMenu()
-    comp.update()
+    comp.find("ContextualMenu").simulate("dismiss")
     expect(shallowToJson(comp)).toMatchSnapshot()
   })
 
-  it("should show context menu on click", () => {
-    // Can't simulate using the DOM. Read above.
-    comp.instance().logout()
-    expect(currentUser).toBeNull()
+  it("should logout", () => {
+    comp.setState({ menuVisible: true })
+
+    comp
+      .find("ContextualMenu")
+      .prop("items")
+      .filter(i => i.key === "logout-btn")[0]
+      .onClick()
+
+    expect(dispatch).toHaveBeenCalled()
   })
 })

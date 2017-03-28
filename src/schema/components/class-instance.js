@@ -10,7 +10,7 @@ import { KeyType } from "../../persistence/faunadb-wrapper"
 import { ReplEditor, evalQuery } from "../../repl"
 import { InstanceInfo } from "../../dataset"
 
-class ClassInstance extends Component {
+export class ClassInstance extends Component {
 
   constructor(props) {
     super(props)
@@ -78,10 +78,9 @@ class ClassInstance extends Component {
 }
 
 export default connect(
-  (state, props) => ({
+  state => ({
     path: selectedDatabase(state).get("path"),
     clazz: selectedClass(state),
-    client: faunaClient(state),
-    ...props
+    client: faunaClient(state)
   })
 )(ClassInstance)

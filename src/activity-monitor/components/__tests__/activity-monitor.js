@@ -1,25 +1,15 @@
 import React from "react"
-import renderer from "react-test-renderer"
+import { shallow } from "enzyme"
+import { shallowToJson } from "enzyme-to-json"
 
-import { reduceActivityMonitor, monitorActivity, ActivityMonitor } from "../../"
+import { ActivityMonitor } from "../activity-monitor"
 
-describe("ActivityMonitor Component", () => {
-  let comp, store
+it("should turn spinner ON when monitoring activity", () => {
+  const comp = shallow(<ActivityMonitor isBusy={true} /> )
+  expect(shallowToJson(comp)).toMatchSnapshot()
+})
 
-  beforeEach(() => {
-    store = createImmutableTestStore({ activityMonitor: reduceActivityMonitor })()
-    comp = renderer.create(<ActivityMonitor store={store} />)
-    expect(comp).toMatchSnapshot()
-  })
-
-  it("should turn spinner on and off when monitoring activity", () => {
-    return store.dispatch(
-      monitorActivity(() => {
-        expect(comp).toMatchSnapshot() // Inside monitor. Display spinner
-        return Promise.resolve()
-      })
-    ).then(() => {
-      expect(comp).toMatchSnapshot() // Outside monitor. Hide spinner
-    })
-  })
+it("should turn spinner OFF when NOT monitoring activity", () => {
+  const comp = shallow(<ActivityMonitor isBusy={false} /> )
+  expect(shallowToJson(comp)).toMatchSnapshot()
 })

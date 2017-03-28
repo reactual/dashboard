@@ -28,7 +28,7 @@ const asLinks = (items) => items.map(item => ({
   url: item.get("url")
 })).toJS()
 
-const NavSchema = ({ client, database, resourceUrl }) => {
+export const NavSchema = ({ client, database, resourceUrl }) => {
   const links = [
     {
       name: "Options",
@@ -55,10 +55,9 @@ const NavSchema = ({ client, database, resourceUrl }) => {
 }
 
 export default connect(
-  (state, props) => ({
+  state => ({
     client: faunaClient(state),
     database: selectedDatabase(state),
-    resourceUrl: selectedResource(state).getIn(["resource", "url"]),
-    ...props
+    resourceUrl: selectedResource(state).getIn(["resource", "url"])
   })
 )(NavSchema)
