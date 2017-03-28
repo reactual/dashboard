@@ -22,20 +22,12 @@ class IndexForm extends Component {
       unique: false,
       source: { key: "", ref: null },
       terms: [{ field: [], transform: null }],
-      values: [{ field: [], transform: null }],
-      nonce: 0
+      values: [{ field: [], transform: null }]
     }
   }
 
   componentDidMount() {
-    this.reset()
-  }
-
-  reset() {
-    this.setState({
-      ...this.initialState(),
-      nonce: this.state.nonce + 1
-    })
+    this.setState(this.initialState())
   }
 
   onChange(field) {
@@ -111,8 +103,7 @@ class IndexForm extends Component {
     return <SchemaForm
       title="Create a new Index"
       buttonText="Create Index"
-      onSubmit={this.onSubmit.bind(this)}
-      onFinish={this.reset.bind(this)}>
+      onSubmit={this.onSubmit.bind(this)}>
 
       <TextField
         label="Name"
@@ -139,7 +130,6 @@ class IndexForm extends Component {
       <FieldsForm
         title="Terms"
         knownFields={allFields}
-        nonce={this.state.nonce}
         fields={this.state.terms}
         addField={this.addField("terms")}
         updateField={this.updateField("terms")}>
@@ -157,7 +147,6 @@ class IndexForm extends Component {
       <FieldsForm
         title="Values"
         knownFields={allFields}
-        nonce={this.state.nonce}
         fields={this.state.values}
         addField={this.addField("values")}
         updateField={this.updateField("values")} />

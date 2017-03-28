@@ -23,10 +23,6 @@ class DatabaseForm extends Component {
   }
 
   componentDidMount() {
-    this.reset()
-  }
-
-  reset() {
     this.setState(this.initialState())
   }
 
@@ -71,8 +67,7 @@ class DatabaseForm extends Component {
       <SchemaForm
         title="Create a new database"
         buttonText="Create Database"
-        onSubmit={this.onSubmit.bind(this)}
-        onFinish={this.reset.bind(this)}>
+        onSubmit={this.onSubmit.bind(this)}>
           <TextField label="Name"
             required={true}
             value={this.state.name}

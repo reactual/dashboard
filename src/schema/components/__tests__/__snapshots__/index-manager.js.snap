@@ -1,0 +1,19 @@
+exports[`test display index components 1`] = `
+<Pivot>
+  <PivotItem
+    itemKey="index-info"
+    linkText="Index Details">
+    <Connect(IndexInfo) />
+  </PivotItem>
+  <PivotItem
+    itemKey="index-browser"
+    linkText="Browse Index">
+    <Connect(IndexBrowser) />
+  </PivotItem>
+  <PivotItem
+    itemKey="index-delete"
+    linkText="Delete">
+    <Connect(Component) />
+  </PivotItem>
+</Pivot>
+`;

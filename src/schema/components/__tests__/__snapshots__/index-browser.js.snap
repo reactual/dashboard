@@ -1,0 +1,156 @@
+exports[`IndexBrowser Component browser a class index 1`] = `
+<div>
+  <div
+    className="ms-Grid-row">
+    <div
+      className="ms-Grid-col ms-u-sm12">
+      <Connect(Pagination)
+        onSelectRef={[Function]}
+        query={[Function]} />
+    </div>
+  </div>
+  <div
+    className="ms-Grid-row">
+    <div
+      className="ms-Grid-col ms-u-sm12">
+      <Connect(InstanceInfo)
+        instance={null} />
+    </div>
+  </div>
+</div>
+`;
+
+exports[`IndexBrowser Component browser non class index 1`] = `
+<div>
+  <div
+    className="ms-Grid-row">
+    <div
+      className="ms-Grid-col ms-u-sm12">
+      <h3>
+        Lookup
+      </h3>
+      <ReplEditor
+        mode="editor form-field text-field"
+        name="index-lookup-editor"
+        onChange={[Function]}
+        shortcuts={
+          Array [
+            Object {
+              "bindKey": Object {
+                "mac": "Enter",
+                "win": "Enter",
+              },
+              "exec": [Function],
+              "name": "search",
+            },
+          ]
+        }
+        value="\"\"" />
+      <p
+        className="ms-TextField-description">
+        The contents of this field will be evaluated with the context of a repl and placed in the \"terms\" field of the index look up query.
+      </p>
+      <Button
+        buttonType={1}
+        onClick={[Function]}>
+        Search
+      </Button>
+    </div>
+  </div>
+  <div
+    className="ms-Grid-row">
+    <div
+      className="ms-Grid-col ms-u-sm12">
+      <Connect(Pagination)
+        onSelectRef={[Function]} />
+    </div>
+  </div>
+  <div
+    className="ms-Grid-row">
+    <div
+      className="ms-Grid-col ms-u-sm12">
+      <Connect(InstanceInfo)
+        instance={null} />
+    </div>
+  </div>
+</div>
+`;
+
+exports[`IndexBrowser Component browser non class index 2`] = `
+<div>
+  <div
+    className="ms-Grid-row">
+    <div
+      className="ms-Grid-col ms-u-sm12">
+      <h3>
+        Lookup
+      </h3>
+      <ReplEditor
+        mode="editor form-field text-field"
+        name="index-lookup-editor"
+        onChange={[Function]}
+        shortcuts={
+          Array [
+            Object {
+              "bindKey": Object {
+                "mac": "Enter",
+                "win": "Enter",
+              },
+              "exec": [Function],
+              "name": "search",
+            },
+          ]
+        }
+        value="a name" />
+      <p
+        className="ms-TextField-description">
+        The contents of this field will be evaluated with the context of a repl and placed in the \"terms\" field of the index look up query.
+      </p>
+      <Button
+        buttonType={1}
+        onClick={[Function]}>
+        Search
+      </Button>
+    </div>
+  </div>
+  <div
+    className="ms-Grid-row">
+    <div
+      className="ms-Grid-col ms-u-sm12">
+      <Connect(Pagination)
+        onSelectRef={[Function]}
+        query={[Function]} />
+    </div>
+  </div>
+  <div
+    className="ms-Grid-row">
+    <div
+      className="ms-Grid-col ms-u-sm12">
+      <Connect(InstanceInfo)
+        instance={null} />
+    </div>
+  </div>
+</div>
+`;
+
+exports[`IndexBrowser Component select a ref 1`] = `
+<div>
+  <div
+    className="ms-Grid-row">
+    <div
+      className="ms-Grid-col ms-u-sm12">
+      <Connect(Pagination)
+        onSelectRef={[Function]}
+        query={[Function]} />
+    </div>
+  </div>
+  <div
+    className="ms-Grid-row">
+    <div
+      className="ms-Grid-col ms-u-sm12">
+      <Connect(InstanceInfo)
+        instance="mocked" />
+    </div>
+  </div>
+</div>
+`;
