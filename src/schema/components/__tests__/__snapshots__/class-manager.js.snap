@@ -6,6 +6,11 @@ exports[`ClassManager Component renders class components 1`] = `
     <Connect(ClassInfo) />
   </PivotItem>
   <PivotItem
+    itemKey="class-browse"
+    linkText="Browse Class">
+    <Connect(ClassBrowser) />
+  </PivotItem>
+  <PivotItem
     itemKey="class-instance"
     linkText="Create Instance">
     <Connect(ClassInstance) />
