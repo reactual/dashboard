@@ -1,0 +1,209 @@
+exports[`InstancesList Component can go back to instances list from instance details view 1`] = `
+<div>
+  <div
+    style={
+      Object {
+        "display": "none",
+      }
+    }>
+    <Connect(Pagination)
+      onSelectRef={[Function]}
+      query={[Function]} />
+  </div>
+  <div
+    style={
+      Object {
+        "display": "block",
+      }
+    }>
+    <Button
+      buttonType={4}
+      icon="ChromeBack"
+      onClick={[Function]}>
+      Go back to the instances list
+    </Button>
+    <Connect(InstanceInfo)
+      instance="fake-instance" />
+  </div>
+</div>
+`;
+
+exports[`InstancesList Component can go back to instances list from instance details view 2`] = `
+<div>
+  <div
+    style={
+      Object {
+        "display": "block",
+      }
+    }>
+    <Connect(Pagination)
+      onSelectRef={[Function]}
+      query={[Function]} />
+  </div>
+  <div
+    style={
+      Object {
+        "display": "none",
+      }
+    }>
+    <Button
+      buttonType={4}
+      icon="ChromeBack"
+      onClick={[Function]}>
+      Go back to the instances list
+    </Button>
+    <Connect(InstanceInfo)
+      instance={null} />
+  </div>
+</div>
+`;
+
+exports[`InstancesList Component displays instances list 1`] = `
+<div>
+  <div
+    style={
+      Object {
+        "display": "block",
+      }
+    }>
+    <Connect(Pagination)
+      onSelectRef={[Function]}
+      query={[Function]} />
+  </div>
+  <div
+    style={
+      Object {
+        "display": "none",
+      }
+    }>
+    <Button
+      buttonType={4}
+      icon="ChromeBack"
+      onClick={[Function]}>
+      Go back to the instances list
+    </Button>
+    <Connect(InstanceInfo)
+      instance={null} />
+  </div>
+</div>
+`;
+
+exports[`InstancesList Component displays the selected instance 1`] = `
+<div>
+  <div
+    style={
+      Object {
+        "display": "none",
+      }
+    }>
+    <Connect(Pagination)
+      onSelectRef={[Function]}
+      query={[Function]} />
+  </div>
+  <div
+    style={
+      Object {
+        "display": "block",
+      }
+    }>
+    <Button
+      buttonType={4}
+      icon="ChromeBack"
+      onClick={[Function]}>
+      Go back to the instances list
+    </Button>
+    <Connect(InstanceInfo)
+      instance="a-instance" />
+  </div>
+</div>
+`;
+
+exports[`InstancesList Component does NOT display selected ref if no promise is returned 1`] = `
+<div>
+  <div
+    style={
+      Object {
+        "display": "block",
+      }
+    }>
+    <Connect(Pagination)
+      onSelectRef={[Function]}
+      query={[Function]} />
+  </div>
+  <div
+    style={
+      Object {
+        "display": "none",
+      }
+    }>
+    <Button
+      buttonType={4}
+      icon="ChromeBack"
+      onClick={[Function]}>
+      Go back to the instances list
+    </Button>
+    <Connect(InstanceInfo)
+      instance={null} />
+  </div>
+</div>
+`;
+
+exports[`InstancesList Component does not set onSelectRef for Pagination Component if no handler 1`] = `
+<div>
+  <div
+    style={
+      Object {
+        "display": "block",
+      }
+    }>
+    <Connect(Pagination)
+      onSelectRef={null}
+      query={[Function]} />
+  </div>
+  <div
+    style={
+      Object {
+        "display": "none",
+      }
+    }>
+    <Button
+      buttonType={4}
+      icon="ChromeBack"
+      onClick={[Function]}>
+      Go back to the instances list
+    </Button>
+    <Connect(InstanceInfo)
+      instance={null} />
+  </div>
+</div>
+`;
+
+exports[`InstancesList Component resets inner state when query function changes 1`] = `
+<div>
+  <div
+    style={
+      Object {
+        "display": "block",
+      }
+    }>
+    <Connect(Pagination)
+      onSelectRef={[Function]}
+      query={[Function]} />
+  </div>
+  <div
+    style={
+      Object {
+        "display": "none",
+      }
+    }>
+    <Button
+      buttonType={4}
+      icon="ChromeBack"
+      onClick={[Function]}>
+      Go back to the instances list
+    </Button>
+    <Connect(InstanceInfo)
+      instance={null} />
+  </div>
+</div>
+`;
