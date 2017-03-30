@@ -6,50 +6,48 @@ import { query as q } from "faunadb"
 
 import { IndexBrowser } from "../index-browser"
 
-jest.mock("../../../activity-monitor", () => ({
-  monitorActivity: x => x
-}))
-
-jest.mock("../../../notifications", () => ({
-  watchForError: () => Promise.resolve("mocked")
-}))
+jest.mock("../../../activity-monitor", () => ({ monitorActivity: x => x }))
+jest.mock("../../../notifications", () => ({ watchForError: (msg, fn) => fn() }))
 
 describe("IndexBrowser Component", () => {
-  let classIndex, index
-
-  const render = (index) => shallow(
-    <IndexBrowser dispatch={x => x} index={index} />
-  )
+  let comp, classIndex, nonClassIndex, client
 
   beforeEach(() => {
+    client = {
+      query: jest.fn()
+    }
+
     classIndex = Map.of(
       "ref", q.Index("a-index"),
       "terms", List()
     )
 
-    index = Map.of(
+    nonClassIndex = Map.of(
       "ref", q.Index("a-index"),
       "terms", List.of(
         Map.of("field", List.of("data", "name"))
       )
     )
+
+    comp = shallow(
+      <IndexBrowser
+        dispatch={x => x}
+        client={client}
+        index={classIndex} />
+    )
   })
 
   it("browser a class index", () => {
-    const comp = render(classIndex)
     expect(shallowToJson(comp)).toMatchSnapshot()
   })
 
   it("select a ref", () => {
-    const comp = render(classIndex)
-    return comp.find("Connect(Pagination)").props().onSelectRef(q.Ref("fake")).then(() => {
-      comp.update()
-      expect(shallowToJson(comp)).toMatchSnapshot()
-    })
+    comp.find("InstancesList").simulate("selectRef", q.Ref("fake"))
+    expect(client.query).toHaveBeenCalled()
   })
 
   it("browser non class index", () => {
-    const comp = render(index)
+    comp.setProps({ index: nonClassIndex })
     expect(shallowToJson(comp)).toMatchSnapshot()
 
     comp.find("ReplEditor").simulate("change", "a name")

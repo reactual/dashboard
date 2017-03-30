@@ -4,17 +4,9 @@ exports[`IndexBrowser Component browser a class index 1`] = `
     className="ms-Grid-row">
     <div
       className="ms-Grid-col ms-u-sm12">
-      <Connect(Pagination)
+      <InstancesList
         onSelectRef={[Function]}
         query={[Function]} />
-    </div>
-  </div>
-  <div
-    className="ms-Grid-row">
-    <div
-      className="ms-Grid-col ms-u-sm12">
-      <Connect(InstanceInfo)
-        instance={null} />
     </div>
   </div>
 </div>
@@ -61,16 +53,8 @@ exports[`IndexBrowser Component browser non class index 1`] = `
     className="ms-Grid-row">
     <div
       className="ms-Grid-col ms-u-sm12">
-      <Connect(Pagination)
+      <InstancesList
         onSelectRef={[Function]} />
-    </div>
-  </div>
-  <div
-    className="ms-Grid-row">
-    <div
-      className="ms-Grid-col ms-u-sm12">
-      <Connect(InstanceInfo)
-        instance={null} />
     </div>
   </div>
 </div>
@@ -117,39 +101,9 @@ exports[`IndexBrowser Component browser non class index 2`] = `
     className="ms-Grid-row">
     <div
       className="ms-Grid-col ms-u-sm12">
-      <Connect(Pagination)
+      <InstancesList
         onSelectRef={[Function]}
         query={[Function]} />
-    </div>
-  </div>
-  <div
-    className="ms-Grid-row">
-    <div
-      className="ms-Grid-col ms-u-sm12">
-      <Connect(InstanceInfo)
-        instance={null} />
-    </div>
-  </div>
-</div>
-`;
-
-exports[`IndexBrowser Component select a ref 1`] = `
-<div>
-  <div
-    className="ms-Grid-row">
-    <div
-      className="ms-Grid-col ms-u-sm12">
-      <Connect(Pagination)
-        onSelectRef={[Function]}
-        query={[Function]} />
-    </div>
-  </div>
-  <div
-    className="ms-Grid-row">
-    <div
-      className="ms-Grid-col ms-u-sm12">
-      <Connect(InstanceInfo)
-        instance="mocked" />
     </div>
   </div>
 </div>
