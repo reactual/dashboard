@@ -22,20 +22,32 @@ export class ClassBrowser extends Component {
   }
 
   initialState(props) {
-    const classIndex = this.findClassIndex(props.clazz)
+    const index = this.findClassCoveringRef(props.clazz)
 
     return  {
-      classIndex,
-      queryFn: this.buildQueryFn(props, classIndex)
+      index,
+      queryFn: this.buildQueryFn(props, index)
     }
   }
 
-  findClassIndex(clazz) {
+  findClassCoveringRef(clazz) {
     const res = clazz.get("indexes")
-      .filter(idx => idx.get("classIndex"))
-      .sortBy(idx => idx.get("name"))
+      .filter(idx =>
+        idx.get("terms").isEmpty() && (
+          idx.get("values").isEmpty() ||
+          idx.get("values").some(v => v.getIn(["field", 0]) === "ref")
+        )
+      )
+      .sort((a, b) => {
+        if (a.get("values").isEmpty() && b.get("values").isEmpty())
+          return a.get("name") < b.get("name") ? -1 : 1
 
-    return res.isEmpty() ? null : res.getIn([0, "ref"])
+        if (a.get("values").isEmpty()) return -1
+        if (b.get("values").isEmpty()) return 1
+        return 0
+      })
+
+    return res.isEmpty() ? null : res.get(0)
   }
 
   componentDidMount() {
@@ -48,12 +60,12 @@ export class ClassBrowser extends Component {
     }
   }
 
-  buildQueryFn({ client, path }, classIndex) {
+  buildQueryFn({ client, path }, index) {
     return opts =>
       client.query(path, KeyType.SERVER,
         q.Map(
-          q.Paginate(q.Match(classIndex), opts),
-          ref => q.Get(ref)
+          q.Paginate(q.Match(index.get("ref")), opts),
+          res => this.getRef(res, index)
         )
       ).then(res => ({
         ...res,
@@ -62,6 +74,19 @@ export class ClassBrowser extends Component {
           ...inst.data
         }))
       }))
+  }
+
+  getRef(res, index) {
+    const values = index.get("values")
+    if (values.isEmpty()) return q.Get(res)
+    if (values.size === 1) return q.Get(res)
+
+    return q.Get(q.Select(
+      values
+        .zip(values.keySeq())
+        .find(v => v[0].getIn(["field", 0]) === "ref")[1],
+      res
+    ))
   }
 
   createClassIndex(e) {
@@ -95,10 +120,13 @@ export class ClassBrowser extends Component {
   }
 
   render() {
+    if (!this.state.index) {
+      return this.renderNoClassIndexPage()
+    }
+
     const { databaseUrl } = this.props
-    const { classIndex } = this.state
-    const indexLink = linkForRef(databaseUrl, classIndex)
-    if (!classIndex) return this.renderNoClassIndexPage()
+    const { index } = this.state
+    const indexLink = linkForRef(databaseUrl, index.get("ref"))
 
     return <div>
       <InstancesList query={this.state.queryFn} onSelectRef={this.onSelectRef} />

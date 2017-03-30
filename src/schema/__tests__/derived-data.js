@@ -160,13 +160,15 @@ describe("selectedClass", () => {
           name: "all_people",
           ref: q.Ref("indexes/all_people"),
           url: "/db/my-app/my-blog/indexes/all_people",
-          classIndex: true
+          terms: [],
+          values: []
         },
         {
           name: "people_by_name",
           ref: q.Ref("indexes/people_by_name"),
           url: "/db/my-app/my-blog/indexes/people_by_name",
-          classIndex: false
+          terms: [{ field: ["data", "name"], transform: "casefold" }],
+          values: [{ field: ["data", "name"], transform: "casefold" }, { field: ["ref"] }],
         }
       ]
     })

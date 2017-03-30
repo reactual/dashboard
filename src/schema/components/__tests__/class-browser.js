@@ -13,7 +13,10 @@ jest.mock("../../", () => ({ createIndex: jest.fn(() => () => null) }))
 const { createIndex } = require("../../")
 
 describe("ClassBrowser Component", () => {
-  let comp, clazz, classWithoutIndex, client
+  let comp,
+    classWithClassIndex,
+    classWithoutIndex,
+    client
 
   beforeEach(() => {
     client = {
@@ -25,14 +28,15 @@ describe("ClassBrowser Component", () => {
       }))
     }
 
-    clazz = Map.of(
+    classWithClassIndex = Map.of(
       "name", "people",
       "ref", q.Ref("classes/people"),
       "indexes", List.of(
         Map.of(
           "name", "all_people",
-          "classIndex", true,
-          "ref", q.Ref("indexes/all_people")
+          "ref", q.Ref("indexes/all_people"),
+          "terms", List(),
+          "values", List()
         )
       )
     )
@@ -48,7 +52,7 @@ describe("ClassBrowser Component", () => {
         dispatch={jest.fn(x => x)}
         isBusy={false}
         client={client}
-        clazz={clazz}
+        clazz={classWithClassIndex}
         databaseUrl="/db/a-db/databases"
         path={["a-db"]} />
     )
