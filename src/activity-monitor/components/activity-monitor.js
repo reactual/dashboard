@@ -10,6 +10,8 @@ export const ActivityMonitor = (props) => {
   return <Spinner className="activity-monitor" />
 }
 
+ActivityMonitor.displayName = "ActivityMonitor"
+
 export default connect(
   state => ({
     isBusy: isBusy(state)

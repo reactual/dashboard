@@ -1,0 +1,23 @@
+exports[`test displays db and schema tree when using admin key 1`] = `
+<div
+  className="ms-Grid-row">
+  <div
+    className="ms-Grid-col ms-u-sm12 ms-u-xl6">
+    <Connect(NavDBTree) />
+  </div>
+  <div
+    className="ms-Grid-col ms-u-sm12 ms-u-xl6">
+    <Connect(NavSchema) />
+  </div>
+</div>
+`;
+
+exports[`test does not display db tree when using server key 1`] = `
+<div
+  className="ms-Grid-row">
+  <div
+    className="ms-Grid-col ms-u-sm12">
+    <Connect(NavSchema) />
+  </div>
+</div>
+`;

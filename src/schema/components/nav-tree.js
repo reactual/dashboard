@@ -3,9 +3,12 @@ import { connect } from "react-redux"
 
 import NavDBTree from "./nav-db-tree.js"
 import NavSchema from "./nav-schema.js"
+import { faunaClient } from "../../authentication"
+import { KeyType } from "../../persistence/faunadb-wrapper"
 
-const NavTree = (props) => {
-  return <div className="ms-Grid-row">
+export const NavTree = ({ client }) => {
+  if (client.hasPrivileges(KeyType.ADMIN)) {
+    return <div className="ms-Grid-row">
       <div className="ms-Grid-col ms-u-sm12 ms-u-xl6">
         <NavDBTree />
       </div>
@@ -13,6 +16,17 @@ const NavTree = (props) => {
         <NavSchema />
       </div>
     </div>
+  }
+
+  return <div className="ms-Grid-row">
+    <div className="ms-Grid-col ms-u-sm12">
+      <NavSchema />
+    </div>
+  </div>
 }
 
-export default connect()(NavTree)
+export default connect(
+  state => ({
+    client: faunaClient(state)
+  })
+)(NavTree)
