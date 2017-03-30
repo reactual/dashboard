@@ -15,6 +15,7 @@ const { createIndex } = require("../../")
 describe("ClassBrowser Component", () => {
   let comp,
     classWithClassIndex,
+    classWithNonClassIndex,
     classWithoutIndex,
     client
 
@@ -37,6 +38,21 @@ describe("ClassBrowser Component", () => {
           "ref", q.Ref("indexes/all_people"),
           "terms", List(),
           "values", List()
+        )
+      )
+    )
+
+    classWithNonClassIndex = Map.of(
+      "name", "people",
+      "ref", q.Ref("classes/people"),
+      "indexes", List.of(
+        Map.of(
+          "name", "all_people",
+          "ref", q.Ref("indexes/all_people"),
+          "terms", List(),
+          "values", List.of(
+            Map.of("field", List.of("data", "name"))
+          )
         )
       )
     )
@@ -86,9 +102,19 @@ describe("ClassBrowser Component", () => {
     comp.setProps({ clazz: classWithoutIndex })
     comp.find("Button").simulate("click", { preventDefault: jest.fn() })
 
-    expect(createIndex).toHaveBeenCalledWith(client, ["a-db"], {
+    expect(createIndex).toHaveBeenLastCalledWith(client, ["a-db"], {
       name: "all_users",
       source: q.Ref("classes/users")
+    })
+  })
+
+  it("should find a non conflicting name for new index", () => {
+    comp.setProps({ clazz: classWithNonClassIndex })
+    comp.find("Button").simulate("click", { preventDefault: jest.fn() })
+
+    expect(createIndex).toHaveBeenLastCalledWith(client, ["a-db"], {
+      name: "all_people_1",
+      source: q.Ref("classes/people")
     })
   })
 })

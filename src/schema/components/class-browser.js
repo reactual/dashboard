@@ -78,8 +78,7 @@ export class ClassBrowser extends Component {
 
   getRef(res, index) {
     const values = index.get("values")
-    if (values.isEmpty()) return q.Get(res)
-    if (values.size === 1) return q.Get(res)
+    if (values.size <= 1) return q.Get(res)
 
     return q.Get(q.Select(
       values
@@ -98,12 +97,22 @@ export class ClassBrowser extends Component {
         watchForError(
           "Unexpected error while creating class index",
           createIndex(client, path, {
-            name: `all_${clazz.get("name")}`,
+            name: this.findAvailableIndexName(clazz),
             source: clazz.get("ref")
           })
         )
       )
     )
+  }
+
+  findAvailableIndexName(clazz, attempt = 0) {
+    const name = attempt === 0 ?
+      `all_${clazz.get("name")}` :
+      `all_${clazz.get("name")}_${attempt}`
+
+    return clazz.get("indexes").some(idx => idx.get("name") === name) ?
+      this.findAvailableIndexName(clazz, attempt + 1) :
+      name
   }
 
   onSelectRef(ref) {
