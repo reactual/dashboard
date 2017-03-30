@@ -36,12 +36,12 @@ export class KeysList extends Component {
     return client.query(path, KeyType.ADMIN,
       q.Map(
         q.Paginate(q.Ref("keys"), options),
-        ref => q.Let({ key: q.Get(ref) }, {
-          "Name": q.Select(["data", "name"], q.Var("key"), null),
-          "Role": q.Select("role", q.Var("key")),
-          "Database": q.Select("database", q.Var("key")),
+        ref => q.Let({ key: q.Get(ref) }, key => ({
+          "Name": q.Select(["data", "name"], key, null),
+          "Role": q.Select("role", key),
+          "Database": q.Select("database", key),
           "Ref": ref
-        })
+        }))
       )
     )
   }
