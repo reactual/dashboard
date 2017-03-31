@@ -77,6 +77,7 @@ export class Container extends Component {
             { this.props.faunaClient ? this.renderMainView() : null }
           </div>
         </ToggleRepl>
+        <NotificationBar />
         <LoginForm />
         <IntercomWidget />
       </div>
@@ -89,7 +90,6 @@ export class Container extends Component {
           <NavTree />
         </div>
         <div className="ms-Grid-col ms-u-sm12 ms-u-md6 ms-u-lg8">
-          <NotificationBar />
           {this.props.children}
         </div>
       </div>

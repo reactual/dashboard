@@ -1,4 +1,4 @@
-import { List } from "immutable"
+import { Map, List } from "immutable"
 
 export const NotificationType = {
   SUCCESS: "success",
@@ -13,7 +13,7 @@ const Actions = {
 }
 
 const push = (dispatch, type, message) => {
-  const notification = { type, message }
+  const notification = Map.of("type", type, "message", message)
 
   dispatch({
     type: Actions.PUSH,
