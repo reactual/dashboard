@@ -2,7 +2,8 @@ import { Map, List } from "immutable"
 
 export const NotificationType = {
   SUCCESS: "success",
-  ERROR: "error"
+  ERROR: "error",
+  WARNING: "warning"
 }
 
 const DEFAULT_NOTIFICATION_TIMEOUT = 5000

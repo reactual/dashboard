@@ -1,3 +1,46 @@
+exports[`test accept html tags 1`] = `
+<div
+  className="notification-bar ms-Grid-col ms-u-sm12 ms-u-md6 ms-u-mdPush3">
+  <ul>
+    <li
+      className="ms-u-fadeIn100">
+      <MessageBar
+        isMultiline={true}
+        messageBarType={1}
+        onDismiss={null}>
+        <span>
+          an error
+        </span>
+      </MessageBar>
+    </li>
+  </ul>
+</div>
+`;
+
+exports[`test breaks lines 1`] = `
+<div
+  className="notification-bar ms-Grid-col ms-u-sm12 ms-u-md6 ms-u-mdPush3">
+  <ul>
+    <li
+      className="ms-u-fadeIn100">
+      <MessageBar
+        isMultiline={true}
+        messageBarType={1}
+        onDismiss={null}>
+        <span>
+          an
+          <br />
+        </span>
+        <span>
+          error
+          <br />
+        </span>
+      </MessageBar>
+    </li>
+  </ul>
+</div>
+`;
+
 exports[`test displays notifications 1`] = `
 <div
   className="notification-bar ms-Grid-col ms-u-sm12 ms-u-md6 ms-u-mdPush3">
@@ -22,6 +65,18 @@ exports[`test displays notifications 1`] = `
         onDismiss={null}>
         <span>
           a success
+          <br />
+        </span>
+      </MessageBar>
+    </li>
+    <li
+      className="ms-u-fadeIn100">
+      <MessageBar
+        isMultiline={true}
+        messageBarType={5}
+        onDismiss={null}>
+        <span>
+          a warning
           <br />
         </span>
       </MessageBar>
