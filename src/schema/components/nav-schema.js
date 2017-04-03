@@ -54,6 +54,8 @@ export const NavSchema = ({ client, database, resourceUrl }) => {
   return <CustomNav groups={links} selectedKey={resourceUrl} onLinkClick={onClick} />
 }
 
+NavSchema.displayName = "NavSchema"
+
 export default connect(
   state => ({
     client: faunaClient(state),

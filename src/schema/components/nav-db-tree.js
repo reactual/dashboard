@@ -10,9 +10,10 @@ import { watchForError } from "../../notifications"
 import { monitorActivity } from "../../activity-monitor"
 
 class NavDBTree extends Component {
+
   constructor(props) {
     super(props)
-     this.state = { links: [] }
+    this.state = { links: [] }
   }
 
   componentDidMount() {

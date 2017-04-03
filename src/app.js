@@ -13,6 +13,7 @@ import { ActivityMonitor, monitorActivity } from "./activity-monitor"
 import { NotificationBar, watchForError } from "./notifications"
 import { LoginForm, UserAccount, faunaClient } from "./authentication"
 import { IntercomWidget } from "./external/intercom"
+import { KeyType } from "./persistence/faunadb-wrapper"
 
 import {
   NavTree,
@@ -25,7 +26,7 @@ import {
   loadSchemaTree
 } from "./schema"
 
-class Container extends Component {
+export class Container extends Component {
 
   componentWillReceiveProps(next) {
     const oldParams = Immutable.Map(this.props.params)
@@ -73,21 +74,36 @@ class Container extends Component {
                 </ul>
               </div>
             </div>
-            {this.props.faunaClient ?
-              <div className="ms-Grid-row">
-                <div className="ms-Grid-col ms-u-sm12 ms-u-md6 ms-u-lg4">
-                  <NavTree />
-                </div>
-                <div className="ms-Grid-col ms-u-sm12 ms-u-md6 ms-u-lg8">
-                  <NotificationBar />
-                  {this.props.children}
-                </div>
-              </div> : null}
+            { this.props.faunaClient ? this.renderMainView() : null }
           </div>
         </ToggleRepl>
         <LoginForm />
         <IntercomWidget />
       </div>
+  }
+
+  renderMainView() {
+    if (this.props.faunaClient.hasPrivileges(KeyType.ADMIN)) {
+      return <div className="ms-Grid-row">
+        <div className="ms-Grid-col ms-u-sm12 ms-u-md6 ms-u-lg4">
+          <NavTree />
+        </div>
+        <div className="ms-Grid-col ms-u-sm12 ms-u-md6 ms-u-lg8">
+          <NotificationBar />
+          {this.props.children}
+        </div>
+      </div>
+    }
+
+    return <div className="ms-Grid-row">
+      <div className="ms-Grid-col ms-u-sm12 ms-u-md3 ms-u-lg2">
+        <NavTree />
+      </div>
+      <div className="ms-Grid-col ms-u-sm12 ms-u-md9 ms-u-lg10">
+        <NotificationBar />
+        {this.props.children}
+      </div>
+    </div>
   }
 }
 
