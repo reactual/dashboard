@@ -12,7 +12,7 @@ const Actions = {
   REMOVE: "@@notifications/REMOVE"
 }
 
-const push = (dispatch, type, message) => {
+export const pushNotification = (type, message) => (dispatch) => {
   const notification = Map.of("type", type, "message", message)
 
   dispatch({
@@ -58,29 +58,22 @@ export const watchForError = (message, action) => (dispatch) => {
   }
 
   return res.catch(error => {
-    push(dispatch, NotificationType.ERROR, buildErrorMessage(message, error))
+    dispatch(pushNotification(NotificationType.ERROR, buildErrorMessage(message, error)))
     throw error
   })
 }
 
 export const notify = (message, action) => (dispatch) => {
   return watchForError(null, action)(dispatch).then(result => {
-    push(dispatch, NotificationType.SUCCESS, message)
+    dispatch(pushNotification(NotificationType.SUCCESS, message))
     return result
   })
 }
 
 export const reduceNotifications = (state = List(), action) => {
   switch (action.type) {
-    case Actions.PUSH:
-      return state.push(action.notification)
-
-    case Actions.REMOVE:
-      return state.filterNot(
-        notification => notification === action.notification
-      )
-
-    default:
-      return state
+    case Actions.PUSH:   return state.push(action.notification)
+    case Actions.REMOVE: return state.filterNot(n => n === action.notification)
+    default:             return state
   }
 }
