@@ -93,6 +93,9 @@ describe("Given a user store", () => {
         secret: "secret",
         userId: "123",
         email: "test@example.com",
+        flags: {
+          paymentSet: true
+        },
         settings: {
           intercom: {
             appId: "ap123",
@@ -109,6 +112,8 @@ describe("Given a user store", () => {
         client: "mockedClient",
         settings: {
           logoutUrl: "http://localhost:3000/logout",
+          paymentUrl: "http://localhost:3000/account/billing",
+          paymentSet: true,
           intercom: {
             app_id: "ap123",
             user_hash: "hash123",

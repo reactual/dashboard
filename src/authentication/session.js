@@ -33,22 +33,16 @@ export const login = (endpoint, secret, settings = Map()) => dispatch => {
       secret
     })
 
-    dispatch({
-      type: Actions.LOGIN,
-      user: Map({
-        endpoint,
-        secret,
-        settings,
-        client
-      })
-    })
+    const user = Map({ endpoint, secret, settings, client })
+    dispatch({ type: Actions.LOGIN, user })
+    return user
   })
 }
 
 export const restoreUserSession = () => (dispatch) => {
-  const user = SessionStorage.get(LOGGED_IN_USER)
-  if (user) return dispatch(login(user.endpoint, user.secret))
-  return Promise.resolve(false)
+  const savedUser = SessionStorage.get(LOGGED_IN_USER)
+  if (savedUser) return dispatch(login(savedUser.endpoint, savedUser.secret))
+  return Promise.resolve(null)
 }
 
 export const loginWithCloud = () => (dispatch) => {
@@ -65,25 +59,24 @@ export const loginWithCloud = () => (dispatch) => {
           return
         }
 
-        const user = Immutable.fromJS(res.body)
-
-        resolve(
-          dispatch(
-            login(
-              user.get("endpoint"),
-              user.get("secret"),
-              Map.of(
-                "intercom", Map({
-                  app_id: user.getIn(["settings", "intercom", "appId"]),
-                  user_hash: user.getIn(["settings", "intercom", "userHash"]),
-                  user_id: user.get("userId"),
-                  email: user.get("email")
-                }),
-                "logoutUrl", `${WEBSITE}/logout`
-              )
+        const websiteUser = Immutable.fromJS(res.body)
+        const user = dispatch(login(
+          websiteUser.get("endpoint"),
+          websiteUser.get("secret"),
+          Map.of(
+            "logoutUrl", `${WEBSITE}/logout`,
+            "paymentUrl", `${WEBSITE}/account/billing`,
+            "paymentSet", websiteUser.getIn(["flags", "paymentSet"], false),
+            "intercom", Map.of(
+              "app_id", websiteUser.getIn(["settings", "intercom", "appId"]),
+              "user_hash", websiteUser.getIn(["settings", "intercom", "userHash"]),
+              "user_id", websiteUser.get("userId"),
+              "email", websiteUser.get("email")
             )
-          ).then(() => true)
-        )
+          )
+        ))
+
+        resolve(user)
       })
   })
 }
