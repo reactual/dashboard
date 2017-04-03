@@ -30,8 +30,8 @@ const store = (() => {
 
   // Add support for https://github.com/zalmoxisus/redux-devtools-extension
   // eslint-disable-next-line
-  const composeEnhancers = process.env.NODE_ENV !== 'production' &&
-    typeof window === 'object' &&
+  const composeEnhancers = process.env.NODE_ENV === "development" &&
+    typeof window === "object" &&
     window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?
     window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ :
     compose
