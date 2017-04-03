@@ -1,0 +1,54 @@
+exports[`ClassBrowser Component displays instances 1`] = `
+<div>
+  <InstancesList
+    onSelectRef={[Function]}
+    query={[Function]} />
+  <p
+    className="ms-TextField-description">
+    This view was derived from 
+    <Link
+      onlyActiveOnIndex={false}
+      style={Object {}}
+      to="/db/a-db/indexes/all_people">
+      indexes/all_people
+    </Link>
+    .
+  </p>
+</div>
+`;
+
+exports[`ClassBrowser Component should disable create index button when busy 1`] = `
+<div>
+  <p>
+    No eligible class index found.
+  </p>
+  <p
+    className="ms-TextField-description">
+    Without a class index instances can only be loaded by Ref. A class index indexes all members of the class under a single key. For large datasets this can increase storage and processing overhead, so use class indexes sparingly in production.
+  </p>
+  <Button
+    buttonType={1}
+    disabled={true}
+    onClick={[Function]}>
+    Create a class index now
+  </Button>
+</div>
+`;
+
+exports[`ClassBrowser Component should display new index button when no class index 1`] = `
+<div>
+  <p>
+    No eligible class index found.
+  </p>
+  <p
+    className="ms-TextField-description">
+    Without a class index instances can only be loaded by Ref. A class index indexes all members of the class under a single key. For large datasets this can increase storage and processing overhead, so use class indexes sparingly in production.
+  </p>
+  <Button
+    buttonType={1}
+    disabled={false}
+    onClick={[Function]}>
+    Create a class index now
+  </Button>
+</div>
+`;

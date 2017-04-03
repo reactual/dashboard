@@ -65,6 +65,9 @@ export const selectedClass = createSelector([schema, database, resource], (schem
     .map(
       index => Map.of(
         "name", index.get("name"),
+        "ref", index.get("ref"),
+        "terms", index.get("terms", List()),
+        "values", index.get("values", List()),
         "url", buildResourceUrl(database.get("url"), "indexes", index.get("name"))
       )
     )

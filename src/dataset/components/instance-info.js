@@ -147,7 +147,7 @@ class InstanceInfo extends Component {
     if (!instance) return null
 
     return <div>
-        <h3>Instance</h3>
+        <h3>Instance Details</h3>
         <Pivot key={instance.ts} onLinkClick={this.tabSelected.bind(this)}>
           <PivotItem linkText="Preview" itemKey="preview">
             <dl>

@@ -156,8 +156,20 @@ describe("selectedClass", () => {
       ttlDays: 1,
       ref: q.Ref("classes/people"),
       indexes: [
-        { name: "all_people", url: "/db/my-app/my-blog/indexes/all_people" },
-        { name: "people_by_name", url: "/db/my-app/my-blog/indexes/people_by_name" }
+        {
+          name: "all_people",
+          ref: q.Ref("indexes/all_people"),
+          url: "/db/my-app/my-blog/indexes/all_people",
+          terms: [],
+          values: []
+        },
+        {
+          name: "people_by_name",
+          ref: q.Ref("indexes/people_by_name"),
+          url: "/db/my-app/my-blog/indexes/people_by_name",
+          terms: [{ field: ["data", "name"], transform: "casefold" }],
+          values: [{ field: ["data", "name"], transform: "casefold" }, { field: ["ref"] }],
+        }
       ]
     })
   })
