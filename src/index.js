@@ -1,7 +1,7 @@
 import React from "react"
 import ReactDOM from "react-dom"
-import thunk from 'redux-thunk'
-import createLogger from 'redux-logger'
+import thunk from "redux-thunk"
+import createLogger from "redux-logger"
 import Immutable from "immutable"
 import { createStore, applyMiddleware, compose } from "redux"
 import { combineReducers } from "redux-immutable"
@@ -18,7 +18,7 @@ require("./lang/polyfill.js")
 const store = (() => {
   const middlewares = [thunk]
 
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env.NODE_ENV === "development") {
     const logAsJS = obj => Immutable.fromJS(obj).toJS()
 
     middlewares.push(createLogger({
@@ -52,5 +52,5 @@ const store = (() => {
 
 ReactDOM.render(
   <App store={store} />,
-  document.getElementById('root')
+  document.getElementById("root")
 )
