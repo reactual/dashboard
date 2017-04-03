@@ -52,6 +52,7 @@ exports[`Container Component displays the base layout 1`] = `
       </div>
     </div>
   </Connect(ToggleRepl)>
+  <Connect(NotificationBar) />
   <Connect(LoginForm) />
   <Connect(IntercomWidget) />
 </div>
@@ -111,6 +112,7 @@ exports[`Container Component renders a smaller sidebar when using a server key 1
       </div>
     </div>
   </Connect(ToggleRepl)>
+  <Connect(NotificationBar) />
   <Connect(LoginForm) />
   <Connect(IntercomWidget) />
 </div>

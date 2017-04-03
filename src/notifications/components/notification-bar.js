@@ -13,14 +13,14 @@ const messageBarTypeFor = (notificationType) => {
   }
 }
 
-const NotificationBar = ({ notifications }) => {
-  return <div className="notification-bar">
+export const NotificationBar = ({ notifications }) => {
+  return <div className="notification-bar ms-Grid-col ms-u-sm12 ms-u-md6 ms-u-mdPush3">
       <ul>{
       notifications.map((notification, index) => (
         <li key={index} className="ms-u-fadeIn100">
           <MessageBar
-            messageBarType={messageBarTypeFor(notification.type)}>
-            {notification.message.split("\n").map((text, key) =>
+            messageBarType={messageBarTypeFor(notification.get("type"))}>
+            {notification.get("message").split("\n").map((text, key) =>
               <span key={key}>{text}<br/></span>
             )}
           </MessageBar>
@@ -29,6 +29,8 @@ const NotificationBar = ({ notifications }) => {
     }</ul>
   </div>
 }
+
+NotificationBar.displayName = "NotificationBar"
 
 export default connect(
   state => ({

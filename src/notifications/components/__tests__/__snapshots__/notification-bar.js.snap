@@ -1,0 +1,50 @@
+exports[`test displays notifications 1`] = `
+<div
+  className="notification-bar ms-Grid-col ms-u-sm12 ms-u-md6 ms-u-mdPush3">
+  <ul>
+    <li
+      className="ms-u-fadeIn100">
+      <MessageBar
+        isMultiline={true}
+        messageBarType={1}
+        onDismiss={null}>
+        <span>
+          an error
+          <br />
+        </span>
+      </MessageBar>
+    </li>
+    <li
+      className="ms-u-fadeIn100">
+      <MessageBar
+        isMultiline={true}
+        messageBarType={4}
+        onDismiss={null}>
+        <span>
+          a success
+          <br />
+        </span>
+      </MessageBar>
+    </li>
+    <li
+      className="ms-u-fadeIn100">
+      <MessageBar
+        isMultiline={true}
+        messageBarType={0}
+        onDismiss={null}>
+        <span>
+          an info
+          <br />
+        </span>
+      </MessageBar>
+    </li>
+  </ul>
+</div>
+`;
+
+exports[`test renders empty 1`] = `
+<div
+  className="notification-bar ms-Grid-col ms-u-sm12 ms-u-md6 ms-u-mdPush3">
+  <ul />
+</div>
+`;
