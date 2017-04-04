@@ -94,6 +94,7 @@ describe("Given a user store", () => {
         userId: "123",
         email: "test@example.com",
         flags: {
+          acceptedTos: true,
           paymentSet: true
         },
         settings: {
@@ -113,6 +114,7 @@ describe("Given a user store", () => {
         settings: {
           logoutUrl: "http://localhost:3000/logout",
           paymentUrl: "http://localhost:3000/account/billing",
+          acceptedTos: true,
           paymentSet: true,
           intercom: {
             app_id: "ap123",
