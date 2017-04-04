@@ -100,7 +100,6 @@ export class Container extends Component {
         <NavTree />
       </div>
       <div className="ms-Grid-col ms-u-sm12 ms-u-md9 ms-u-lg10">
-        <NotificationBar />
         {this.props.children}
       </div>
     </div>
