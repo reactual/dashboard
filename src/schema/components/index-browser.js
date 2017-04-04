@@ -7,7 +7,7 @@ import { selectedIndex, selectedDatabase } from "../"
 import { faunaClient } from "../../authentication"
 import { watchForError } from "../../notifications"
 import { monitorActivity, isBusy } from "../../activity-monitor"
-import { Pagination, InstanceInfo } from "../../dataset"
+import { InstancesList } from "../../dataset"
 import { ReplEditor, evalQuery } from "../../repl"
 import { KeyType } from "../../persistence/faunadb-wrapper"
 
@@ -24,8 +24,7 @@ export class IndexBrowser extends Component {
   initialState(props) {
     return {
       terms: '""',
-      queryFn: this.buildQuery(props),
-      selectedInstance: null
+      queryFn: this.buildQuery(props)
     }
   }
 
@@ -83,14 +82,12 @@ export class IndexBrowser extends Component {
           client.query(path, KeyType.SERVER, q.Get(ref))
         )
       )
-    ).then(
-      selectedInstance => this.setState({ selectedInstance })
     )
   }
 
   render() {
     const { index, isBusy } = this.props
-    const { terms, queryFn, selectedInstance } = this.state
+    const { terms, queryFn } = this.state
 
     return <div>
       {index.get("terms").size !== 0 ?
@@ -124,13 +121,7 @@ export class IndexBrowser extends Component {
 
       <div className="ms-Grid-row">
         <div className="ms-Grid-col ms-u-sm12">
-          <Pagination query={queryFn} onSelectRef={this.onSelectRef} />
-        </div>
-      </div>
-
-      <div className="ms-Grid-row">
-        <div className="ms-Grid-col ms-u-sm12">
-          <InstanceInfo instance={selectedInstance} />
+          <InstancesList query={queryFn} onSelectRef={this.onSelectRef} />
         </div>
       </div>
     </div>
