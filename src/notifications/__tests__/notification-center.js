@@ -1,4 +1,10 @@
-import { reduceNotifications, notify, watchForError } from "../"
+import {
+  NotificationType,
+  reduceNotifications,
+  pushNotification,
+  notify,
+  watchForError
+} from "../"
 
 const successfull = () => Promise.resolve(42)
 const failure = () => Promise.reject(new Error("Fail"))
@@ -15,6 +21,19 @@ describe("Given a notification store", () => {
     )
   })
 
+  it("should push a new notification", () => {
+    store.dispatch(pushNotification(NotificationType.ERROR, "an error"))
+    expect(notifications).toEqual([{ type: "error", message: "an error" }])
+  })
+
+  it("should remove notifications after a while", () => {
+    store.dispatch(pushNotification(NotificationType.SUCCESS, "Uhull!!"))
+    expect(notifications.length).toEqual(1)
+
+    jest.runAllTimers()
+    expect(notifications.length).toEqual(0)
+  })
+
   it("should notify on success", () => {
     return store.dispatch(notify("Uhull!", successfull)).then(finalResult => {
       expect(notifications).toEqual([{ type: "success", message: "Uhull!" }])
@@ -26,14 +45,6 @@ describe("Given a notification store", () => {
     return store.dispatch(notify("Should fail!", failure)).catch(finalError => {
       expect(notifications).toEqual([{ type: "error", message: "Error: Fail" }])
       expect(finalError).toEqual(new Error("Fail"))
-    })
-  })
-
-  it("should remove notifications after a while", () => {
-    return store.dispatch(notify("Uhull!", successfull)).then(finalResult => {
-      expect(notifications.length).toEqual(1)
-      jest.runAllTimers()
-      expect(notifications.length).toEqual(0)
     })
   })
 

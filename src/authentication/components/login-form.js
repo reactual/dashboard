@@ -2,14 +2,19 @@ import React, { Component } from "react"
 import { connect } from "react-redux"
 import { parse as parseURL } from "url"
 
-import { login, loginWithCloud, restoreUserSession } from "../"
-
 import {
   TextField,
-  Button, ButtonType,
-  Dialog, DialogType, DialogFooter,
-  Spinner, SpinnerType
+  Button,
+  ButtonType,
+  Dialog,
+  DialogType,
+  DialogFooter,
+  Spinner,
+  SpinnerType
 } from "office-ui-fabric-react"
+
+import { login, loginWithCloud, restoreUserSession } from "../"
+import { pushNotification, NotificationType } from "../../notifications"
 
 const DEFAULT_ENDPOINT = "https://db.fauna.com/"
 
@@ -30,13 +35,28 @@ class LoginForm extends Component {
 
   componentDidMount() {
     this.withMessage("Logging in...", loginWithCloud())
-      .then(loggedIn => !loggedIn ? this.withMessage("Restoring user session...", restoreUserSession()) : true)
-      .then(loggedIn => !loggedIn ? this.setState({ message: null }) : null)
+      .then(user => !user ? this.withMessage("Restoring user session...", restoreUserSession()) : user)
+      .then(user => !user ? this.setState({ message: null }) : user)
+      .then(this.askForPaymentInfoIfNeeded.bind(this))
   }
 
   componentWillReceiveProps(next) {
     if (this.props.currentUser !== null && next.currentUser === null) {
       this.setState({ message: "Logging out..." })
+    }
+  }
+
+  askForPaymentInfoIfNeeded(user) {
+    if (user && user.getIn(["settings", "paymentSet"]) === false) {
+      this.props.dispatch(
+        pushNotification(
+          NotificationType.WARNING,
+          <span>
+            Don't forget to <a href={user.getIn(["settings", "paymentUrl"])} target="_blank">setup your billing</a> information
+            to keep using FaunaDB
+          </span>
+        )
+      )
     }
   }
 

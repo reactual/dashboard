@@ -9,9 +9,18 @@ const messageBarTypeFor = (notificationType) => {
   switch (notificationType) {
     case NotificationType.ERROR:   return MessageBarType.error
     case NotificationType.SUCCESS: return MessageBarType.success
+    case NotificationType.WARNING: return MessageBarType.warning
     default:                       return MessageBarType.info
   }
 }
+
+const breakLines = (text) => (typeof text !== "string") ?  text :
+  text.split("\n").map((text, key) =>
+    <span key={key}>
+      {text}
+      <br/>
+    </span>
+  )
 
 export const NotificationBar = ({ notifications }) => {
   return <div className="notification-bar ms-Grid-col ms-u-sm12 ms-u-md6 ms-u-mdPush3">
@@ -20,9 +29,7 @@ export const NotificationBar = ({ notifications }) => {
         <li key={index} className="ms-u-fadeIn100">
           <MessageBar
             messageBarType={messageBarTypeFor(notification.get("type"))}>
-            {notification.get("message").split("\n").map((text, key) =>
-              <span key={key}>{text}<br/></span>
-            )}
+            { breakLines(notification.get("message")) }
           </MessageBar>
         </li>
       ))
