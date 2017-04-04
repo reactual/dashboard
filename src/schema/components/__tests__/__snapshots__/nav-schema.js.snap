@@ -1,98 +1,4 @@
-exports[`NavSchema Component should render classes and indexes for root db 1`] = `
-<CustomNav
-  groups={
-    Array [
-      Object {
-        "isExpanded": true,
-        "links": Array [
-          Object {
-            "key": "create-database",
-            "name": "Create Database",
-            "url": "/db/databases",
-          },
-          Object {
-            "key": "manage-keys",
-            "name": "Manage Keys",
-            "url": "/db/keys",
-          },
-        ],
-        "name": "Options",
-      },
-      Object {
-        "isExpanded": true,
-        "links": Array [
-          Object {
-            "key": "/db/classes/a-class",
-            "name": "a-class",
-            "url": "/db/classes/a-class",
-          },
-        ],
-        "name": "Classes",
-      },
-      Object {
-        "isExpanded": true,
-        "links": Array [
-          Object {
-            "key": "/db/indexes/a-index",
-            "name": "a-index",
-            "url": "/db/indexes/a-index",
-          },
-        ],
-        "name": "Indexes",
-      },
-    ]
-  }
-  onLinkClick={[Function]}
-  onRenderLink={[Function]} />
-`;
-
-exports[`NavSchema Component should render classes and indexes for sub db 1`] = `
-<CustomNav
-  groups={
-    Array [
-      Object {
-        "isExpanded": true,
-        "links": Array [
-          Object {
-            "key": "create-database",
-            "name": "Create Database",
-            "url": "/db/subdb/databases",
-          },
-          Object {
-            "key": "create-class",
-            "name": "Create Class",
-            "url": "/db/subdb/classes",
-          },
-          Object {
-            "key": "create-index",
-            "name": "Create Index",
-            "url": "/db/subdb/indexes",
-          },
-          Object {
-            "key": "manage-keys",
-            "name": "Manage Keys",
-            "url": "/db/subdb/keys",
-          },
-        ],
-        "name": "Options",
-      },
-      Object {
-        "isExpanded": true,
-        "links": Array [],
-        "name": "Classes",
-      },
-      Object {
-        "isExpanded": true,
-        "links": Array [],
-        "name": "Indexes",
-      },
-    ]
-  }
-  onLinkClick={[Function]}
-  onRenderLink={[Function]} />
-`;
-
-exports[`NavSchema Component should render options for root using a server key 1`] = `
+exports[`NavSchema Component should hide admin options when using a server key 1`] = `
 <CustomNav
   groups={
     Array [
@@ -140,7 +46,7 @@ exports[`NavSchema Component should render options for root using a server key 1
   onRenderLink={[Function]} />
 `;
 
-exports[`NavSchema Component should render options for sub using a server key 1`] = `
+exports[`NavSchema Component should render classes and indexes 1`] = `
 <CustomNav
   groups={
     Array [
@@ -148,26 +54,48 @@ exports[`NavSchema Component should render options for sub using a server key 1`
         "isExpanded": true,
         "links": Array [
           Object {
+            "key": "create-database",
+            "name": "Create Database",
+            "url": "/db/databases",
+          },
+          Object {
             "key": "create-class",
             "name": "Create Class",
-            "url": "/db/subdb/classes",
+            "url": "/db/classes",
           },
           Object {
             "key": "create-index",
             "name": "Create Index",
-            "url": "/db/subdb/indexes",
+            "url": "/db/indexes",
+          },
+          Object {
+            "key": "manage-keys",
+            "name": "Manage Keys",
+            "url": "/db/keys",
           },
         ],
         "name": "Options",
       },
       Object {
         "isExpanded": true,
-        "links": Array [],
+        "links": Array [
+          Object {
+            "key": "/db/classes/a-class",
+            "name": "a-class",
+            "url": "/db/classes/a-class",
+          },
+        ],
         "name": "Classes",
       },
       Object {
         "isExpanded": true,
-        "links": Array [],
+        "links": Array [
+          Object {
+            "key": "/db/indexes/a-index",
+            "name": "a-index",
+            "url": "/db/indexes/a-index",
+          },
+        ],
         "name": "Indexes",
       },
     ]

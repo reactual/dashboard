@@ -8,12 +8,12 @@ import { faunaClient } from "../../authentication"
 import { selectedResource, buildResourceUrl } from "../../router"
 import { KeyType } from "../../persistence/faunadb-wrapper"
 
-const buildOptions = (isAdmin, isRoot, url) => {
+const buildOptions = (isAdmin, isServer, url) => {
   return [
-    isAdmin               && { name: "Create Database", key: "create-database", url },
-    (!isAdmin || !isRoot) && { name: "Create Class", key: "create-class", url: buildResourceUrl(url, "classes") },
-    (!isAdmin || !isRoot) && { name: "Create Index", key: "create-index", url: buildResourceUrl(url, "indexes") },
-    isAdmin               && { name: "Manage Keys", key: "manage-keys", url: buildResourceUrl(url, "keys") },
+    isAdmin  && { name: "Create Database", key: "create-database", url },
+    isServer && { name: "Create Class", key: "create-class", url: buildResourceUrl(url, "classes") },
+    isServer && { name: "Create Index", key: "create-index", url: buildResourceUrl(url, "indexes") },
+    isAdmin  && { name: "Manage Keys", key: "manage-keys", url: buildResourceUrl(url, "keys") },
   ].filter(x => x)
 }
 
@@ -35,7 +35,7 @@ export const NavSchema = ({ client, database, resourceUrl }) => {
       isExpanded: true,
       links: buildOptions(
         client.hasPrivileges(KeyType.ADMIN),
-        database.get("isRoot"),
+        client.hasPrivileges(KeyType.SERVER),
         database.get("url")
       )
     },
