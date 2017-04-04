@@ -28,38 +28,34 @@ class NavDBTree extends Component {
 
   buildLinks(databaseTree) {
     this.setState({
-      links: this.databaseLinks(databaseTree, this.state.links)
+      links: [
+        this.buildDatabaseTreeLinks(databaseTree, this.state.links)
+      ]
     })
   }
 
-  databaseLinks(databaseTree, links) {
-    const toLink = (db) => {
-      const key = db.get("url")
-      const link = links.find(l => l.key === key) || {}
-      const isAtSelectedPath = db.get("path").every((seg, index) =>
-        this.props.selectedDatabasePath.get(index) === seg)
+  buildDatabaseTreeLinks(db, links) {
+    const key = db.get("url")
+    const link = links.find(l => l.key === key) || {}
 
-      return {
-        key,
-        url: key,
-        name: db.get("name"),
-        path: db.get("path"),
-        links: this.databaseLinks(db, link.links || []),
-        isExpanded: !!link.isExpanded ? link.isExpanded : isAtSelectedPath
-      }
+    const isAtSelectedPath = db.get("path").every((seg, index) =>
+      this.props.selectedDatabasePath.get(index) === seg)
+
+    const res = {
+      key: key,
+      url: key,
+      name: db.get("name"),
+      path: db.get("path"),
+      links: db.get("databases").map(sub => this.buildDatabaseTreeLinks(sub, link.links || [])).toJS(),
+      isExpanded: !!link.isExpanded ? link.isExpanded : isAtSelectedPath
     }
 
-    const res = databaseTree.get("databases").map(toLink).toJS()
-
-    if (databaseTree.get("hasMore"))  {
-      res.push({
-        key: `${databaseTree.get("url")}-load-more`,
+    if (db.get("hasMore"))  {
+      res.links.push({
+        key: `${db.get("url")}-load-more`,
         name: "Load more",
         icon: "CirclePlus",
-        onClick: this.loadMoreDatabases.bind(this,
-          databaseTree.get("path"),
-          databaseTree.get("cursor")
-        )
+        onClick: this.loadMoreDatabases.bind(this, db.get("path"), db.get("cursor"))
       })
     }
 
