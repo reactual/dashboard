@@ -4,6 +4,7 @@ import { shallow } from "enzyme"
 import { shallowToJson } from "enzyme-to-json"
 
 import { NavSchema } from "../nav-schema"
+import { KeyType } from "../../../persistence/faunadb-wrapper"
 
 jest.mock("react-router", () => ({
   browserHistory: {
@@ -14,47 +15,30 @@ jest.mock("react-router", () => ({
 const { browserHistory } = require("react-router")
 
 describe("NavSchema Component", () => {
-  let rootDb, subDb, client
-  const render = (db) => shallow(<NavSchema client={client} database={db} />)
+  let comp, client
 
   beforeEach(() => {
-    rootDb = Map.of(
-      "isRoot", true,
+    const database = Map.of(
       "url", "/db/databases",
       "classes", List.of(Map.of("name", "a-class", "url", "/db/classes/a-class")),
       "indexes", List.of(Map.of("name", "a-index", "url", "/db/indexes/a-index")),
     )
 
-    subDb = Map.of(
-      "isRoot", false,
-      "url", "/db/subdb/databases",
-      "classes", List(),
-      "indexes", List(),
-    )
-
     client = { hasPrivileges: jest.fn(() => true) }
+    comp = shallow(<NavSchema client={client} database={database} />)
   })
 
-  it("should render classes and indexes for root db", () => {
-    expect(shallowToJson(render(rootDb))).toMatchSnapshot()
+  it("should render classes and indexes", () => {
+    expect(shallowToJson(comp)).toMatchSnapshot()
   })
 
-  it("should render classes and indexes for sub db", () => {
-    expect(shallowToJson(render(subDb))).toMatchSnapshot()
-  })
-
-  it("should render options for root using a server key", () => {
-    client.hasPrivileges.mockReturnValue(false)
-    expect(shallowToJson(render(rootDb))).toMatchSnapshot()
-  })
-
-  it("should render options for sub using a server key", () => {
-    client.hasPrivileges.mockReturnValue(false)
-    expect(shallowToJson(render(subDb))).toMatchSnapshot()
+  it("should hide admin options when using a server key", () => {
+    client.hasPrivileges.mockImplementation(type => type === KeyType.SERVER)
+    comp.setProps({ client })
+    expect(shallowToJson(comp)).toMatchSnapshot()
   })
 
   it("navigates to the clicked resource", () => {
-    const comp = render(rootDb)
     comp.simulate("linkClick", new Event("click"), { url: "resource-url" })
     expect(browserHistory.push).toHaveBeenCalledWith("resource-url")
   })
