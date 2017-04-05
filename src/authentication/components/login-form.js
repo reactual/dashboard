@@ -47,7 +47,7 @@ class LoginForm extends Component {
   }
 
   askForPaymentInfoIfNeeded(user) {
-    if (user && user.getIn(["settings", "paymentSet"]) === false) {
+    if (this.shouldAskForPaymentInfo(user)) {
       this.props.dispatch(
         pushNotification(
           NotificationType.WARNING,
@@ -58,6 +58,12 @@ class LoginForm extends Component {
         )
       )
     }
+  }
+
+  shouldAskForPaymentInfo(user) {
+    return user &&
+      user.getIn(["settings", "acceptedTos"]) === true &&
+      user.getIn(["settings", "paymentSet"]) === false
   }
 
   withMessage(message, action) {

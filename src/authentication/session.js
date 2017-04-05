@@ -67,6 +67,7 @@ export const loginWithCloud = () => (dispatch) => {
             "logoutUrl", `${WEBSITE}/logout`,
             "paymentUrl", `${WEBSITE}/account/billing`,
             "paymentSet", websiteUser.getIn(["flags", "paymentSet"], false),
+            "acceptedTos", websiteUser.getIn(["flags", "acceptedTos"], false),
             "intercom", Map.of(
               "app_id", websiteUser.getIn(["settings", "intercom", "appId"]),
               "user_hash", websiteUser.getIn(["settings", "intercom", "userHash"]),
