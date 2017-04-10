@@ -39,7 +39,7 @@ class ToggleRepl extends Component {
   }
 
   componentWillReceiveProps(next) {
-    if (this.props.faunaClient !== next.faunaClient) {
+    if (next.faunaClient && next.faunaClient !== this.props.faunaClient) {
       this.setState({
         privilege: next.faunaClient.availablePrivileges[0]
       })
