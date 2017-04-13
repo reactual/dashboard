@@ -63,9 +63,8 @@ export default class ReplEditor extends Component {
       faunaLangCompleter
     ]
 
-    shortcuts.forEach(shortcut => {
-      this.editor.commands.addCommand(shortcut)
-    })
+    this.editor.commands.removeCommand("find")
+    shortcuts.forEach(shortcut => this.editor.commands.addCommand(shortcut))
 
     this.editor.focus()
   }
