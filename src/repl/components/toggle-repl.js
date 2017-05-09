@@ -99,6 +99,7 @@ class ToggleRepl extends Component {
       (result) => this.setState({ result, error: null }),
       (error) => this.setState({ error, result: null })
     )
+    ReactGA.event({category: "repl", action: "query"});
   }
 
   render() {

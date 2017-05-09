@@ -237,6 +237,7 @@ export const loadSchemaTree = (client, path = [], onCompleteAsyncOperations = no
   })
 
 const create = (nodeToUpdate, keyType, createQuery, mapper = x => x) => (client, dbPath, config) => (dispatch) => {
+  ReactGA.event({category: "schema-create", action: nodeToUpdate});
   return client.query(dbPath, keyType, createQuery(config)).then(
     instance => {
       dispatch({
