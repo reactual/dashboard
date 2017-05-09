@@ -1,5 +1,6 @@
 import Immutable, { Map, List } from "immutable"
 import { query as q } from "faunadb"
+import ReactGA from "react-ga"
 
 import { KeyType } from "../persistence/faunadb-wrapper"
 import { nestedDatabaseNodeIn, allDatabasesPaths } from "./path"

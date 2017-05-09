@@ -1,4 +1,5 @@
 import { Map, List } from "immutable"
+import ReactGA from "react-ga"
 
 export const NotificationType = {
   SUCCESS: "success",
