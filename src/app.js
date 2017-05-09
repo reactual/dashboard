@@ -120,7 +120,7 @@ export default class App extends Component {
   // FIXME: GA should be extract as a plugin for could users only
   componentDidMount() {
     if (App.isProduction) {
-      ReactGA.initialize("UA-51914115-3")
+      ReactGA.initialize("UA-51914115-2")
     }
   }
 
