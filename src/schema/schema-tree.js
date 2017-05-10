@@ -1,6 +1,5 @@
 import Immutable, { Map, List } from "immutable"
 import { query as q } from "faunadb"
-import ReactGA from "react-ga"
 
 import { KeyType } from "../persistence/faunadb-wrapper"
 import { nestedDatabaseNodeIn, allDatabasesPaths } from "./path"
@@ -238,7 +237,6 @@ export const loadSchemaTree = (client, path = [], onCompleteAsyncOperations = no
   })
 
 const create = (nodeToUpdate, keyType, createQuery, mapper = x => x) => (client, dbPath, config) => (dispatch) => {
-  ReactGA.event({category: "schema-create", action: nodeToUpdate});
   return client.query(dbPath, keyType, createQuery(config)).then(
     instance => {
       dispatch({

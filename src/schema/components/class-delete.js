@@ -1,6 +1,7 @@
 import React from "react"
 import { connect } from "react-redux"
 import { browserHistory } from "react-router"
+import ReactGA from "react-ga"
 
 import DeleteForm from "./delete-form"
 import { deleteClass, selectedDatabase, selectedClass } from "../"
@@ -9,11 +10,14 @@ import { faunaClient } from "../../authentication"
 import { buildResourceUrl } from "../../router"
 
 export const ClassDelete = ({ client, path, dbUrl, clazz }) => {
-  const onDelete = () => notify("Class deleted successfully", dispatch =>
-    dispatch(deleteClass(client, path, clazz.get("name"))).then(() =>
-      browserHistory.push(buildResourceUrl(dbUrl, "classes"))
+  const onDelete = () => {
+    ReactGA.event({category: "schema", action: "class-create"});
+    return notify("Class deleted successfully", dispatch =>
+      dispatch(deleteClass(client, path, clazz.get("name"))).then(() =>
+        browserHistory.push(buildResourceUrl(dbUrl, "classes"))
+      )
     )
-  )
+  }
 
   return <DeleteForm
     buttonText="Delete Class"

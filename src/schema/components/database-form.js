@@ -2,6 +2,7 @@ import React, { Component } from "react"
 import { connect } from "react-redux"
 import { browserHistory } from "react-router"
 import { TextField } from "office-ui-fabric-react"
+import ReactGA from "react-ga"
 
 import SchemaForm from "./schema-form"
 import DeleteForm from "./delete-form"
@@ -33,6 +34,7 @@ class DatabaseForm extends Component {
   }
 
   onSubmit() {
+    ReactGA.event({category: "schema", action: "database-create"});
     return notify("Database created successfully", dispatch =>
       dispatch(createDatabase(
         this.props.client,
@@ -48,7 +50,7 @@ class DatabaseForm extends Component {
 
   onDelete() {
     const { client, database } = this.props
-
+    ReactGA.event({category: "schema", action: "database-delete"});
     return notify("Database deleted successfully", dispatch =>
       dispatch(deleteDatabase(
         client,
