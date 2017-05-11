@@ -11,7 +11,7 @@ import { buildResourceUrl } from "../../router"
 
 export const ClassDelete = ({ client, path, dbUrl, clazz }) => {
   const onDelete = () => {
-    ReactGA.event({category: "schema", action: "class-create"});
+    ReactGA.event({category: "schema", action: "class-delete"});
     return notify("Class deleted successfully", dispatch =>
       dispatch(deleteClass(client, path, clazz.get("name"))).then(() =>
         browserHistory.push(buildResourceUrl(dbUrl, "classes"))
