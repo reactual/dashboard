@@ -1,6 +1,7 @@
 import React from "react"
 import { connect } from "react-redux"
 import { browserHistory } from "react-router"
+import ReactGA from "react-ga"
 
 import DeleteForm from "./delete-form"
 import { selectedIndex, selectedDatabase, deleteIndex } from "../"
@@ -9,11 +10,14 @@ import { faunaClient } from "../../authentication"
 import { notify } from "../../notifications"
 
 export const IndexDelete = ({ client, index, path, databaseUrl }) => {
-  const onDelete = () => notify("Index deleted successfully", dispatch =>
-    dispatch(deleteIndex(client, path, index.get("name"))).then(() =>
-      browserHistory.push(buildResourceUrl(databaseUrl, "indexes"))
+  const onDelete = () => {
+    ReactGA.event({category: "schema", action: "index-delete"});
+    return notify("Index deleted successfully", dispatch =>
+      dispatch(deleteIndex(client, path, index.get("name"))).then(() =>
+        browserHistory.push(buildResourceUrl(databaseUrl, "indexes"))
+      )
     )
-  )
+  }
 
   return <DeleteForm
     buttonText="Delete Index"

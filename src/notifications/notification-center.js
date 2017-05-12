@@ -1,4 +1,5 @@
 import { Map, List } from "immutable"
+import ReactGA from "react-ga"
 
 export const NotificationType = {
   SUCCESS: "success",
@@ -15,6 +16,7 @@ const Actions = {
 
 export const pushNotification = (type, message) => (dispatch) => {
   const notification = Map.of("type", type, "message", message)
+  ReactGA.event({category: "notify", action: type, label: message});
 
   dispatch({
     type: Actions.PUSH,

@@ -2,6 +2,7 @@ import React, { Component } from "react"
 import { connect } from "react-redux"
 import { browserHistory } from "react-router"
 import { TextField, Dropdown, Checkbox } from "office-ui-fabric-react"
+import ReactGA from "react-ga"
 
 import SchemaForm from "./schema-form"
 import FieldsForm from "./fields-form"
@@ -77,7 +78,7 @@ class IndexForm extends Component {
 
   onSubmit() {
     const { client, path, url } = this.props
-
+    ReactGA.event({category: "schema", action: "index-create"});
     return notify("Index created successfully", dispatch =>
       dispatch(createIndex(client, path, this.indexConfig())).then(index =>
         browserHistory.push(

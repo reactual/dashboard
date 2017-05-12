@@ -2,6 +2,7 @@ import React, { Component } from "react"
 import { connect } from "react-redux"
 import { browserHistory } from "react-router"
 import { TextField, Checkbox } from "office-ui-fabric-react"
+import ReactGA from "react-ga"
 
 import SchemaForm from "./schema-form"
 import { faunaClient } from "../../authentication"
@@ -44,6 +45,7 @@ class ClassForm extends Component {
 
   onSubmit() {
     const { path, url, client } = this.props
+    ReactGA.event({category: "schema", action: "class-create"});
 
     return notify("Class created successfully", dispatch => {
       let res = dispatch(createClass(client, path, this.classConfig()))

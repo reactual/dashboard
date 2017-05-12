@@ -2,6 +2,7 @@ import React, { Component } from "react"
 import { connect } from "react-redux"
 import { query as q } from "faunadb"
 import { TextField, Dropdown, MessageBar, MessageBarType } from "office-ui-fabric-react"
+import ReactGA from "react-ga"
 
 import SchemaForm from "./schema-form"
 import { selectedDatabase } from "../"
@@ -53,7 +54,7 @@ export class KeysForm extends Component {
 
   onSubmit() {
     const { client, database } = this.props
-
+    ReactGA.event({category: "schema", action: "keys-create"});
     return notify("Key created successfully", () =>
       client
         .query(database.get("path"), KeyType.ADMIN, q.CreateKey(this.keyConfig()))

@@ -1,5 +1,6 @@
 import SplitPane from "react-split-pane"
 import React, { Component } from "react"
+import ReactGA from "react-ga"
 import { connect } from "react-redux"
 import { browserHistory } from "react-router"
 import { List } from "immutable"
@@ -99,6 +100,7 @@ class ToggleRepl extends Component {
       (result) => this.setState({ result, error: null }),
       (error) => this.setState({ error, result: null })
     )
+    ReactGA.event({category: "repl", action: "query"});
   }
 
   render() {
