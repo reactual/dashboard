@@ -60,6 +60,7 @@ class ToggleRepl extends Component {
   }
 
   onToggle(field) {
+    ReactGA.event({category: "repl", action: "toggle-"+field+"-"+!this.state[field]});
     return value => this.setState({
       [field]: !this.state[field]
     })
