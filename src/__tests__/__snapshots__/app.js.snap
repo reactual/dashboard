@@ -12,7 +12,7 @@ exports[`Container Component displays the base layout 1`] = `
         className="ms-Grid-row header"
       >
         <div
-          className="ms-Grid-col ms-u-sm5 ms-u-md6 ms-u-lg3 ms-u-xl2 padding-05"
+          className="ms-Grid-col ms-u-sm5 ms-u-md6 ms-u-lg3 ms-u-xl2"
         >
           <Link
             onlyActiveOnIndex={false}
@@ -26,7 +26,7 @@ exports[`Container Component displays the base layout 1`] = `
           </Link>
         </div>
         <div
-          className="ms-Grid-col ms-u-sm12 ms-u-md6 ms-u-lg9 ms-u-xl10 padding-05"
+          className="ms-Grid-col ms-u-sm12 ms-u-md6 ms-u-lg9 ms-u-xl10"
         >
           <ul>
             <li>
@@ -85,7 +85,7 @@ exports[`Container Component renders a smaller sidebar when using a server key 1
         className="ms-Grid-row header"
       >
         <div
-          className="ms-Grid-col ms-u-sm5 ms-u-md6 ms-u-lg3 ms-u-xl2 padding-05"
+          className="ms-Grid-col ms-u-sm5 ms-u-md6 ms-u-lg3 ms-u-xl2"
         >
           <Link
             onlyActiveOnIndex={false}
@@ -99,7 +99,7 @@ exports[`Container Component renders a smaller sidebar when using a server key 1
           </Link>
         </div>
         <div
-          className="ms-Grid-col ms-u-sm12 ms-u-md6 ms-u-lg9 ms-u-xl10 padding-05"
+          className="ms-Grid-col ms-u-sm12 ms-u-md6 ms-u-lg9 ms-u-xl10"
         >
           <ul>
             <li>

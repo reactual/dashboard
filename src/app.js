@@ -61,10 +61,10 @@ export class Container extends Component {
         <ToggleRepl>
           <div className="ms-Grid">
             <div className="ms-Grid-row header">
-              <div className="ms-Grid-col ms-u-sm5 ms-u-md6 ms-u-lg3 ms-u-xl2 padding-05">
+              <div className="ms-Grid-col ms-u-sm5 ms-u-md6 ms-u-lg3 ms-u-xl2">
                 <Link to="/"><img src={logo} alt="logo" /></Link>
               </div>
-              <div className="ms-Grid-col ms-u-sm12 ms-u-md6 ms-u-lg9 ms-u-xl10 padding-05">
+              <div className="ms-Grid-col ms-u-sm12 ms-u-md6 ms-u-lg9 ms-u-xl10">
                 <ul>
                   <li><ActivityMonitor /></li>
                   <li><a href="http://fauna.com/tutorials" target="_blank" rel="noopener noreferrer">Tutorials</a></li>
