@@ -1,10 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
 exports[`UserAccount Component should show and hide context menu on click 1`] = `
 <div>
   <Button
     buttonType={5}
     description="Log out"
     icon="Contact"
-    onClick={[Function]} />
+    onClick={[Function]}
+  />
 </div>
 `;
 
@@ -14,7 +17,8 @@ exports[`UserAccount Component should show and hide context menu on click 2`] = 
     buttonType={5}
     description="Log out"
     icon="Contact"
-    onClick={[Function]} />
+    onClick={[Function]}
+  />
   <ContextualMenu
     beakWidth={16}
     directionalHint={5}
@@ -32,7 +36,8 @@ exports[`UserAccount Component should show and hide context menu on click 2`] = 
     }
     onDismiss={[Function]}
     shouldFocusOnMount={true}
-    targetElement="mocked" />
+    targetElement="mocked"
+  />
 </div>
 `;
 
@@ -42,6 +47,7 @@ exports[`UserAccount Component should show and hide context menu on click 3`] = 
     buttonType={5}
     description="Log out"
     icon="Contact"
-    onClick={[Function]} />
+    onClick={[Function]}
+  />
 </div>
 `;

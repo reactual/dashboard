@@ -1,12 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
 exports[`IndexBrowser Component browser a class index 1`] = `
 <div>
   <div
-    className="ms-Grid-row">
+    className="ms-Grid-row"
+  >
     <div
-      className="ms-Grid-col ms-u-sm12">
+      className="ms-Grid-col ms-u-sm12"
+    >
       <InstancesList
         onSelectRef={[Function]}
-        query={[Function]} />
+        query={[Function]}
+      />
     </div>
   </div>
 </div>
@@ -15,9 +20,11 @@ exports[`IndexBrowser Component browser a class index 1`] = `
 exports[`IndexBrowser Component browser non class index 1`] = `
 <div>
   <div
-    className="ms-Grid-row">
+    className="ms-Grid-row"
+  >
     <div
-      className="ms-Grid-col ms-u-sm12">
+      className="ms-Grid-col ms-u-sm12"
+    >
       <h3>
         Lookup
       </h3>
@@ -37,24 +44,30 @@ exports[`IndexBrowser Component browser non class index 1`] = `
             },
           ]
         }
-        value="\"\"" />
+        value="\\"\\""
+      />
       <p
-        className="ms-TextField-description">
-        The contents of this field will be evaluated with the context of a repl and placed in the \"terms\" field of the index look up query.
+        className="ms-TextField-description"
+      >
+        The contents of this field will be evaluated with the context of a repl and placed in the "terms" field of the index look up query.
       </p>
       <Button
         buttonType={1}
-        onClick={[Function]}>
+        onClick={[Function]}
+      >
         Search
       </Button>
     </div>
   </div>
   <div
-    className="ms-Grid-row">
+    className="ms-Grid-row"
+  >
     <div
-      className="ms-Grid-col ms-u-sm12">
+      className="ms-Grid-col ms-u-sm12"
+    >
       <InstancesList
-        onSelectRef={[Function]} />
+        onSelectRef={[Function]}
+      />
     </div>
   </div>
 </div>
@@ -63,9 +76,11 @@ exports[`IndexBrowser Component browser non class index 1`] = `
 exports[`IndexBrowser Component browser non class index 2`] = `
 <div>
   <div
-    className="ms-Grid-row">
+    className="ms-Grid-row"
+  >
     <div
-      className="ms-Grid-col ms-u-sm12">
+      className="ms-Grid-col ms-u-sm12"
+    >
       <h3>
         Lookup
       </h3>
@@ -85,25 +100,31 @@ exports[`IndexBrowser Component browser non class index 2`] = `
             },
           ]
         }
-        value="a name" />
+        value="a name"
+      />
       <p
-        className="ms-TextField-description">
-        The contents of this field will be evaluated with the context of a repl and placed in the \"terms\" field of the index look up query.
+        className="ms-TextField-description"
+      >
+        The contents of this field will be evaluated with the context of a repl and placed in the "terms" field of the index look up query.
       </p>
       <Button
         buttonType={1}
-        onClick={[Function]}>
+        onClick={[Function]}
+      >
         Search
       </Button>
     </div>
   </div>
   <div
-    className="ms-Grid-row">
+    className="ms-Grid-row"
+  >
     <div
-      className="ms-Grid-col ms-u-sm12">
+      className="ms-Grid-col ms-u-sm12"
+    >
       <InstancesList
         onSelectRef={[Function]}
-        query={[Function]} />
+        query={[Function]}
+      />
     </div>
   </div>
 </div>

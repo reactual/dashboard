@@ -1,7 +1,10 @@
-exports[`test should turn spinner OFF when NOT monitoring activity 1`] = `null`;
+// Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`test should turn spinner ON when monitoring activity 1`] = `
+exports[`should turn spinner OFF when NOT monitoring activity 1`] = `null`;
+
+exports[`should turn spinner ON when monitoring activity 1`] = `
 <Spinner
   className="activity-monitor"
-  type={0} />
+  type={0}
+/>
 `;

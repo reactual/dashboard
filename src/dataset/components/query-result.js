@@ -118,7 +118,7 @@ export default class QueryResult extends Component {
     if (this.props.onSelectRef && (item instanceof v.Ref || value instanceof v.Ref)) {
       const ref = item instanceof v.Ref ? item : value
 
-      return <a href="#"
+      return <a href={`#${ref.value}`}
         onClick={(e) => {
           e.preventDefault()
           this.props.onSelectRef(ref)

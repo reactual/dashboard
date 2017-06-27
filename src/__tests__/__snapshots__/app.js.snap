@@ -1,24 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
 exports[`Container Component displays the base layout 1`] = `
 <div
-  className="ms-Fabric ms-font-m">
+  className="ms-Fabric ms-font-m"
+>
   <Connect(ToggleRepl)>
     <div
-      className="ms-Grid">
+      className="ms-Grid"
+    >
       <div
-        className="ms-Grid-row header">
+        className="ms-Grid-row header"
+      >
         <div
-          className="ms-Grid-col ms-u-sm5 ms-u-md6 ms-u-lg3 ms-u-xl2 padding-05">
+          className="ms-Grid-col ms-u-sm5 ms-u-md6 ms-u-lg3 ms-u-xl2 padding-05"
+        >
           <Link
             onlyActiveOnIndex={false}
             style={Object {}}
-            to="/">
+            to="/"
+          >
             <img
               alt="logo"
-              src="logo.svg" />
+              src="logo.svg"
+            />
           </Link>
         </div>
         <div
-          className="ms-Grid-col ms-u-sm12 ms-u-md6 ms-u-lg9 ms-u-xl10 padding-05">
+          className="ms-Grid-col ms-u-sm12 ms-u-md6 ms-u-lg9 ms-u-xl10 padding-05"
+        >
           <ul>
             <li>
               <Connect(ActivityMonitor) />
@@ -26,21 +35,27 @@ exports[`Container Component displays the base layout 1`] = `
             <li>
               <a
                 href="http://fauna.com/tutorials"
-                target="_blank">
+                rel="noopener noreferrer"
+                target="_blank"
+              >
                 Tutorials
               </a>
             </li>
             <li>
               <a
                 href="http://fauna.com/documentation"
-                target="_blank">
+                rel="noopener noreferrer"
+                target="_blank"
+              >
                 Documentation
               </a>
             </li>
             <li>
               <a
                 href="https://fauna.com/resources#drivers"
-                target="_blank">
+                rel="noopener noreferrer"
+                target="_blank"
+              >
                 Drivers
               </a>
             </li>
@@ -60,25 +75,32 @@ exports[`Container Component displays the base layout 1`] = `
 
 exports[`Container Component renders a smaller sidebar when using a server key 1`] = `
 <div
-  className="ms-Fabric ms-font-m">
+  className="ms-Fabric ms-font-m"
+>
   <Connect(ToggleRepl)>
     <div
-      className="ms-Grid">
+      className="ms-Grid"
+    >
       <div
-        className="ms-Grid-row header">
+        className="ms-Grid-row header"
+      >
         <div
-          className="ms-Grid-col ms-u-sm5 ms-u-md6 ms-u-lg3 ms-u-xl2 padding-05">
+          className="ms-Grid-col ms-u-sm5 ms-u-md6 ms-u-lg3 ms-u-xl2 padding-05"
+        >
           <Link
             onlyActiveOnIndex={false}
             style={Object {}}
-            to="/">
+            to="/"
+          >
             <img
               alt="logo"
-              src="logo.svg" />
+              src="logo.svg"
+            />
           </Link>
         </div>
         <div
-          className="ms-Grid-col ms-u-sm12 ms-u-md6 ms-u-lg9 ms-u-xl10 padding-05">
+          className="ms-Grid-col ms-u-sm12 ms-u-md6 ms-u-lg9 ms-u-xl10 padding-05"
+        >
           <ul>
             <li>
               <Connect(ActivityMonitor) />
@@ -86,21 +108,27 @@ exports[`Container Component renders a smaller sidebar when using a server key 1
             <li>
               <a
                 href="http://fauna.com/tutorials"
-                target="_blank">
+                rel="noopener noreferrer"
+                target="_blank"
+              >
                 Tutorials
               </a>
             </li>
             <li>
               <a
                 href="http://fauna.com/documentation"
-                target="_blank">
+                rel="noopener noreferrer"
+                target="_blank"
+              >
                 Documentation
               </a>
             </li>
             <li>
               <a
                 href="https://fauna.com/resources#drivers"
-                target="_blank">
+                rel="noopener noreferrer"
+                target="_blank"
+              >
                 Drivers
               </a>
             </li>

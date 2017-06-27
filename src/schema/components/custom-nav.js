@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import React from "react"
 import { Nav, css } from "office-ui-fabric-react"
 
@@ -38,7 +40,6 @@ export default class CustomNav extends Nav {
         <a
           className={ css("ms-Nav-link") }
           style={ { paddingLeft: nestingLevel > 0 ? paddingBefore : _indentationSize } }
-          // eslint-disable-next-line
           href={ link.url || "javascript:" }
           onClick={ this._onNavAnchorLinkClicked.bind(this, link) }
           aria-label={ link.ariaLabel }

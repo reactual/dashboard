@@ -1,12 +1,16 @@
-exports[`test displays index information 1`] = `
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`displays index information 1`] = `
 <div>
   <h3>
     Index Details
   </h3>
   <div
-    className="ms-Grid-row">
+    className="ms-Grid-row"
+  >
     <div
-      className="ms-Grid-col ms-u-sm12 ms-u-md6">
+      className="ms-Grid-col ms-u-sm12 ms-u-md6"
+    >
       <dl>
         <dt>
           Name
@@ -21,14 +25,16 @@ exports[`test displays index information 1`] = `
           <Link
             onlyActiveOnIndex={false}
             style={Object {}}
-            to="/db/a-db/a-class">
+            to="/db/a-db/a-class"
+          >
             a-class
           </Link>
         </dd>
       </dl>
     </div>
     <div
-      className="ms-Grid-col ms-u-sm12 ms-u-md6">
+      className="ms-Grid-col ms-u-sm12 ms-u-md6"
+    >
       <dl>
         <dt>
           Active
@@ -52,9 +58,11 @@ exports[`test displays index information 1`] = `
     </div>
   </div>
   <div
-    className="ms-Grid-row">
+    className="ms-Grid-row"
+  >
     <div
-      className="ms-Grid-col ms-u-sm12 ms-u-md6">
+      className="ms-Grid-col ms-u-sm12 ms-u-md6"
+    >
       <h3>
         Terms
       </h3>
@@ -62,12 +70,13 @@ exports[`test displays index information 1`] = `
         <li>
           data
           name
-           => casefold
+           =&gt; casefold
         </li>
       </ul>
     </div>
     <div
-      className="ms-Grid-col ms-u-sm12 ms-u-md6">
+      className="ms-Grid-col ms-u-sm12 ms-u-md6"
+    >
       <h3>
         Values
       </h3>

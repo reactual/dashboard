@@ -1,3 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
 exports[`NavSchema Component should hide admin options when using a server key 1`] = `
 <CustomNav
   groups={
@@ -43,7 +45,8 @@ exports[`NavSchema Component should hide admin options when using a server key 1
     ]
   }
   onLinkClick={[Function]}
-  onRenderLink={[Function]} />
+  onRenderLink={[Function]}
+/>
 `;
 
 exports[`NavSchema Component should render classes and indexes 1`] = `
@@ -101,5 +104,6 @@ exports[`NavSchema Component should render classes and indexes 1`] = `
     ]
   }
   onLinkClick={[Function]}
-  onRenderLink={[Function]} />
+  onRenderLink={[Function]}
+/>
 `;

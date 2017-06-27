@@ -1,18 +1,23 @@
-exports[`test display index components 1`] = `
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`display index components 1`] = `
 <Pivot>
   <PivotItem
     itemKey="index-info"
-    linkText="Index Details">
+    linkText="Index Details"
+  >
     <Connect(IndexInfo) />
   </PivotItem>
   <PivotItem
     itemKey="index-browser"
-    linkText="Browse Index">
+    linkText="Browse Index"
+  >
     <Connect(IndexBrowser) />
   </PivotItem>
   <PivotItem
     itemKey="index-delete"
-    linkText="Delete">
+    linkText="Delete"
+  >
     <Connect(Component) />
   </PivotItem>
 </Pivot>

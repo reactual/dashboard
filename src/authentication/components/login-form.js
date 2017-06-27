@@ -52,7 +52,7 @@ class LoginForm extends Component {
         pushNotification(
           NotificationType.WARNING,
           <span>
-            Don't forget to <a href={user.getIn(["settings", "paymentUrl"])} target="_blank">setup your billing</a> information
+            Don't forget to <a href={user.getIn(["settings", "paymentUrl"])} target="_blank" rel="noopener noreferrer">setup your billing</a> information
             to keep using FaunaDB
           </span>
         )
