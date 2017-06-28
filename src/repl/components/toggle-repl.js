@@ -1,11 +1,11 @@
+import ReactGA from "react-ga"
 import SplitPane from "react-split-pane"
 import React, { Component } from "react"
-import ReactGA from "react-ga"
 import { connect } from "react-redux"
 import { browserHistory } from "react-router"
 import { List } from "immutable"
 import { IconButton, PrimaryButton, CommandButton } from "office-ui-fabric-react/lib/Button"
-import { Dropdown } from "office-ui-fabric-react/lib/Dropdown"
+import { Dropdown, DropdownMenuItemType } from "office-ui-fabric-react/lib/Dropdown"
 import { Breadcrumb } from "office-ui-fabric-react/lib/Breadcrumb"
 
 import "./toggle-repl.css"
@@ -116,7 +116,7 @@ class ToggleRepl extends Component {
       .concat(this.buildBreadCrumbItem(this.props.selectedPath))
 
     const privileges = this.props.faunaClient.availablePrivileges
-      .map(privilege => ({ key: privilege, text: privilege }))
+      .map(privilege => ({ key: privilege, text: privilege, itemType: DropdownMenuItemType.Normal }))
 
     return <SplitPane
       className="toggle-repl"

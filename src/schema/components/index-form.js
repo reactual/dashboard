@@ -3,7 +3,7 @@ import React, { Component } from "react"
 import { connect } from "react-redux"
 import { browserHistory } from "react-router"
 import { TextField } from "office-ui-fabric-react/lib/TextField"
-import { Dropdown } from "office-ui-fabric-react/lib/Dropdown"
+import { Dropdown, DropdownMenuItemType } from "office-ui-fabric-react/lib/Dropdown"
 import { Checkbox } from "office-ui-fabric-react/lib/Checkbox"
 
 import SchemaForm from "./schema-form"
@@ -122,7 +122,8 @@ class IndexForm extends Component {
         options={this.props.classes.map(clazz => ({
           key: clazz.get("url"),
           text: clazz.get("name"),
-          ref: clazz.get("ref")
+          ref: clazz.get("ref"),
+          itemType: DropdownMenuItemType.Normal
         })).toJS()} />
 
       <Checkbox

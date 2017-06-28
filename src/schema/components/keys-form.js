@@ -3,7 +3,7 @@ import React, { Component } from "react"
 import { connect } from "react-redux"
 import { query as q } from "faunadb"
 import { TextField } from "office-ui-fabric-react/lib/TextField"
-import { Dropdown } from "office-ui-fabric-react/lib/Dropdown"
+import { Dropdown, DropdownMenuItemType } from "office-ui-fabric-react/lib/Dropdown"
 import { MessageBar, MessageBarType } from "office-ui-fabric-react/lib/MessageBar"
 
 import SchemaForm from "./schema-form"
@@ -95,10 +95,10 @@ export class KeysForm extends Component {
               selectedKey={this.state.form.role}
               onChanged={this.onSelect("role")}
               options={[
-                { key: "admin", text: "admin" },
-                { key: "server", text: "server" },
-                { key: "server-readonly", text: "server-readonly" },
-                { key: "client", text: "client" }
+                { key: "admin", text: "admin", itemType: DropdownMenuItemType.Normal },
+                { key: "server", text: "server", itemType: DropdownMenuItemType.Normal },
+                { key: "server-readonly", text: "server-readonly", itemType: DropdownMenuItemType.Normal },
+                { key: "client", text: "client", itemType: DropdownMenuItemType.Normal }
               ]} />
 
             <p className="ms-TextField-description">
@@ -113,7 +113,8 @@ export class KeysForm extends Component {
               options={
                 database.get("databases").map(db => ({
                   key: db.get("name"),
-                  text: db.get("name")
+                  text: db.get("name"),
+                  itemType: DropdownMenuItemType.Normal
                 })).toJSON()
               } />
         </SchemaForm>
