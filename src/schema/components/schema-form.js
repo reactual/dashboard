@@ -16,9 +16,7 @@ const SchemaForm = (props) => {
   return <form onSubmit={onSubmit}>
       <h3>{props.title}{props.context ? " in " + props.context : null}</h3>
       {props.children}
-      <PrimaryButton
-        disabled={props.disabled}
-        onClick={onSubmit}>
+      <PrimaryButton type="submit" disabled={props.disabled}>
           {props.buttonText}
       </PrimaryButton>
     </form>

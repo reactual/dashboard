@@ -15,6 +15,8 @@ class LoginForm extends Component {
   constructor(props) {
     super(props)
     this.state = this.initialState()
+    this.askForPaymentInfoIfNeeded = this.askForPaymentInfoIfNeeded.bind(this)
+    this.onSubmit = this.onSubmit.bind(this)
   }
 
   initialState() {
@@ -30,7 +32,7 @@ class LoginForm extends Component {
     this.withMessage("Logging in...", loginWithCloud())
       .then(user => !user ? this.withMessage("Restoring user session...", restoreUserSession()) : user)
       .then(user => !user ? this.setState({ message: null }) : user)
-      .then(this.askForPaymentInfoIfNeeded.bind(this))
+      .then(this.askForPaymentInfoIfNeeded)
   }
 
   componentWillReceiveProps(next) {
@@ -95,7 +97,7 @@ class LoginForm extends Component {
     }
   }
 
-  onClick(e) {
+  onSubmit(e) {
     e.preventDefault()
     if (this.validate()) {
       const { endpoint, secret } = this.state
@@ -142,7 +144,7 @@ class LoginForm extends Component {
       >
         {message != null ?
           <Spinner type={SpinnerType.large} label={message} /> :
-          <form>
+          <form onSubmit={this.onSubmit}>
             <p className="ms-Dialog-subText">
               Visit <a href="https://fauna.com/dashboard">https://fauna.com/dashboard</a> or talk to your administrator to provision keys.
             </p>
@@ -165,7 +167,7 @@ class LoginForm extends Component {
               errorMessage={errors.secret} />
 
             <DialogFooter>
-              <PrimaryButton onClick={this.onClick.bind(this)}>
+              <PrimaryButton type="submit">
                 Use Secret
               </PrimaryButton>
             </DialogFooter>
