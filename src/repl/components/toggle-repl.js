@@ -158,7 +158,7 @@ class ToggleRepl extends Component {
                 key.
 
                 <IconButton
-                  icon={this.state.fullscreen ? "BackToWindow" : "FullScreen"}
+                  iconProps={{ iconName: this.state.fullscreen ? "BackToWindow" : "FullScreen" }}
                   onClick={this.onToggle("fullscreen")} />
               </div>
 
@@ -178,7 +178,7 @@ class ToggleRepl extends Component {
             </PrimaryButton>
 
             <CommandButton
-              icon={this.state.isOpen ? "ChevronDown" : "ChevronUp"}
+              iconProps={{ iconName: this.state.isOpen ? "ChevronDown" : "ChevronUp" }}
               onClick={this.onToggle("isOpen")}>
                 Toggle Query Console
             </CommandButton>

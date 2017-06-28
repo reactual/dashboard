@@ -93,13 +93,15 @@ class Pagination extends Component {
           <IconButton
             disabled={isBusy}
             onClick={this.refresh.bind(this)}
-            icon="Refresh">Refresh</IconButton>
+            iconProps={{ iconName: "Refresh" }}>
+              Refresh
+          </IconButton>
         </div>
         <div className="ms-Grid-col ms-u-sm1 ms-u-textAlignCenter">
           <IconButton
             disabled={!result.before || isBusy}
             onClick={this.setCursor("before", result.before)}
-            icon="ChevronLeft" />
+            iconProps={{ iconName: "ChevronLeft" }} />
         </div>
         <div className="ms-Grid-col ms-u-sm1">
           <TextField
@@ -111,7 +113,7 @@ class Pagination extends Component {
           <IconButton
             disabled={!result.after || isBusy}
             onClick={this.setCursor("after", result.after)}
-            icon="ChevronRight" />
+            iconProps={{ iconName: "ChevronRight" }} />
         </div>
       </div>
 

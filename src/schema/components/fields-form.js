@@ -36,7 +36,7 @@ export default class FieldsForm extends Component {
           <CommandButton
             type="button"
             onClick={this.addField.bind(this)}
-            icon="Add">
+            iconProps={{ iconName: "Add" }}>
             Add field
           </CommandButton>
         </div>

@@ -55,7 +55,7 @@ export default class InstancesList extends Component {
 
       <div style={{display: !selectedInstance ? "none" : "block"}}>
         <CommandButton
-          icon="ChromeBack"
+          iconProps={{ iconName: "ChromeBack" }}
           onClick={this.hideInstanceInfo}>
             Go back to the instances list
         </CommandButton>

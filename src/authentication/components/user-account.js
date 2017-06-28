@@ -33,7 +33,7 @@ export class UserAccount extends Component {
 
     return <div>
         <IconButton
-        icon="Contact"
+        iconProps={{ iconName: 'Contact' }}
         description="Log out"
         onClick={this.showMenu.bind(this)} />
 

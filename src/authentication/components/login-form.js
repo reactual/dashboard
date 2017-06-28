@@ -135,9 +135,9 @@ class LoginForm extends Component {
 
     return (
       <Dialog
-        isOpen={!this.props.currentUser}
-        isBlocking={true}
-        type={DialogType.largeHeader}
+        hidden={this.props.currentUser}
+        dialogContentProps={{ type: DialogType.largeHeader }}
+        modalProps={{ isBlocking: true }}
         title="Connect to FaunaDB"
       >
         {message != null ?
