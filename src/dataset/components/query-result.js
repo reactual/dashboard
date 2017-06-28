@@ -1,13 +1,8 @@
 import React, { Component } from "react"
 import { values as v } from "faunadb"
-
-import {
-  Pivot,
-  PivotItem,
-  DetailsList,
-  CheckboxVisibility,
-  DetailsListLayoutMode
-} from "office-ui-fabric-react"
+import { Pivot, PivotItem } from "office-ui-fabric-react/lib/Pivot"
+import { DetailsList, DetailsListLayoutMode } from "office-ui-fabric-react/lib/DetailsList"
+import { CheckboxVisibility } from "office-ui-fabric-react/lib/Checkbox"
 
 import { renderSpecialType } from "../special-types"
 import { stringify } from "../stringify"

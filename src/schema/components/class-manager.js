@@ -1,5 +1,5 @@
 import React from "react"
-import { Pivot, PivotItem } from "office-ui-fabric-react"
+import { Pivot, PivotItem } from "office-ui-fabric-react/lib/Pivot"
 
 import ClassInfo from "./class-info"
 import ClassBrowser from "./class-browser"

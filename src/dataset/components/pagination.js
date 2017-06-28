@@ -1,6 +1,7 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
-import { TextField, Button, ButtonType } from "office-ui-fabric-react"
+import { TextField } from "office-ui-fabric-react/lib/TextField"
+import { IconButton } from "office-ui-fabric-react/lib/Button"
 
 import "./pagination.css"
 import { watchForError } from "../../notifications"
@@ -89,16 +90,14 @@ class Pagination extends Component {
     return <div className="ms-Grid pagination">
       <div className="ms-Grid-row">
         <div className="ms-Grid-col ms-u-sm9">
-          <Button
+          <IconButton
             disabled={isBusy}
-            buttonType={ButtonType.icon}
             onClick={this.refresh.bind(this)}
-            icon="Refresh">Refresh</Button>
+            icon="Refresh">Refresh</IconButton>
         </div>
         <div className="ms-Grid-col ms-u-sm1 ms-u-textAlignCenter">
-          <Button
+          <IconButton
             disabled={!result.before || isBusy}
-            buttonType={ButtonType.icon}
             onClick={this.setCursor("before", result.before)}
             icon="ChevronLeft" />
         </div>
@@ -109,9 +108,8 @@ class Pagination extends Component {
             onChanged={this.onChange.bind(this)} />
         </div>
         <div className="ms-Grid-col ms-u-sm1 ms-u-textAlignCenter">
-          <Button
+          <IconButton
             disabled={!result.after || isBusy}
-            buttonType={ButtonType.icon}
             onClick={this.setCursor("after", result.after)}
             icon="ChevronRight" />
         </div>

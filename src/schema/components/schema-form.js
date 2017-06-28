@@ -1,6 +1,6 @@
 import React from "react"
 import { connect } from "react-redux"
-import { Button, ButtonType } from "office-ui-fabric-react"
+import { PrimaryButton } from "office-ui-fabric-react/lib/Button"
 
 import { selectedDatabase } from "../"
 import { monitorActivity, isBusy } from "../../activity-monitor"
@@ -13,15 +13,14 @@ const SchemaForm = (props) => {
       .then(props.onFinish)
   }
 
-  return <form>
+  return <form onSubmit={onSubmit}>
       <h3>{props.title}{props.context ? " in " + props.context : null}</h3>
       {props.children}
-      <Button
+      <PrimaryButton
         disabled={props.disabled}
-        buttonType={ButtonType.primary}
         onClick={onSubmit}>
           {props.buttonText}
-      </Button>
+      </PrimaryButton>
     </form>
 }
 

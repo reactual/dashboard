@@ -1,8 +1,10 @@
+import ReactGA from "react-ga"
 import React, { Component } from "react"
 import { connect } from "react-redux"
 import { query as q } from "faunadb"
-import { TextField, Dropdown, MessageBar, MessageBarType } from "office-ui-fabric-react"
-import ReactGA from "react-ga"
+import { TextField } from "office-ui-fabric-react/lib/TextField"
+import { Dropdown } from "office-ui-fabric-react/lib/Dropdown"
+import { MessageBar, MessageBarType } from "office-ui-fabric-react/lib/MessageBar"
 
 import SchemaForm from "./schema-form"
 import { selectedDatabase } from "../"

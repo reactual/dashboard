@@ -1,7 +1,7 @@
 import React from "react"
 import { connect } from "react-redux"
 import { Link } from "react-router"
-import { Pivot, PivotItem } from "office-ui-fabric-react"
+import { Pivot, PivotItem } from "office-ui-fabric-react/lib/Pivot"
 
 import KeysForm from "./keys-form"
 import KeysList from "./keys-list"

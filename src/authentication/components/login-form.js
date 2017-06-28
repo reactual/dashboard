@@ -1,17 +1,10 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
 import { parse as parseURL } from "url"
-
-import {
-  TextField,
-  Button,
-  ButtonType,
-  Dialog,
-  DialogType,
-  DialogFooter,
-  Spinner,
-  SpinnerType
-} from "office-ui-fabric-react"
+import { Spinner, SpinnerType } from "office-ui-fabric-react/lib/Spinner"
+import { PrimaryButton } from "office-ui-fabric-react/lib/Button"
+import { TextField } from "office-ui-fabric-react/lib/TextField"
+import { Dialog, DialogType, DialogFooter } from "office-ui-fabric-react/lib/Dialog"
 
 import { login, loginWithCloud, restoreUserSession } from "../"
 import { pushNotification, NotificationType } from "../../notifications"
@@ -172,11 +165,9 @@ class LoginForm extends Component {
               errorMessage={errors.secret} />
 
             <DialogFooter>
-              <Button
-                buttonType={ButtonType.primary}
-                onClick={this.onClick.bind(this)}>
+              <PrimaryButton onClick={this.onClick.bind(this)}>
                 Use Secret
-              </Button>
+              </PrimaryButton>
             </DialogFooter>
           </form>}
       </Dialog>

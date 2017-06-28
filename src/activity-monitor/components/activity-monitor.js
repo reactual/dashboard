@@ -1,6 +1,6 @@
 import React from "react"
 import { connect } from "react-redux"
-import { Spinner } from "office-ui-fabric-react"
+import { Spinner } from "office-ui-fabric-react/lib/Spinner"
 
 import "./activity-monitor.css"
 import { isBusy } from "../"

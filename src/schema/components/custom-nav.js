@@ -1,7 +1,8 @@
 /* eslint-disable */
 
 import React from "react"
-import { Nav, css } from "office-ui-fabric-react"
+import { Nav } from "office-ui-fabric-react/lib/Nav"
+import { css } from "office-ui-fabric-react" // FIXME: remove
 
 const _indentationSize = 14
 const _indentWithExpandButton = 28

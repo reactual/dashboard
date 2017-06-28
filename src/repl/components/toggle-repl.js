@@ -4,7 +4,9 @@ import ReactGA from "react-ga"
 import { connect } from "react-redux"
 import { browserHistory } from "react-router"
 import { List } from "immutable"
-import { Button, ButtonType, Breadcrumb, Dropdown } from "office-ui-fabric-react"
+import { IconButton, PrimaryButton, CommandButton } from "office-ui-fabric-react/lib/Button"
+import { Dropdown } from "office-ui-fabric-react/lib/Dropdown"
+import { Breadcrumb } from "office-ui-fabric-react/lib/Breadcrumb"
 
 import "./toggle-repl.css"
 import { ReplEditor, evalQuery } from "../"
@@ -155,11 +157,9 @@ class ToggleRepl extends Component {
                   onChanged={this.onSelect("privilege")} />
                 key.
 
-                <Button
-                  buttonType={ButtonType.icon}
+                <IconButton
                   icon={this.state.fullscreen ? "BackToWindow" : "FullScreen"}
-                  onClick={this.onToggle("fullscreen")}
-                  />
+                  onClick={this.onToggle("fullscreen")} />
               </div>
 
               <QueryResult
@@ -171,19 +171,17 @@ class ToggleRepl extends Component {
 
         <div className="repl-bar">
           <div className="buttons">
-            <Button
+            <PrimaryButton
               disabled={!this.state.isOpen || this.props.isBusy}
-              buttonType={ButtonType.primary}
               onClick={this.executeQuery.bind(this)}>
                 Run
-            </Button>
+            </PrimaryButton>
 
-            <Button
+            <CommandButton
               icon={this.state.isOpen ? "ChevronDown" : "ChevronUp"}
-              buttonType={ButtonType.command}
               onClick={this.onToggle("isOpen")}>
                 Toggle Query Console
-            </Button>
+            </CommandButton>
           </div>
 
           <Breadcrumb items={breadcrumbItems} />

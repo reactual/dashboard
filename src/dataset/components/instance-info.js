@@ -1,15 +1,9 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
 import { query as q } from "faunadb"
-
-import {
-  Pivot,
-  PivotItem,
-  Button,
-  ButtonType,
-  MessageBar,
-  MessageBarType
-} from "office-ui-fabric-react"
+import { Pivot, PivotItem } from "office-ui-fabric-react/lib/Pivot"
+import { MessageBar, MessageBarType } from "office-ui-fabric-react/lib/MessageBar"
+import { DefaultButton, PrimaryButton } from "office-ui-fabric-react/lib/MessageBar"
 
 import { Pagination } from "../"
 import { stringify } from "../stringify"
@@ -173,18 +167,17 @@ class InstanceInfo extends Component {
                 the "data" field of the updated instance.
               </p>
 
-              <Button
+              <PrimaryButton
                 disabled={isBusy}
-                buttonType={ButtonType.primary}
                 onClick={this.updateInstance.bind(this)}>
                   Update Instance
-              </Button>
+              </PrimaryButton>
 
-              <Button
+              <DefaultButton
                 disabled={isBusy}
                 onClick={this.openDeleteConfirmation.bind(this)}>
                   Delete Instance
-              </Button>
+              </DefaultButton>
 
               {isDeleteConfirmationOpen ?
                 <MessageBar
@@ -192,18 +185,17 @@ class InstanceInfo extends Component {
                   isMultiline={false}
                   actions={
                     <div>
-                      <Button
+                      <PrimaryButton
                         disabled={isBusy}
-                        buttonType={ButtonType.primary}
                         onClick={this.deleteInstance.bind(this)}>
                         Yes
-                      </Button>
+                      </PrimaryButton>
 
-                      <Button
+                      <DefaultButton
                         disabled={isBusy}
                         onClick={this.closeDeleteConfirmation.bind(this)}>
                         No
-                      </Button>
+                      </DefaultButton>
                     </div>
                   }>
                   Are you sure you want to delete this instance?

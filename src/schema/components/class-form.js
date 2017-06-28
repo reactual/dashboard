@@ -1,8 +1,9 @@
+import ReactGA from "react-ga"
 import React, { Component } from "react"
 import { connect } from "react-redux"
 import { browserHistory } from "react-router"
-import { TextField, Checkbox } from "office-ui-fabric-react"
-import ReactGA from "react-ga"
+import { Checkbox } from "office-ui-fabric-react/lib/Checkbox"
+import { TextField } from "office-ui-fabric-react/lib/TextField"
 
 import SchemaForm from "./schema-form"
 import { faunaClient } from "../../authentication"

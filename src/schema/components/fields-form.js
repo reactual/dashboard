@@ -1,13 +1,8 @@
 import React, { Component } from "react"
-
-import {
-  Dropdown,
-  Label,
-  TagPicker,
-  TagItem,
-  Button,
-  ButtonType
-} from "office-ui-fabric-react"
+import { Dropdown } from "office-ui-fabric-react/lib/Dropdown"
+import { Label } from "office-ui-fabric-react/lib/Label"
+import { CommandButton } from "office-ui-fabric-react/lib/Button"
+import { TagPicker, TagItem } from "office-ui-fabric-react/lib/components/pickers/TagPicker/TagPicker"
 
 import "./fields-form.css"
 
@@ -38,13 +33,12 @@ export default class FieldsForm extends Component {
             "data" "name" will be become {'{ "field": ["data", "name"] }'}
           </p>
           {this.props.children}
-          <Button
+          <CommandButton
             type="button"
-            buttonType={ButtonType.command}
             onClick={this.addField.bind(this)}
             icon="Add">
             Add field
-          </Button>
+          </CommandButton>
         </div>
       </div>
     </div>

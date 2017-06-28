@@ -1,11 +1,8 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
-import {
-  Button,
-  ButtonType,
-  ContextualMenu,
-  DirectionalHint
-} from "office-ui-fabric-react"
+import { ContextualMenu } from "office-ui-fabric-react/lib/ContextualMenu"
+import { DirectionalHint } from "office-ui-fabric-react/lib/Callout"
+import { IconButton } from "office-ui-fabric-react/lib/Button"
 
 import { logout } from "../"
 
@@ -35,10 +32,9 @@ export class UserAccount extends Component {
     const { target, menuVisible } = this.state
 
     return <div>
-        <Button
+        <IconButton
         icon="Contact"
         description="Log out"
-        buttonType={ButtonType.icon}
         onClick={this.showMenu.bind(this)} />
 
       {menuVisible ?

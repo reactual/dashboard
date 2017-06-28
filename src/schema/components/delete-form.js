@@ -1,6 +1,7 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
-import { TextField, Button } from "office-ui-fabric-react"
+import { TextField } from "office-ui-fabric-react/lib/TextField"
+import { DefaultButton } from "office-ui-fabric-react/lib/TextField"
 
 import "./delete-form.css"
 import { faunaClient } from "../../authentication"
@@ -52,11 +53,11 @@ class DeleteForm extends Component {
           value={this.state.name}
           onBeforeChange={this.onChange.bind(this)} />
 
-        <Button
+        <DefaultButton
           disabled={(this.props.validateName !== this.state.name) || this.props.isBusy}
           onClick={this.remove.bind(this)}>
           {this.props.buttonText}
-        </Button>
+        </DefaultButton>
       </form>
     </div>
   }

@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { Button, ButtonType } from "office-ui-fabric-react"
+import { CommandButton } from "office-ui-fabric-react/lib/Button"
 
 import Pagination from "./pagination"
 import InstanceInfo from "./instance-info"
@@ -54,12 +54,11 @@ export default class InstancesList extends Component {
       </div>
 
       <div style={{display: !selectedInstance ? "none" : "block"}}>
-        <Button
-          buttonType={ButtonType.command}
+        <CommandButton
           icon="ChromeBack"
           onClick={this.hideInstanceInfo}>
             Go back to the instances list
-        </Button>
+        </CommandButton>
 
         <InstanceInfo instance={selectedInstance} />
       </div>
