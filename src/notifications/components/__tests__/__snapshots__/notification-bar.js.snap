@@ -1,13 +1,18 @@
-exports[`test accept html tags 1`] = `
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`accept html tags 1`] = `
 <div
-  className="notification-bar ms-Grid-col ms-u-sm12 ms-u-md6 ms-u-mdPush3">
+  className="notification-bar ms-Grid-col ms-u-sm12 ms-u-md6 ms-u-mdPush3"
+>
   <ul>
     <li
-      className="ms-u-fadeIn100">
+      className="ms-u-fadeIn100"
+    >
       <MessageBar
         isMultiline={true}
         messageBarType={1}
-        onDismiss={null}>
+        onDismiss={null}
+      >
         <span>
           an error
         </span>
@@ -17,16 +22,19 @@ exports[`test accept html tags 1`] = `
 </div>
 `;
 
-exports[`test breaks lines 1`] = `
+exports[`breaks lines 1`] = `
 <div
-  className="notification-bar ms-Grid-col ms-u-sm12 ms-u-md6 ms-u-mdPush3">
+  className="notification-bar ms-Grid-col ms-u-sm12 ms-u-md6 ms-u-mdPush3"
+>
   <ul>
     <li
-      className="ms-u-fadeIn100">
+      className="ms-u-fadeIn100"
+    >
       <MessageBar
         isMultiline={true}
         messageBarType={1}
-        onDismiss={null}>
+        onDismiss={null}
+      >
         <span>
           an
           <br />
@@ -41,16 +49,19 @@ exports[`test breaks lines 1`] = `
 </div>
 `;
 
-exports[`test displays notifications 1`] = `
+exports[`displays notifications 1`] = `
 <div
-  className="notification-bar ms-Grid-col ms-u-sm12 ms-u-md6 ms-u-mdPush3">
+  className="notification-bar ms-Grid-col ms-u-sm12 ms-u-md6 ms-u-mdPush3"
+>
   <ul>
     <li
-      className="ms-u-fadeIn100">
+      className="ms-u-fadeIn100"
+    >
       <MessageBar
         isMultiline={true}
         messageBarType={1}
-        onDismiss={null}>
+        onDismiss={null}
+      >
         <span>
           an error
           <br />
@@ -58,11 +69,13 @@ exports[`test displays notifications 1`] = `
       </MessageBar>
     </li>
     <li
-      className="ms-u-fadeIn100">
+      className="ms-u-fadeIn100"
+    >
       <MessageBar
         isMultiline={true}
         messageBarType={4}
-        onDismiss={null}>
+        onDismiss={null}
+      >
         <span>
           a success
           <br />
@@ -70,11 +83,13 @@ exports[`test displays notifications 1`] = `
       </MessageBar>
     </li>
     <li
-      className="ms-u-fadeIn100">
+      className="ms-u-fadeIn100"
+    >
       <MessageBar
         isMultiline={true}
         messageBarType={5}
-        onDismiss={null}>
+        onDismiss={null}
+      >
         <span>
           a warning
           <br />
@@ -82,11 +97,13 @@ exports[`test displays notifications 1`] = `
       </MessageBar>
     </li>
     <li
-      className="ms-u-fadeIn100">
+      className="ms-u-fadeIn100"
+    >
       <MessageBar
         isMultiline={true}
         messageBarType={0}
-        onDismiss={null}>
+        onDismiss={null}
+      >
         <span>
           an info
           <br />
@@ -97,9 +114,10 @@ exports[`test displays notifications 1`] = `
 </div>
 `;
 
-exports[`test renders empty 1`] = `
+exports[`renders empty 1`] = `
 <div
-  className="notification-bar ms-Grid-col ms-u-sm12 ms-u-md6 ms-u-mdPush3">
+  className="notification-bar ms-Grid-col ms-u-sm12 ms-u-md6 ms-u-mdPush3"
+>
   <ul />
 </div>
 `;

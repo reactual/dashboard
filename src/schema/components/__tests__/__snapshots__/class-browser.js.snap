@@ -1,15 +1,20 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
 exports[`ClassBrowser Component displays instances 1`] = `
 <div>
   <InstancesList
     onSelectRef={[Function]}
-    query={[Function]} />
+    query={[Function]}
+  />
   <p
-    className="ms-TextField-description">
+    className="ms-TextField-description"
+  >
     This view was derived from 
     <Link
       onlyActiveOnIndex={false}
       style={Object {}}
-      to="/db/a-db/indexes/all_people">
+      to="/db/a-db/indexes/all_people"
+    >
       indexes/all_people
     </Link>
     .
@@ -23,13 +28,15 @@ exports[`ClassBrowser Component should disable create index button when busy 1`]
     No eligible class index found.
   </p>
   <p
-    className="ms-TextField-description">
+    className="ms-TextField-description"
+  >
     Without a class index instances can only be loaded by Ref. A class index indexes all members of the class under a single key. For large datasets this can increase storage and processing overhead, so use class indexes sparingly in production.
   </p>
   <Button
     buttonType={1}
     disabled={true}
-    onClick={[Function]}>
+    onClick={[Function]}
+  >
     Create a class index now
   </Button>
 </div>
@@ -41,13 +48,15 @@ exports[`ClassBrowser Component should display new index button when no class in
     No eligible class index found.
   </p>
   <p
-    className="ms-TextField-description">
+    className="ms-TextField-description"
+  >
     Without a class index instances can only be loaded by Ref. A class index indexes all members of the class under a single key. For large datasets this can increase storage and processing overhead, so use class indexes sparingly in production.
   </p>
   <Button
     buttonType={1}
     disabled={false}
-    onClick={[Function]}>
+    onClick={[Function]}
+  >
     Create a class index now
   </Button>
 </div>

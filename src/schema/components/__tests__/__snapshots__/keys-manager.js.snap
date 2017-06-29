@@ -1,9 +1,12 @@
-exports[`test should keys containment message when not a root database 1`] = `
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should keys containment message when not a root database 1`] = `
 <div>
   <Pivot>
     <PivotItem
       itemKey="keys"
-      linkText="Keys">
+      linkText="Keys"
+    >
       <p>
         Keys are located at the container database. If you want to grant access to 
         <strong>
@@ -13,7 +16,8 @@ exports[`test should keys containment message when not a root database 1`] = `
         <Link
           onlyActiveOnIndex={false}
           style={Object {}}
-          to="/db/parent/keys">
+          to="/db/parent/keys"
+        >
           parent
         </Link>
          container.
@@ -22,24 +26,27 @@ exports[`test should keys containment message when not a root database 1`] = `
     </PivotItem>
     <PivotItem
       itemKey="create"
-      linkText="Create a Key">
+      linkText="Create a Key"
+    >
       <Connect(KeysForm) />
     </PivotItem>
   </Pivot>
 </div>
 `;
 
-exports[`test should render for root db 1`] = `
+exports[`should render for root db 1`] = `
 <div>
   <Pivot>
     <PivotItem
       itemKey="keys"
-      linkText="Keys">
+      linkText="Keys"
+    >
       <Connect(KeysList) />
     </PivotItem>
     <PivotItem
       itemKey="create"
-      linkText="Create a Key">
+      linkText="Create a Key"
+    >
       <Connect(KeysForm) />
     </PivotItem>
   </Pivot>

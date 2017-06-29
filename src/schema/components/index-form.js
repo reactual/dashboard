@@ -139,7 +139,7 @@ class IndexForm extends Component {
           Terms are matched exactly, values can be ranged.
           A termless index is useful for paginating all members of a class. <a
             href="https://fauna.com/documentation/objects#indexes"
-            target="_blank">
+            target="_blank" rel="noopener noreferrer">
               Learn more about indexes in the documentation.
           </a>
         </p>

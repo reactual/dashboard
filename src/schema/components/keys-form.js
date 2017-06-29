@@ -100,7 +100,7 @@ export class KeysForm extends Component {
               ]} />
 
             <p className="ms-TextField-description">
-              Check <a href="https://fauna.com/documentation/#authentication" target="_blank">https://fauna.com/documentation/#authentication</a> for
+              Check <a href="https://fauna.com/documentation/#authentication" target="_blank" rel="noopener noreferrer">https://fauna.com/documentation/#authentication</a> for
               more information about the key's role.
             </p>
 

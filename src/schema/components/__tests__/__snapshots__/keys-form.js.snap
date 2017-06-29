@@ -1,10 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
 exports[`KeysForm Component should be submit the form 1`] = `
 <div>
   <Connect(SchemaForm)
     buttonText="Create Key"
     onFinish={[Function]}
     onSubmit={[Function]}
-    title="Create a new key">
+    title="Create a new key"
+  >
     <TextField
       deferredValidationTime={200}
       errorMessage=""
@@ -16,7 +19,8 @@ exports[`KeysForm Component should be submit the form 1`] = `
       onNotifyValidationResult={[Function]}
       resizable={true}
       underlined={false}
-      value="server-key" />
+      value="server-key"
+    />
     <Dropdown
       label="Role"
       onChanged={[Function]}
@@ -40,16 +44,20 @@ exports[`KeysForm Component should be submit the form 1`] = `
           },
         ]
       }
-      selectedKey="admin" />
+      selectedKey="admin"
+    />
     <p
-      className="ms-TextField-description">
+      className="ms-TextField-description"
+    >
       Check 
       <a
         href="https://fauna.com/documentation/#authentication"
-        target="_blank">
+        rel="noopener noreferrer"
+        target="_blank"
+      >
         https://fauna.com/documentation/#authentication
       </a>
-       for more information about the key\'s role.
+       for more information about the key's role.
     </p>
     <Dropdown
       label="Database"
@@ -66,7 +74,8 @@ exports[`KeysForm Component should be submit the form 1`] = `
           },
         ]
       }
-      selectedKey="db1" />
+      selectedKey="db1"
+    />
   </Connect(SchemaForm)>
 </div>
 `;
@@ -77,7 +86,8 @@ exports[`KeysForm Component should be submit the form 2`] = `
     buttonText="Create Key"
     onFinish={[Function]}
     onSubmit={[Function]}
-    title="Create a new key">
+    title="Create a new key"
+  >
     <TextField
       deferredValidationTime={200}
       errorMessage=""
@@ -89,7 +99,8 @@ exports[`KeysForm Component should be submit the form 2`] = `
       onNotifyValidationResult={[Function]}
       resizable={true}
       underlined={false}
-      value="" />
+      value=""
+    />
     <Dropdown
       label="Role"
       onChanged={[Function]}
@@ -113,16 +124,20 @@ exports[`KeysForm Component should be submit the form 2`] = `
           },
         ]
       }
-      selectedKey={null} />
+      selectedKey={null}
+    />
     <p
-      className="ms-TextField-description">
+      className="ms-TextField-description"
+    >
       Check 
       <a
         href="https://fauna.com/documentation/#authentication"
-        target="_blank">
+        rel="noopener noreferrer"
+        target="_blank"
+      >
         https://fauna.com/documentation/#authentication
       </a>
-       for more information about the key\'s role.
+       for more information about the key's role.
     </p>
     <Dropdown
       label="Database"
@@ -139,7 +154,8 @@ exports[`KeysForm Component should be submit the form 2`] = `
           },
         ]
       }
-      selectedKey={null} />
+      selectedKey={null}
+    />
   </Connect(SchemaForm)>
 </div>
 `;
@@ -150,7 +166,8 @@ exports[`KeysForm Component should create a new key on submit 1`] = `
     buttonText="Create Key"
     onFinish={[Function]}
     onSubmit={[Function]}
-    title="Create a new key">
+    title="Create a new key"
+  >
     <TextField
       deferredValidationTime={200}
       errorMessage=""
@@ -162,7 +179,8 @@ exports[`KeysForm Component should create a new key on submit 1`] = `
       onNotifyValidationResult={[Function]}
       resizable={true}
       underlined={false}
-      value="" />
+      value=""
+    />
     <Dropdown
       label="Role"
       onChanged={[Function]}
@@ -186,16 +204,20 @@ exports[`KeysForm Component should create a new key on submit 1`] = `
           },
         ]
       }
-      selectedKey={null} />
+      selectedKey={null}
+    />
     <p
-      className="ms-TextField-description">
+      className="ms-TextField-description"
+    >
       Check 
       <a
         href="https://fauna.com/documentation/#authentication"
-        target="_blank">
+        rel="noopener noreferrer"
+        target="_blank"
+      >
         https://fauna.com/documentation/#authentication
       </a>
-       for more information about the key\'s role.
+       for more information about the key's role.
     </p>
     <Dropdown
       label="Database"
@@ -212,19 +234,21 @@ exports[`KeysForm Component should create a new key on submit 1`] = `
           },
         ]
       }
-      selectedKey={null} />
+      selectedKey={null}
+    />
   </Connect(SchemaForm)>
   <div>
     <br />
     <MessageBar
       isMultiline={true}
       messageBarType={3}
-      onDismiss={null}>
-      Your key\'s secret is: 
+      onDismiss={null}
+    >
+      Your key's secret is: 
       <pre>
         one-time-secret
       </pre>
-      Be aware that this secret won\'t be displayed again.
+      Be aware that this secret won't be displayed again.
     </MessageBar>
   </div>
 </div>
@@ -236,7 +260,8 @@ exports[`KeysForm Component should render an empty form 1`] = `
     buttonText="Create Key"
     onFinish={[Function]}
     onSubmit={[Function]}
-    title="Create a new key">
+    title="Create a new key"
+  >
     <TextField
       deferredValidationTime={200}
       errorMessage=""
@@ -248,7 +273,8 @@ exports[`KeysForm Component should render an empty form 1`] = `
       onNotifyValidationResult={[Function]}
       resizable={true}
       underlined={false}
-      value="" />
+      value=""
+    />
     <Dropdown
       label="Role"
       onChanged={[Function]}
@@ -272,16 +298,20 @@ exports[`KeysForm Component should render an empty form 1`] = `
           },
         ]
       }
-      selectedKey={null} />
+      selectedKey={null}
+    />
     <p
-      className="ms-TextField-description">
+      className="ms-TextField-description"
+    >
       Check 
       <a
         href="https://fauna.com/documentation/#authentication"
-        target="_blank">
+        rel="noopener noreferrer"
+        target="_blank"
+      >
         https://fauna.com/documentation/#authentication
       </a>
-       for more information about the key\'s role.
+       for more information about the key's role.
     </p>
     <Dropdown
       label="Database"
@@ -298,7 +328,8 @@ exports[`KeysForm Component should render an empty form 1`] = `
           },
         ]
       }
-      selectedKey={null} />
+      selectedKey={null}
+    />
   </Connect(SchemaForm)>
 </div>
 `;
