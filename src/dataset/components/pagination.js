@@ -1,7 +1,7 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
 import { TextField } from "office-ui-fabric-react/lib/TextField"
-import { IconButton } from "office-ui-fabric-react/lib/Button"
+import { CommandButton, IconButton } from "office-ui-fabric-react/lib/Button"
 
 import "./pagination.css"
 import { watchForError } from "../../notifications"
@@ -12,6 +12,9 @@ class Pagination extends Component {
   constructor(props) {
     super(props)
     this.state = this.initialState()
+    this.refresh = this.refresh.bind(this)
+    this.onChange = this.onChange.bind(this)
+    this.onFinishTyping = this.onFinishTyping.bind(this)
   }
 
   initialState() {
@@ -61,15 +64,17 @@ class Pagination extends Component {
     )
   }
 
-  onChange(pageSize) {
-    const n = parseInt(pageSize, 10)
+  onChange(size) {
+    const n = parseInt(size, 10)
+    if (!isNaN(n)) this.setState({ size: n })
+  }
 
-    if (!isNaN(n) && n !== this.state.size) {
-      this.setState({
-        size: n,
-        cursor: {}
-      }, () => this.refresh())
+  onFinishTyping(size) {
+    if (!isNaN(size) && size > 0) {
+      this.setState({ cursor: {} }, this.refresh)
     }
+
+    return ""
   }
 
   setCursor(name, value) {
@@ -90,12 +95,12 @@ class Pagination extends Component {
     return <div className="ms-Grid pagination">
       <div className="ms-Grid-row">
         <div className="ms-Grid-col ms-u-sm9">
-          <IconButton
+          <CommandButton
             disabled={isBusy}
-            onClick={this.refresh.bind(this)}
+            onClick={this.refresh}
             iconProps={{ iconName: "Refresh" }}>
               Refresh
-          </IconButton>
+          </CommandButton>
         </div>
         <div className="ms-Grid-col ms-u-sm1 ms-u-textAlignCenter">
           <IconButton
@@ -107,7 +112,8 @@ class Pagination extends Component {
           <TextField
             disabled={isBusy}
             value={this.state.size}
-            onChanged={this.onChange.bind(this)} />
+            onChanged={this.onChange}
+            onGetErrorMessage={this.onFinishTyping} />
         </div>
         <div className="ms-Grid-col ms-u-sm1 ms-u-textAlignCenter">
           <IconButton

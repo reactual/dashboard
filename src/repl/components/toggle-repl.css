@@ -65,6 +65,10 @@
     float: right;
 }
 
+.toggle-repl .repl-bar .buttons .ms-Button--primary {
+    margin-top: 0.3em;
+}
+
 .toggle-repl .repl-bar .ms-Breadcrumb {
     margin: 0.25em;
 }
