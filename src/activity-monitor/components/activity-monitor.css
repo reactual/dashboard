@@ -1,5 +1,5 @@
 .activity-monitor .ms-Spinner-circle {
-    border-color: white;
-    border-top-color: black;
-    margin: 0;
+    border-color: #fff !important;
+    border-top-color: #000 !important;
+    margin: 0 !important;
 }
