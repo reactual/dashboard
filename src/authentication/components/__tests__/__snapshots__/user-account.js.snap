@@ -2,10 +2,13 @@
 
 exports[`UserAccount Component should show and hide context menu on click 1`] = `
 <div>
-  <Button
-    buttonType={5}
+  <ComponentWithInjectedProps
     description="Log out"
-    icon="Contact"
+    iconProps={
+      Object {
+        "iconName": "Contact",
+      }
+    }
     onClick={[Function]}
   />
 </div>
@@ -13,13 +16,17 @@ exports[`UserAccount Component should show and hide context menu on click 1`] = 
 
 exports[`UserAccount Component should show and hide context menu on click 2`] = `
 <div>
-  <Button
-    buttonType={5}
+  <ComponentWithInjectedProps
     description="Log out"
-    icon="Contact"
+    iconProps={
+      Object {
+        "iconName": "Contact",
+      }
+    }
     onClick={[Function]}
   />
   <ContextualMenu
+    arrowDirection={0}
     beakWidth={16}
     directionalHint={5}
     gapSpace={0}
@@ -43,10 +50,13 @@ exports[`UserAccount Component should show and hide context menu on click 2`] = 
 
 exports[`UserAccount Component should show and hide context menu on click 3`] = `
 <div>
-  <Button
-    buttonType={5}
+  <ComponentWithInjectedProps
     description="Log out"
-    icon="Contact"
+    iconProps={
+      Object {
+        "iconName": "Contact",
+      }
+    }
     onClick={[Function]}
   />
 </div>

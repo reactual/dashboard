@@ -32,13 +32,12 @@ exports[`ClassBrowser Component should disable create index button when busy 1`]
   >
     Without a class index instances can only be loaded by Ref. A class index indexes all members of the class under a single key. For large datasets this can increase storage and processing overhead, so use class indexes sparingly in production.
   </p>
-  <Button
-    buttonType={1}
+  <ComponentWithInjectedProps
     disabled={true}
     onClick={[Function]}
   >
     Create a class index now
-  </Button>
+  </ComponentWithInjectedProps>
 </div>
 `;
 
@@ -52,12 +51,11 @@ exports[`ClassBrowser Component should display new index button when no class in
   >
     Without a class index instances can only be loaded by Ref. A class index indexes all members of the class under a single key. For large datasets this can increase storage and processing overhead, so use class indexes sparingly in production.
   </p>
-  <Button
-    buttonType={1}
+  <ComponentWithInjectedProps
     disabled={false}
     onClick={[Function]}
   >
     Create a class index now
-  </Button>
+  </ComponentWithInjectedProps>
 </div>
 `;

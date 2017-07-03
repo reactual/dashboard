@@ -37,7 +37,7 @@ describe("InstancesList Component", () => {
     comp.setState({ selectedInstance: "fake-instance" })
     expect(shallowToJson(comp)).toMatchSnapshot()
 
-    comp.find("Button").simulate("click")
+    comp.find("ComponentWithInjectedProps").simulate("click")
     expect(shallowToJson(comp)).toMatchSnapshot()
   })
 

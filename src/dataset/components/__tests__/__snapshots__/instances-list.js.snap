@@ -21,13 +21,16 @@ exports[`InstancesList Component can go back to instances list from instance det
       }
     }
   >
-    <Button
-      buttonType={4}
-      icon="ChromeBack"
+    <ComponentWithInjectedProps
+      iconProps={
+        Object {
+          "iconName": "ChromeBack",
+        }
+      }
       onClick={[Function]}
     >
       Go back to the instances list
-    </Button>
+    </ComponentWithInjectedProps>
     <Connect(InstanceInfo)
       instance="fake-instance"
     />
@@ -56,13 +59,16 @@ exports[`InstancesList Component can go back to instances list from instance det
       }
     }
   >
-    <Button
-      buttonType={4}
-      icon="ChromeBack"
+    <ComponentWithInjectedProps
+      iconProps={
+        Object {
+          "iconName": "ChromeBack",
+        }
+      }
       onClick={[Function]}
     >
       Go back to the instances list
-    </Button>
+    </ComponentWithInjectedProps>
     <Connect(InstanceInfo)
       instance={null}
     />
@@ -91,13 +97,16 @@ exports[`InstancesList Component displays instances list 1`] = `
       }
     }
   >
-    <Button
-      buttonType={4}
-      icon="ChromeBack"
+    <ComponentWithInjectedProps
+      iconProps={
+        Object {
+          "iconName": "ChromeBack",
+        }
+      }
       onClick={[Function]}
     >
       Go back to the instances list
-    </Button>
+    </ComponentWithInjectedProps>
     <Connect(InstanceInfo)
       instance={null}
     />
@@ -126,13 +135,16 @@ exports[`InstancesList Component displays the selected instance 1`] = `
       }
     }
   >
-    <Button
-      buttonType={4}
-      icon="ChromeBack"
+    <ComponentWithInjectedProps
+      iconProps={
+        Object {
+          "iconName": "ChromeBack",
+        }
+      }
       onClick={[Function]}
     >
       Go back to the instances list
-    </Button>
+    </ComponentWithInjectedProps>
     <Connect(InstanceInfo)
       instance="a-instance"
     />
@@ -161,13 +173,16 @@ exports[`InstancesList Component does NOT display selected ref if no promise is 
       }
     }
   >
-    <Button
-      buttonType={4}
-      icon="ChromeBack"
+    <ComponentWithInjectedProps
+      iconProps={
+        Object {
+          "iconName": "ChromeBack",
+        }
+      }
       onClick={[Function]}
     >
       Go back to the instances list
-    </Button>
+    </ComponentWithInjectedProps>
     <Connect(InstanceInfo)
       instance={null}
     />
@@ -196,13 +211,16 @@ exports[`InstancesList Component does not set onSelectRef for Pagination Compone
       }
     }
   >
-    <Button
-      buttonType={4}
-      icon="ChromeBack"
+    <ComponentWithInjectedProps
+      iconProps={
+        Object {
+          "iconName": "ChromeBack",
+        }
+      }
       onClick={[Function]}
     >
       Go back to the instances list
-    </Button>
+    </ComponentWithInjectedProps>
     <Connect(InstanceInfo)
       instance={null}
     />
@@ -231,13 +249,16 @@ exports[`InstancesList Component resets inner state when query function changes 
       }
     }
   >
-    <Button
-      buttonType={4}
-      icon="ChromeBack"
+    <ComponentWithInjectedProps
+      iconProps={
+        Object {
+          "iconName": "ChromeBack",
+        }
+      }
       onClick={[Function]}
     >
       Go back to the instances list
-    </Button>
+    </ComponentWithInjectedProps>
     <Connect(InstanceInfo)
       instance={null}
     />

@@ -100,7 +100,7 @@ describe("ClassBrowser Component", () => {
 
   it("should be able to create a new class index", () => {
     comp.setProps({ clazz: classWithoutIndex })
-    comp.find("Button").simulate("click", { preventDefault: jest.fn() })
+    comp.find("ComponentWithInjectedProps").simulate("click", { preventDefault: jest.fn() })
 
     expect(createIndex).toHaveBeenLastCalledWith(client, ["a-db"], {
       name: "all_users",
@@ -110,7 +110,7 @@ describe("ClassBrowser Component", () => {
 
   it("should find a non conflicting name for new index", () => {
     comp.setProps({ clazz: classWithNonClassIndex })
-    comp.find("Button").simulate("click", { preventDefault: jest.fn() })
+    comp.find("ComponentWithInjectedProps").simulate("click", { preventDefault: jest.fn() })
 
     expect(createIndex).toHaveBeenLastCalledWith(client, ["a-db"], {
       name: "all_people_1",
