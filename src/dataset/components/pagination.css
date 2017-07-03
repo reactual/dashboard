@@ -5,3 +5,15 @@
 .pagination .ms-TextField-field {
     padding: 6px 0px 7px 5px;
 }
+
+.pagination .ms-Button-icon {
+    color: #333333;
+}
+
+.pagination .ms-Button--icon {
+    background: none;
+}
+
+.pagination .is-disabled .ms-Icon {
+    color: #c8c8c8;
+}
