@@ -3,7 +3,7 @@ import { Dropdown } from "office-ui-fabric-react/lib/Dropdown"
 import { Label } from "office-ui-fabric-react/lib/Label"
 import { CommandButton } from "office-ui-fabric-react/lib/Button"
 import { TagPicker } from "office-ui-fabric-react/lib/components/pickers/TagPicker/TagPicker"
-import { TagItem } from "office-ui-fabric-react/lib/components/pickers/TagPicker/TagPicker"
+import { TagItem } from "office-ui-fabric-react/lib/components/pickers/TagPicker/TagItem"
 
 import "./fields-form.css"
 
