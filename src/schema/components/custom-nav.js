@@ -4,6 +4,8 @@ import React from "react"
 import { Nav } from "office-ui-fabric-react/lib/Nav"
 import { css } from "office-ui-fabric-react" // FIXME: remove
 
+import "./custom-nav.css"
+
 const _indentationSize = 14
 const _indentWithExpandButton = 28
 const _indentNoExpandButton = 20
@@ -15,7 +17,7 @@ export default class CustomNav extends Nav {
     const paddingBefore = (_indentationSize * nestingLevel).toString(10) + "px"
 
     return <div key={link.key || linkIndex}
-        className={css("ms-Nav-compositeLink", {"is-expanded": link.isExpanded, "is-selected": isLinkSelected })}>
+        className={css("custom-nav-compositeLink", {"is-expanded": link.isExpanded, "is-selected": isLinkSelected })}>
           {((nestingLevel > 0 && link.links && link.links.length > 0) ?
             <button
               style={{paddingLeft: paddingBefore}}
