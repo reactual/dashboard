@@ -1,13 +1,14 @@
 'use strict';
 
+const glob = require('glob');
 const path = require('path');
 const fs = require('fs');
 const url = require('url');
 
-const appDirectory = (function() {
-  if (process.env.PROJECT) return process.env.PROJECT;
-  return 'packages/dashboard-core';
-})();
+const appDirectory = process.env.PACKAGE;
+if (!appDirectory) {
+  throw new Error("Missing PACKAGE env. Build doesn't know which package to build.");
+}
 
 // Make sure any symlinks in the project folder are resolved:
 // https://github.com/facebookincubator/create-react-app/issues/637
@@ -44,12 +45,25 @@ function getServedPath(appPackageJson) {
   return ensureSlash(servedUrl, true);
 }
 
+function getCrossPackageDependecies(lernaConfig) {
+  const packages = [];
+
+  require(lernaConfig).packages.forEach(pattern =>
+    glob.sync(pattern).forEach(pkg => {
+      if (!appDirectory.includes(pkg))
+        packages.push(resolveRoot(pkg));
+    })
+  );
+
+  return packages;
+}
+
 module.exports = {
   dotenv: resolveRoot('.env'),
   yarnLockFile: resolveRoot('yarn.lock'),
-  lernaConfigJson: resolveRoot('lerna.json'),
   appPublic: resolveRoot('public'),
   appHtml: resolveRoot('public/index.html'),
+  crossPackageDependecies: getCrossPackageDependecies(resolveRoot('lerna.json')),
 
   appDirectory: appDirectory,
   appBuild: resolveApp('build'),

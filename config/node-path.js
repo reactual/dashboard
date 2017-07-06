@@ -1,6 +1,5 @@
 'use strict';
 
-const glob = require('glob');
 const path = require('path');
 const paths = require('./paths');
 
@@ -12,16 +11,11 @@ function addToNodePath(dirs) {
 }
 
 function includeAllPackages() {
-  const rawPackages = require(paths.lernaConfigJson).packages;
-  const packages = ['node_modules'];
-
-  rawPackages.forEach(pkg => {
-    glob.sync(pkg).forEach(pkgDir => {
-      packages.push(`${pkgDir}/node_modules`)
-    });
-  });
-
-  addToNodePath(packages);
+  addToNodePath(['node_modules'].concat(
+    paths.crossPackageDependecies.map(pkg =>
+      path.relative(paths.appDirectory, path.resolve(pkg, 'node_modules'))
+    )
+  ));
 }
 
 function includeRunningPackage() {

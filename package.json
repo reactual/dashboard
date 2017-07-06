@@ -52,9 +52,12 @@
   },
   "scripts": {
     "postinstall": "./node_modules/.bin/lerna bootstrap",
-    "start": "node scripts/start.js",
-    "build": "node scripts/build.js",
-    "test": "node scripts/test.js --env=jsdom"
+    "start": "PACKAGE=packages/dashboard-base node scripts/start.js",
+    "test": "PACKAGE=packages/dashboard-base node scripts/test.js --env=jsdom",
+    "start-cloud": "PACKAGE=packages/dashboard-cloud node scripts/start.js",
+    "build-cloud": "PACKAGE=packages/dashboard-cloud node scripts/build.js",
+    "start-enterprise": "PACKAGE=packages/dashboard-enterprise node scripts/start.js",
+    "build-enterprise": "PACKAGE=packages/dashboard-enterprise node scripts/build.js"
   },
   "jest": {
     "collectCoverageFrom": [
@@ -63,7 +66,7 @@
     "setupFiles": [
       "<rootDir>/config/polyfills.js"
     ],
-    "setupTestFrameworkScriptFile": "<rootDir>packages/dashboard-core/src/setupTests.js",
+    "setupTestFrameworkScriptFile": "<rootDir>packages/dashboard-base/src/setupTests.js",
     "testMatch": [
       "<rootDir>packages/**/src/**/__tests__/**/*.js?(x)",
       "<rootDir>packages/**/src/**/?(*.)(spec|test).js?(x)"
