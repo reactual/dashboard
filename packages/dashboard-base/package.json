@@ -1,6 +1,6 @@
 {
-  "name": "dashboard-core",
-  "version": "0.1.0",
+  "name": "dashboard-base",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
     "brace": "^0.5.1",
