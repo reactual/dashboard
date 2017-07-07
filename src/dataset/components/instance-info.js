@@ -1,15 +1,9 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
 import { query as q } from "faunadb"
-
-import {
-  Pivot,
-  PivotItem,
-  Button,
-  ButtonType,
-  MessageBar,
-  MessageBarType
-} from "office-ui-fabric-react"
+import { Pivot, PivotItem } from "office-ui-fabric-react/lib/Pivot"
+import { MessageBar, MessageBarType } from "office-ui-fabric-react/lib/MessageBar"
+import { DefaultButton, PrimaryButton } from "office-ui-fabric-react/lib/Button"
 
 import { Pagination } from "../"
 import { stringify } from "../stringify"
@@ -161,54 +155,50 @@ class InstanceInfo extends Component {
             </dl>
           </PivotItem>
           <PivotItem linkText="Edit" itemKey="edit">
-            <form>
-              <ReplEditor
-                mode={ReplEditor.Mode.TEXT_AREA}
-                name="instance-data-editor"
-                value={instanceData}
-                onChange={this.updateInstanceData.bind(this)} />
+            <ReplEditor
+              mode={ReplEditor.Mode.TEXT_AREA}
+              name="instance-data-editor"
+              value={instanceData}
+              onChange={this.updateInstanceData.bind(this)} />
 
-              <p className="ms-TextField-description">
-                The contents of this field will be evaluated with the context of a repl and placed in
-                the "data" field of the updated instance.
-              </p>
+            <p className="ms-TextField-description">
+              The contents of this field will be evaluated with the context of a repl and placed in
+              the "data" field of the updated instance.
+            </p>
 
-              <Button
-                disabled={isBusy}
-                buttonType={ButtonType.primary}
-                onClick={this.updateInstance.bind(this)}>
-                  Update Instance
-              </Button>
+            <PrimaryButton
+              disabled={isBusy}
+              onClick={this.updateInstance.bind(this)}>
+                Update Instance
+            </PrimaryButton>
 
-              <Button
-                disabled={isBusy}
-                onClick={this.openDeleteConfirmation.bind(this)}>
-                  Delete Instance
-              </Button>
+            <DefaultButton
+              disabled={isBusy}
+              onClick={this.openDeleteConfirmation.bind(this)}>
+                Delete Instance
+            </DefaultButton>
 
-              {isDeleteConfirmationOpen ?
-                <MessageBar
-                  messageBarType={MessageBarType.severeWarning}
-                  isMultiline={false}
-                  actions={
-                    <div>
-                      <Button
-                        disabled={isBusy}
-                        buttonType={ButtonType.primary}
-                        onClick={this.deleteInstance.bind(this)}>
-                        Yes
-                      </Button>
+            {isDeleteConfirmationOpen ?
+              <MessageBar
+                messageBarType={MessageBarType.severeWarning}
+                isMultiline={false}
+                actions={
+                  <div>
+                    <PrimaryButton
+                      disabled={isBusy}
+                      onClick={this.deleteInstance.bind(this)}>
+                      Yes
+                    </PrimaryButton>
 
-                      <Button
-                        disabled={isBusy}
-                        onClick={this.closeDeleteConfirmation.bind(this)}>
-                        No
-                      </Button>
-                    </div>
-                  }>
-                  Are you sure you want to delete this instance?
-                </MessageBar> : null}
-            </form>
+                    <DefaultButton
+                      disabled={isBusy}
+                      onClick={this.closeDeleteConfirmation.bind(this)}>
+                      No
+                    </DefaultButton>
+                  </div>
+                }>
+                Are you sure you want to delete this instance?
+              </MessageBar> : null}
           </PivotItem>
           <PivotItem linkText="JS" itemKey="JS">
             <pre>{stringify(instance)}</pre>

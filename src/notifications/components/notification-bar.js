@@ -1,6 +1,6 @@
 import React from "react"
 import { connect } from "react-redux"
-import { MessageBar, MessageBarType } from "office-ui-fabric-react"
+import { MessageBar, MessageBarType } from "office-ui-fabric-react/lib/MessageBar"
 
 import "./notification-bar.css"
 import { NotificationType } from "../"

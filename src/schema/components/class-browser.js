@@ -2,7 +2,7 @@ import React, { Component } from "react"
 import { connect } from "react-redux"
 import { query as q } from "faunadb"
 import { Link } from "react-router"
-import { Button, ButtonType } from "office-ui-fabric-react"
+import { PrimaryButton } from "office-ui-fabric-react/lib/Button"
 
 import { selectedClass, selectedDatabase, createIndex } from "../"
 import { faunaClient } from "../../authentication"
@@ -156,12 +156,11 @@ export class ClassBrowser extends Component {
         datasets this can increase storage and processing overhead, so use class
         indexes sparingly in production.
       </p>
-      <Button
-        buttonType={ButtonType.primary}
+      <PrimaryButton
         disabled={isBusy}
         onClick={this.createClassIndex}>
           Create a class index now
-      </Button>
+      </PrimaryButton>
     </div>
   }
 

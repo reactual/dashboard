@@ -1,10 +1,12 @@
+import ReactGA from "react-ga"
 import SplitPane from "react-split-pane"
 import React, { Component } from "react"
-import ReactGA from "react-ga"
 import { connect } from "react-redux"
 import { browserHistory } from "react-router"
 import { List } from "immutable"
-import { Button, ButtonType, Breadcrumb, Dropdown } from "office-ui-fabric-react"
+import { IconButton, PrimaryButton, CommandButton } from "office-ui-fabric-react/lib/Button"
+import { Dropdown, DropdownMenuItemType } from "office-ui-fabric-react/lib/Dropdown"
+import { Breadcrumb } from "office-ui-fabric-react/lib/Breadcrumb"
 
 import "./toggle-repl.css"
 import { ReplEditor, evalQuery } from "../"
@@ -114,7 +116,7 @@ class ToggleRepl extends Component {
       .concat(this.buildBreadCrumbItem(this.props.selectedPath))
 
     const privileges = this.props.faunaClient.availablePrivileges
-      .map(privilege => ({ key: privilege, text: privilege }))
+      .map(privilege => ({ key: privilege, text: privilege, itemType: DropdownMenuItemType.Normal }))
 
     return <SplitPane
       className="toggle-repl"
@@ -155,11 +157,9 @@ class ToggleRepl extends Component {
                   onChanged={this.onSelect("privilege")} />
                 key.
 
-                <Button
-                  buttonType={ButtonType.icon}
-                  icon={this.state.fullscreen ? "BackToWindow" : "FullScreen"}
-                  onClick={this.onToggle("fullscreen")}
-                  />
+                <IconButton
+                  iconProps={{ iconName: this.state.fullscreen ? "BackToWindow" : "FullScreen" }}
+                  onClick={this.onToggle("fullscreen")} />
               </div>
 
               <QueryResult
@@ -171,19 +171,17 @@ class ToggleRepl extends Component {
 
         <div className="repl-bar">
           <div className="buttons">
-            <Button
+            <PrimaryButton
               disabled={!this.state.isOpen || this.props.isBusy}
-              buttonType={ButtonType.primary}
               onClick={this.executeQuery.bind(this)}>
                 Run
-            </Button>
+            </PrimaryButton>
 
-            <Button
-              icon={this.state.isOpen ? "ChevronDown" : "ChevronUp"}
-              buttonType={ButtonType.command}
+            <CommandButton
+              iconProps={{ iconName: this.state.isOpen ? "ChevronDown" : "ChevronUp" }}
               onClick={this.onToggle("isOpen")}>
                 Toggle Query Console
-            </Button>
+            </CommandButton>
           </div>
 
           <Breadcrumb items={breadcrumbItems} />

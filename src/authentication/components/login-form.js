@@ -1,17 +1,10 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
 import { parse as parseURL } from "url"
-
-import {
-  TextField,
-  Button,
-  ButtonType,
-  Dialog,
-  DialogType,
-  DialogFooter,
-  Spinner,
-  SpinnerType
-} from "office-ui-fabric-react"
+import { Spinner, SpinnerType } from "office-ui-fabric-react/lib/Spinner"
+import { PrimaryButton } from "office-ui-fabric-react/lib/Button"
+import { TextField } from "office-ui-fabric-react/lib/TextField"
+import { Dialog, DialogType, DialogFooter } from "office-ui-fabric-react/lib/Dialog"
 
 import { login, loginWithCloud, restoreUserSession } from "../"
 import { pushNotification, NotificationType } from "../../notifications"
@@ -22,6 +15,8 @@ class LoginForm extends Component {
   constructor(props) {
     super(props)
     this.state = this.initialState()
+    this.askForPaymentInfoIfNeeded = this.askForPaymentInfoIfNeeded.bind(this)
+    this.onSubmit = this.onSubmit.bind(this)
   }
 
   initialState() {
@@ -37,7 +32,7 @@ class LoginForm extends Component {
     this.withMessage("Logging in...", loginWithCloud())
       .then(user => !user ? this.withMessage("Restoring user session...", restoreUserSession()) : user)
       .then(user => !user ? this.setState({ message: null }) : user)
-      .then(this.askForPaymentInfoIfNeeded.bind(this))
+      .then(this.askForPaymentInfoIfNeeded)
   }
 
   componentWillReceiveProps(next) {
@@ -102,7 +97,7 @@ class LoginForm extends Component {
     }
   }
 
-  onClick(e) {
+  onSubmit(e) {
     e.preventDefault()
     if (this.validate()) {
       const { endpoint, secret } = this.state
@@ -142,14 +137,14 @@ class LoginForm extends Component {
 
     return (
       <Dialog
-        isOpen={!this.props.currentUser}
-        isBlocking={true}
-        type={DialogType.largeHeader}
+        hidden={this.props.currentUser}
+        dialogContentProps={{ type: DialogType.largeHeader }}
+        modalProps={{ isBlocking: true }}
         title="Connect to FaunaDB"
       >
         {message != null ?
           <Spinner type={SpinnerType.large} label={message} /> :
-          <form>
+          <form onSubmit={this.onSubmit}>
             <p className="ms-Dialog-subText">
               Visit <a href="https://fauna.com/dashboard">https://fauna.com/dashboard</a> or talk to your administrator to provision keys.
             </p>
@@ -172,11 +167,9 @@ class LoginForm extends Component {
               errorMessage={errors.secret} />
 
             <DialogFooter>
-              <Button
-                buttonType={ButtonType.primary}
-                onClick={this.onClick.bind(this)}>
+              <PrimaryButton type="submit">
                 Use Secret
-              </Button>
+              </PrimaryButton>
             </DialogFooter>
           </form>}
       </Dialog>

@@ -1,7 +1,7 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
 import { browserHistory } from "react-router"
-import { TextField } from "office-ui-fabric-react"
+import { TextField } from "office-ui-fabric-react/lib/TextField"
 import ReactGA from "react-ga"
 
 import SchemaForm from "./schema-form"

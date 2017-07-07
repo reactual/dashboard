@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`KeysForm Component should be submit the form 1`] = `
+exports[`KeysForm Component should create a new key on submit 1`] = `
 <div>
   <Connect(SchemaForm)
     buttonText="Create Key"
@@ -9,6 +9,8 @@ exports[`KeysForm Component should be submit the form 1`] = `
     title="Create a new key"
   >
     <TextField
+      autoAdjustHeight={false}
+      borderless={false}
       deferredValidationTime={200}
       errorMessage=""
       label="Name"
@@ -19,26 +21,33 @@ exports[`KeysForm Component should be submit the form 1`] = `
       onNotifyValidationResult={[Function]}
       resizable={true}
       underlined={false}
+      validateOnFocusIn={false}
+      validateOnFocusOut={false}
+      validateOnLoad={true}
       value="server-key"
     />
-    <Dropdown
+    <WithResponsiveMode
       label="Role"
       onChanged={[Function]}
       options={
         Array [
           Object {
+            "itemType": 0,
             "key": "admin",
             "text": "admin",
           },
           Object {
+            "itemType": 0,
             "key": "server",
             "text": "server",
           },
           Object {
+            "itemType": 0,
             "key": "server-readonly",
             "text": "server-readonly",
           },
           Object {
+            "itemType": 0,
             "key": "client",
             "text": "client",
           },
@@ -59,16 +68,18 @@ exports[`KeysForm Component should be submit the form 1`] = `
       </a>
        for more information about the key's role.
     </p>
-    <Dropdown
+    <WithResponsiveMode
       label="Database"
       onChanged={[Function]}
       options={
         Array [
           Object {
+            "itemType": 0,
             "key": "db1",
             "text": "db1",
           },
           Object {
+            "itemType": 0,
             "key": "db2",
             "text": "db2",
           },
@@ -80,7 +91,7 @@ exports[`KeysForm Component should be submit the form 1`] = `
 </div>
 `;
 
-exports[`KeysForm Component should be submit the form 2`] = `
+exports[`KeysForm Component should create a new key on submit 2`] = `
 <div>
   <Connect(SchemaForm)
     buttonText="Create Key"
@@ -89,6 +100,8 @@ exports[`KeysForm Component should be submit the form 2`] = `
     title="Create a new key"
   >
     <TextField
+      autoAdjustHeight={false}
+      borderless={false}
       deferredValidationTime={200}
       errorMessage=""
       label="Name"
@@ -99,26 +112,33 @@ exports[`KeysForm Component should be submit the form 2`] = `
       onNotifyValidationResult={[Function]}
       resizable={true}
       underlined={false}
+      validateOnFocusIn={false}
+      validateOnFocusOut={false}
+      validateOnLoad={true}
       value=""
     />
-    <Dropdown
+    <WithResponsiveMode
       label="Role"
       onChanged={[Function]}
       options={
         Array [
           Object {
+            "itemType": 0,
             "key": "admin",
             "text": "admin",
           },
           Object {
+            "itemType": 0,
             "key": "server",
             "text": "server",
           },
           Object {
+            "itemType": 0,
             "key": "server-readonly",
             "text": "server-readonly",
           },
           Object {
+            "itemType": 0,
             "key": "client",
             "text": "client",
           },
@@ -139,96 +159,18 @@ exports[`KeysForm Component should be submit the form 2`] = `
       </a>
        for more information about the key's role.
     </p>
-    <Dropdown
+    <WithResponsiveMode
       label="Database"
       onChanged={[Function]}
       options={
         Array [
           Object {
+            "itemType": 0,
             "key": "db1",
             "text": "db1",
           },
           Object {
-            "key": "db2",
-            "text": "db2",
-          },
-        ]
-      }
-      selectedKey={null}
-    />
-  </Connect(SchemaForm)>
-</div>
-`;
-
-exports[`KeysForm Component should create a new key on submit 1`] = `
-<div>
-  <Connect(SchemaForm)
-    buttonText="Create Key"
-    onFinish={[Function]}
-    onSubmit={[Function]}
-    title="Create a new key"
-  >
-    <TextField
-      deferredValidationTime={200}
-      errorMessage=""
-      label="Name"
-      multiline={false}
-      onBeforeChange={[Function]}
-      onChanged={[Function]}
-      onGetErrorMessage={[Function]}
-      onNotifyValidationResult={[Function]}
-      resizable={true}
-      underlined={false}
-      value=""
-    />
-    <Dropdown
-      label="Role"
-      onChanged={[Function]}
-      options={
-        Array [
-          Object {
-            "key": "admin",
-            "text": "admin",
-          },
-          Object {
-            "key": "server",
-            "text": "server",
-          },
-          Object {
-            "key": "server-readonly",
-            "text": "server-readonly",
-          },
-          Object {
-            "key": "client",
-            "text": "client",
-          },
-        ]
-      }
-      selectedKey={null}
-    />
-    <p
-      className="ms-TextField-description"
-    >
-      Check 
-      <a
-        href="https://fauna.com/documentation/#authentication"
-        rel="noopener noreferrer"
-        target="_blank"
-      >
-        https://fauna.com/documentation/#authentication
-      </a>
-       for more information about the key's role.
-    </p>
-    <Dropdown
-      label="Database"
-      onChanged={[Function]}
-      options={
-        Array [
-          Object {
-            "key": "db1",
-            "text": "db1",
-          },
-          Object {
+            "itemType": 0,
             "key": "db2",
             "text": "db2",
           },
@@ -263,6 +205,8 @@ exports[`KeysForm Component should render an empty form 1`] = `
     title="Create a new key"
   >
     <TextField
+      autoAdjustHeight={false}
+      borderless={false}
       deferredValidationTime={200}
       errorMessage=""
       label="Name"
@@ -273,26 +217,33 @@ exports[`KeysForm Component should render an empty form 1`] = `
       onNotifyValidationResult={[Function]}
       resizable={true}
       underlined={false}
+      validateOnFocusIn={false}
+      validateOnFocusOut={false}
+      validateOnLoad={true}
       value=""
     />
-    <Dropdown
+    <WithResponsiveMode
       label="Role"
       onChanged={[Function]}
       options={
         Array [
           Object {
+            "itemType": 0,
             "key": "admin",
             "text": "admin",
           },
           Object {
+            "itemType": 0,
             "key": "server",
             "text": "server",
           },
           Object {
+            "itemType": 0,
             "key": "server-readonly",
             "text": "server-readonly",
           },
           Object {
+            "itemType": 0,
             "key": "client",
             "text": "client",
           },
@@ -313,16 +264,18 @@ exports[`KeysForm Component should render an empty form 1`] = `
       </a>
        for more information about the key's role.
     </p>
-    <Dropdown
+    <WithResponsiveMode
       label="Database"
       onChanged={[Function]}
       options={
         Array [
           Object {
+            "itemType": 0,
             "key": "db1",
             "text": "db1",
           },
           Object {
+            "itemType": 0,
             "key": "db2",
             "text": "db2",
           },

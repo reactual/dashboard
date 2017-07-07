@@ -1,7 +1,7 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
 import { query as q } from "faunadb"
-import { Button, ButtonType } from "office-ui-fabric-react"
+import { PrimaryButton } from "office-ui-fabric-react/lib/Button"
 
 import { selectedIndex, selectedDatabase } from "../"
 import { faunaClient } from "../../authentication"
@@ -110,12 +110,11 @@ export class IndexBrowser extends Component {
               the "terms" field of the index look up query.
             </p>
 
-            <Button
+            <PrimaryButton
               disabled={isBusy}
-              buttonType={ButtonType.primary}
               onClick={this.onSubmit}>
               Search
-            </Button>
+            </PrimaryButton>
           </div>
         </div> : null}
 

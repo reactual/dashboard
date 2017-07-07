@@ -51,7 +51,7 @@ describe("IndexBrowser Component", () => {
     expect(shallowToJson(comp)).toMatchSnapshot()
 
     comp.find("ReplEditor").simulate("change", "a name")
-    comp.find("Button").simulate("click")
+    comp.find("ComponentWithInjectedProps").simulate("click")
     expect(shallowToJson(comp)).toMatchSnapshot()
   })
 })

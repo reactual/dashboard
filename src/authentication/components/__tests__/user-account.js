@@ -15,7 +15,7 @@ describe("UserAccount Component", () => {
   it("should show and hide context menu on click", () => {
     expect(shallowToJson(comp)).toMatchSnapshot()
 
-    comp.find("Button").simulate("click", { target: "mocked" })
+    comp.find("ComponentWithInjectedProps").simulate("click", { target: "mocked" })
     expect(shallowToJson(comp)).toMatchSnapshot()
 
     comp.find("ContextualMenu").simulate("dismiss")
