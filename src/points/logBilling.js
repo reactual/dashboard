@@ -1,7 +1,5 @@
 export default function (res) {
-  console.log('res in log Billing?', res)
-  console.log('res in log billing args:', arguments)
-  console.log('this in log billing?', this)
+  console.log('res in logBilling:\n', res)
   // const header = res.responseHeaders
   // const cost = Number(header['x-points-total']) * .00001
   // const billingPoints = {

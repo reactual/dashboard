@@ -105,7 +105,6 @@ class ToggleRepl extends Component {
     ).then(
 
       (result) => {
-        console.log('result?', result)
         this.setState({ result, error: null })
       },
       (error) => this.setState({ error, result: null })
