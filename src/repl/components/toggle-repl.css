@@ -65,6 +65,12 @@
     float: right;
 }
 
+.toggle-repl .repl-bar .buttons .ms-Checkbox {
+    float: right;
+    margin-left: 0.6em;
+    margin-top: 0.7em;
+    margin-right: 1em;
+}
 .toggle-repl .repl-bar .buttons .ms-Button--primary {
     margin-top: 0.3em;
 }

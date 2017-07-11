@@ -6,6 +6,7 @@ import { browserHistory } from "react-router"
 import { List } from "immutable"
 import { IconButton, PrimaryButton, CommandButton } from "office-ui-fabric-react/lib/Button"
 import { Dropdown, DropdownMenuItemType } from "office-ui-fabric-react/lib/Dropdown"
+import { Checkbox } from "office-ui-fabric-react/lib/Checkbox"
 import { Breadcrumb } from "office-ui-fabric-react/lib/Breadcrumb"
 
 import "./toggle-repl.css"
@@ -23,6 +24,7 @@ class ToggleRepl extends Component {
 
   initialState() {
     return {
+      isChecked: true,
       code: "q.Paginate(q.Ref(\"indexes\"))",
       selectedCode: "",
       isOpen: false,
@@ -30,7 +32,8 @@ class ToggleRepl extends Component {
       expandedSize: 300,
       privilege: null,
       result: null,
-      error: null
+      error: null,
+      points: null
     }
   }
 
@@ -100,7 +103,11 @@ class ToggleRepl extends Component {
         )(selectedCode || code)
       )
     ).then(
-      (result) => this.setState({ result, error: null }),
+
+      (result) => {
+        console.log('result?', result)
+        this.setState({ result, error: null })
+      },
       (error) => this.setState({ error, result: null })
     )
     ReactGA.event({category: "repl", action: "query"});
@@ -171,6 +178,11 @@ class ToggleRepl extends Component {
 
         <div className="repl-bar">
           <div className="buttons">
+            <Checkbox
+              label='Display Points'
+              checked={ this.state.isChecked }
+              onChange={ (ev, checked) => this.setState({ isChecked: checked }) } />
+
             <PrimaryButton
               disabled={!this.state.isOpen || this.props.isBusy}
               onClick={this.executeQuery.bind(this)}>

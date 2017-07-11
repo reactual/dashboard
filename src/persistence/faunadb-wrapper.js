@@ -1,5 +1,6 @@
 import faunadb, { query as q, errors } from "faunadb"
 import { parse as parseURL } from "url"
+import logBilling from '../points/logBilling'
 
 export default class FaunaClient {
   static KeyType = {
@@ -69,7 +70,9 @@ export default class FaunaClient {
         config.port = endpointURL.port
       }
     }
-
+    if (logBilling) {
+      config.observer = logBilling
+    }
     this.endpoint = endpoint
     this.secret = secret
     this.config = config

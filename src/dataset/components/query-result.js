@@ -28,6 +28,7 @@ export default class QueryResult extends Component {
   }
 
   showResult() {
+    console.log('result in showResult()? this.props:', this.props)
     const { columns, data } = this.buildDataSet()
     const selectedTab = data.length > 0 ? 0 : 1
 
