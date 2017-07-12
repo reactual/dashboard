@@ -48,6 +48,11 @@ export default class QueryResult extends Component {
         <PivotItem linkText="JS">
           <pre>{stringify(this.props.result)}</pre>
         </PivotItem>
+        <PivotItem linkText="Points">
+          <strong>Total Points: { this.props.result.billing.pts_total || '0.00' }</strong><br/>
+          <strong>Total Cost: { this.props.result.billing.cost_total  || '$0.00' }</strong><br/>
+          <pre>{stringify(this.props.result.billing)}</pre>
+        </PivotItem>
       </Pivot>
   }
 
